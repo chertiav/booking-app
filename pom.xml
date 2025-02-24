@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>com.chertiavdev</groupId>
-    <artifactId>booking-app-prev</artifactId>
+    <artifactId>booking-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>booking-app</name>
     <description>booking-app</description>
