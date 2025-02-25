@@ -1,11 +1,16 @@
 package com.chertiavdev.bookingapp.dto.user;
 
+import com.chertiavdev.bookingapp.validation.FieldMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+@FieldMatch(
+        firstField = "password",
+        secondField = "repeatPassword",
+        message = "Passwords do not match")
 @Data
 public class UserRegisterRequestDto {
     @NotBlank(message = "Email is required")
