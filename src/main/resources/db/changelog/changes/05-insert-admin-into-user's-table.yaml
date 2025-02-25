@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id:  insert-admin-into-user's-table
+      author: andrey
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "admin@example.com" }
+              - column: { name: password,
+                          value: "$2a$10$7O3zfCPG26uI4KLn/Ynm..DVjx48xedYhbB/.ensNKrqZEEgTTXQy" }
+              - column: { name: first_name, value: "admin" }
+              - column: { name: last_name, value: "example" }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, valueNumeric: 1 }
+              - column: { name: role_id, valueNumeric: 1 }
