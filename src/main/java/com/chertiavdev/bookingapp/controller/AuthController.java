@@ -1,5 +1,6 @@
 package com.chertiavdev.bookingapp.controller;
 
+import com.chertiavdev.bookingapp.dto.error.CommonApiResponseDto;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
 import com.chertiavdev.bookingapp.dto.user.UserLoginRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserLoginResponseDto;
@@ -8,6 +9,7 @@ import com.chertiavdev.bookingapp.exception.RegistrationException;
 import com.chertiavdev.bookingapp.security.AuthenticationService;
 import com.chertiavdev.bookingapp.service.UserService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
+import com.chertiavdev.bookingapp.util.ExampleValues;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -38,9 +40,32 @@ public class AuthController {
                             description = "Successfully registered a new user",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDto.class)
-                            )
-                    )
+                                    schema = @Schema(implementation = UserDto.class))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
+                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Validation Error Example",
+                                                    summary = "An example of a validation error "
+                                                            + "response with field-specific issues",
+                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
+                                            ),
+                                            @ExampleObject(
+                                                    name = "General Error Example",
+                                                    summary = "An example of a general error "
+                                                            + "response for invalid request "
+                                                            + "parameters",
+                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
+                                            )
+                                    })),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
+                            description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class))),
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Data required to register a new user",
@@ -67,9 +92,42 @@ public class AuthController {
                             description = "Successful user login",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = UserLoginResponseDto.class)
-                            )
-                    )
+                                    schema = @Schema(implementation = UserLoginResponseDto.class))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
+                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Validation Error Example",
+                                                    summary = "An example of a validation error "
+                                                            + "response with field-specific issues",
+                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
+                                            ),
+                                            @ExampleObject(
+                                                    name = "General Error Example",
+                                                    summary = "An example of a general error "
+                                                            + "response for invalid request "
+                                                            + "parameters",
+                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
+                                            )
+                                    })),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
+                            description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
+                            description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
+                            description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiResponseDto.class))),
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "User login data",
@@ -81,23 +139,11 @@ public class AuthController {
                                     @ExampleObject(
                                             name = "Example User logging",
                                             summary = "Example of a valid User logging request",
-                                            value = """
-                                                    {
-                                                      "email": "example@example.com",
-                                                      "password": "strongPassword123*"
-                                                    }
-                                                    """
-                                    ),
+                                            value = ExampleValues.EXAMPLE_USER_LOGGING),
                                     @ExampleObject(
                                             name = "Example Admin logging",
                                             summary = "Example of a valid Admin logging request",
-                                            value = """
-                                                    {
-                                                      "email": "admin@example.com",
-                                                      "password": "12345678"
-                                                    }
-                                                    """
-                                    )
+                                            value = ExampleValues.EXAMPLE_ADMIN_LOGGING)
                             }
                     )
             )
