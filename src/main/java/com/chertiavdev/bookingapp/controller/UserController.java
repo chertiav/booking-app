@@ -2,11 +2,9 @@ package com.chertiavdev.bookingapp.controller;
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
-import com.chertiavdev.bookingapp.dto.user.UserLoginRequestDto;
-import com.chertiavdev.bookingapp.dto.user.UserLoginResponseDto;
-import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
-import com.chertiavdev.bookingapp.exception.RegistrationException;
-import com.chertiavdev.bookingapp.security.AuthenticationService;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserWithRoleDto;
 import com.chertiavdev.bookingapp.service.UserService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
 import com.chertiavdev.bookingapp.util.ExampleValues;
@@ -18,54 +16,56 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Auth management", description = "Endpoints responsible for managing authentication and"
-        + " retrieving user information.")
+@Tag(name = "User management", description = "Endpoints for managing users")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
-public class AuthController {
-
+@RequestMapping("/users")
+public class UserController {
     private final UserService userService;
-    private final AuthenticationService authenticationService;
 
     @Operation(
-            summary = ApiResponseConstants.USER_REGISTRATION_DESCRIPTION,
-            description = ApiResponseConstants.USER_REGISTRATION_DESCRIPTION,
+            summary = "Retrieve the current user's information",
+            description = "Returns detailed information about the currently authenticated user, "
+                    + "including their roles.",
             responses = {
                     @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "Successfully registered a new user",
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
+                            description = "Successfully retrieved the user's information along with"
+                                    + " their roles.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = UserDto.class))),
                     @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
-                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
+                            description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
                             content = @Content(schema = @Schema(
                                     implementation = CommonApiErrorResponseDto.class),
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = ApiResponseConstants
-                                                            .VALIDATION_ERROR_EXAMPLE_MESSAGE,
-                                                    summary = ApiResponseConstants
-                                                            .VALIDATION_ERROR_EXAMPLE_DESCRIPTION,
-                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
-                                            ),
-                                            @ExampleObject(
-                                                    name = ApiResponseConstants
-                                                            .GENERAL_ERROR_EXAMPLE_MESSAGE,
-                                                    summary = ApiResponseConstants
-                                                            .GENERAL_ERROR_EXAMPLE_DESCRIPTION,
-                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
-                                            )
-                                    })),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .RESOURCE_NOT_FOUND_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .NOT_FOUND_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.NOT_FOUND_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
+                            description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                            examples = @ExampleObject(
+                                    name = ApiResponseConstants.UNAUTHORIZED_ERROR_EXAMPLE_MESSAGE,
+                                    summary = ApiResponseConstants
+                                            .USER_UNAUTHORIZED_ERROR_EXAMPLE_DESCRIPTION,
+                                    value = ExampleValues.UNAUTHORIZED_ERROR_EXAMPLE))),
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
                             description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
@@ -78,33 +78,25 @@ public class AuthController {
                                                     .INTERNAL_SERVER_ERROR_EXAMPLE_DESCRIPTION,
                                             value = ExampleValues
                                                     .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
-            },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Data required to register a new user",
-                    required = true,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserRegisterRequestDto.class)
-                    )
-            )
+            }
     )
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/register")
-    public UserDto register(@Valid @RequestBody UserRegisterRequestDto requestDto)
-            throws RegistrationException {
-        return userService.register(requestDto);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @GetMapping("/me")
+    public UserDto findByEmail(Authentication authentication) {
+        return userService.findByEmail(authentication.getName());
     }
 
     @Operation(
-            summary = ApiResponseConstants.USER_LOGIN_DESCRIPTION,
-            description = ApiResponseConstants.USER_LOGIN_DESCRIPTION,
+            summary = "Update a user's information by Email",
+            description = "Updates the details of a specific user based on the provided email "
+                    + "address and request body",
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successful user login",
+                            description = "Successfully updated the user's information",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = UserLoginResponseDto.class))),
+                                    schema = @Schema(implementation = UserDto.class))),
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
                             description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
@@ -160,28 +152,99 @@ public class AuthController {
                                                     .INTERNAL_SERVER_ERROR_EXAMPLE_DESCRIPTION,
                                             value = ExampleValues
                                                     .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
-            },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "User login data",
-                    required = true,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserLoginRequestDto.class),
-                            examples = {
-                                    @ExampleObject(
-                                            name = "Example User logging",
-                                            summary = "Example of a valid User logging request",
-                                            value = ExampleValues.EXAMPLE_USER_LOGGING),
-                                    @ExampleObject(
-                                            name = "Example Admin logging",
-                                            summary = "Example of a valid Admin logging request",
-                                            value = ExampleValues.EXAMPLE_ADMIN_LOGGING)
-                            }
-                    )
-            )
+            }
     )
-    @PostMapping("/login")
-    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
-        return authenticationService.authenticate(requestDto);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PutMapping("/me")
+    public UserDto updateByEmail(
+            Authentication authentication,
+            @RequestBody @Valid UserUpdateRequestDto requestDto) {
+        return userService.updateByEmail(authentication.getName(), requestDto);
+    }
+
+    @Operation(
+            summary = "Update a user's role by ID",
+            description = "Updates the role of a user identified by their unique ID. This "
+                    + "operation is restricted to administrators.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
+                            description = "The user's role was successfully updated.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserWithRoleDto.class))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
+                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
+                                            ),
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
+                                            )
+                                    })),
+                    @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_FORBIDDEN,
+                            description = ApiResponseConstants.FORBIDDEN_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.FORBIDDEN_ERROR_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
+                            description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .RESOURCE_NOT_FOUND_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .NOT_FOUND_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.NOT_FOUND_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
+                            description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .UNAUTHORIZED_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .USER_UNAUTHORIZED_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.UNAUTHORIZED_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
+                            description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues
+                                                    .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
+            }
+    )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping("/{id}/role")
+    public UserWithRoleDto updateRole(
+            @PathVariable Long id,
+            @RequestBody @Valid UserUpdateRoleRequestDto requestDto) {
+        return userService.updateRoleByUsersId(id, requestDto);
     }
 }

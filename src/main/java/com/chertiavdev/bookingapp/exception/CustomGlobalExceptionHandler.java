@@ -1,8 +1,7 @@
 package com.chertiavdev.bookingapp.exception;
 
-import com.chertiavdev.bookingapp.dto.error.CommonApiResponseDto;
+import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.chertiavdev.bookingapp.dto.error.ErrorDetailDto;
-import io.jsonwebtoken.JwtException;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -53,6 +53,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    protected ResponseEntity<Object> handleRegistrationException(AuthorizationDeniedException ex) {
+        return buildResponseEntity(
+                HttpStatus.FORBIDDEN,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Access denied")
+        );
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
         log.warn("Authentication failed: {}", ex.getMessage());
@@ -70,16 +79,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now(),
                 getErrorMessage(ex, "Entity was not found.")
-        );
-    }
-
-    @ExceptionHandler(JwtException.class)
-    protected ResponseEntity<Object> handleJwtException(JwtException ex) {
-        log.warn("JWT processing error: {}", ex.getMessage());
-        return buildResponseEntity(
-                HttpStatus.UNAUTHORIZED,
-                LocalDateTime.now(),
-                getErrorMessage(ex, "Invalid or missing JWT token.")
         );
     }
 
@@ -108,9 +107,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             HttpStatus status,
             LocalDateTime timestamp,
             Object errorMessage) {
-        CommonApiResponseDto commonApiResponseDto =
-                new CommonApiResponseDto(status, timestamp, errorMessage);
-        return new ResponseEntity<>(commonApiResponseDto, status);
+        CommonApiErrorResponseDto commonApiErrorResponseDto =
+                new CommonApiErrorResponseDto(status, timestamp, errorMessage);
+        return new ResponseEntity<>(commonApiErrorResponseDto, status);
     }
 
     private ErrorDetailDto getErrorDetails(ObjectError objectError) {

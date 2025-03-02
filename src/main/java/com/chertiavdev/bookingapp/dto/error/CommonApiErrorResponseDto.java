@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 
 @Schema(description = "Common format for API responses")
-public record CommonApiResponseDto(
+public record CommonApiErrorResponseDto(
         @Schema(
                 description = "HTTP status of the response",
                 requiredMode = Schema.RequiredMode.REQUIRED
