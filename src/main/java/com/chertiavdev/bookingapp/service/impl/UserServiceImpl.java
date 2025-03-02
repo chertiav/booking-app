@@ -2,6 +2,7 @@ package com.chertiavdev.bookingapp.service.impl;
 
 import com.chertiavdev.bookingapp.dto.user.UserDto;
 import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.exception.RegistrationException;
 import com.chertiavdev.bookingapp.mapper.UserMapper;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+    public static final String ERROR_USER_NOT_FOUND_EMAIL = "User not found with email: ";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
@@ -57,8 +59,16 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: "
-                        + email));
+                .orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND_EMAIL + email));
+    }
+
+    @Transactional
+    @Override
+    public UserDto updateByEmail(String email, UserUpdateRequestDto requestDto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND_EMAIL + email));
+        userMapper.updateUserFromDto(requestDto, user);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     private Set<Role> getSetOfUserRole() {
