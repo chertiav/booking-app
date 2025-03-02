@@ -54,4 +54,11 @@ public class ExampleValues {
                "errorMessage": "Internal server error"
              }
             """;
+    public static final String FORBIDDEN_ERROR_ERROR_EXAMPLE = """
+            {
+               "status": "FORBIDDEN",
+               "timestamp": "02-03-2025 19:10:07",
+               "errorMessage": "Access Denied"
+             }
+            """;
 }

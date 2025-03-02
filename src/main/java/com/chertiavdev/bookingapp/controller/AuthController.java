@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.dto.error.CommonApiResponseDto;
+import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
 import com.chertiavdev.bookingapp.dto.user.UserLoginRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserLoginResponseDto;
@@ -49,7 +49,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
                             description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = {
                                             @ExampleObject(
                                                     name = ApiResponseConstants
@@ -70,7 +70,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
                             description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = @ExampleObject(
                                             name = ApiResponseConstants
                                                     .INTERNAL_SERVER_ERROR_EXAMPLE_MESSAGE,
@@ -109,7 +109,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
                             description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = {
                                             @ExampleObject(
                                                     name = ApiResponseConstants
@@ -130,7 +130,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
                             description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = @ExampleObject(
                                             name = ApiResponseConstants
                                                     .RESOURCE_NOT_FOUND_EXAMPLE_MESSAGE,
@@ -141,7 +141,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
                             description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = @ExampleObject(
                                             name = ApiResponseConstants
                                                     .UNAUTHORIZED_ERROR_EXAMPLE_MESSAGE,
@@ -152,7 +152,7 @@ public class AuthController {
                             responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
                             description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
                             content = @Content(schema = @Schema(
-                                    implementation = CommonApiResponseDto.class),
+                                    implementation = CommonApiErrorResponseDto.class),
                                     examples = @ExampleObject(
                                             name = ApiResponseConstants
                                                     .INTERNAL_SERVER_ERROR_EXAMPLE_MESSAGE,

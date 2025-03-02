@@ -3,6 +3,8 @@ package com.chertiavdev.bookingapp.service;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
 import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserWithRoleDto;
 import com.chertiavdev.bookingapp.exception.RegistrationException;
 
 public interface UserService {
@@ -11,4 +13,6 @@ public interface UserService {
     UserDto findByEmail(String email);
 
     UserDto updateByEmail(String email, UserUpdateRequestDto requestDto);
+
+    UserWithRoleDto updateRoleByUsersId(Long id, UserUpdateRoleRequestDto requestDto);
 }

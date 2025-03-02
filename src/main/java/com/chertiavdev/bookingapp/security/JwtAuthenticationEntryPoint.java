@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.security;
 
-import com.chertiavdev.bookingapp.dto.error.CommonApiResponseDto;
+import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        CommonApiResponseDto responseDto = new CommonApiResponseDto(
+        CommonApiErrorResponseDto responseDto = new CommonApiErrorResponseDto(
                 HttpStatus.UNAUTHORIZED,
                 LocalDateTime.now(),
                 "Access Denied: " + authException.getMessage()
