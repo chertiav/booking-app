@@ -2,7 +2,6 @@ package com.chertiavdev.bookingapp.exception;
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiResponseDto;
 import com.chertiavdev.bookingapp.dto.error.ErrorDetailDto;
-import io.jsonwebtoken.JwtException;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -70,16 +69,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now(),
                 getErrorMessage(ex, "Entity was not found.")
-        );
-    }
-
-    @ExceptionHandler(JwtException.class)
-    protected ResponseEntity<Object> handleJwtException(JwtException ex) {
-        log.warn("JWT processing error: {}", ex.getMessage());
-        return buildResponseEntity(
-                HttpStatus.UNAUTHORIZED,
-                LocalDateTime.now(),
-                getErrorMessage(ex, "Invalid or missing JWT token.")
         );
     }
 

@@ -53,6 +53,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @Override
+    public UserDto findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: "
+                        + email));
+    }
+
     private Set<Role> getSetOfUserRole() {
         return Set.of(roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found role: "

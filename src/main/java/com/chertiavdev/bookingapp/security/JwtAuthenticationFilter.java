@@ -33,21 +33,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String token = getToken(request);
-        try {
-            if (token != null && jwtUtil.isValidToken(token)) {
-                String username = jwtUtil.getUsername(token);
-                log.info("Valid JWT token for username: {}", username);
+        if (token != null && jwtUtil.isValidToken(token)) {
+            String username = jwtUtil.getUsername(token);
+            log.info("Valid JWT token for username: {}", username);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Authentication successfully set for username: {}", username);
-            } else {
-                log.warn("JWT token is either null or invalid.");
-            }
-        } catch (Exception e) {
-            log.error("Error processing JWT token: {}", e.getMessage(), e);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("Authentication successfully set for username: {}", username);
+        } else {
+            log.warn("JWT token is either null or invalid.");
         }
         filterChain.doFilter(request, response);
     }

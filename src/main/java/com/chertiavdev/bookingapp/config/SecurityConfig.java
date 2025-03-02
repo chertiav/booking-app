@@ -2,6 +2,7 @@ package com.chertiavdev.bookingapp.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import com.chertiavdev.bookingapp.security.JwtAuthenticationEntryPoint;
 import com.chertiavdev.bookingapp.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -50,6 +52,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .build();
     }
 

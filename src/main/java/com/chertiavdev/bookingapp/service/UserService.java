@@ -6,4 +6,6 @@ import com.chertiavdev.bookingapp.exception.RegistrationException;
 
 public interface UserService {
     UserDto register(UserRegisterRequestDto requestDto) throws RegistrationException;
+
+    UserDto findByEmail(String email);
 }
