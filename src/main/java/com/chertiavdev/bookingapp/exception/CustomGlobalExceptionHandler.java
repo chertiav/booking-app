@@ -5,6 +5,7 @@ import com.chertiavdev.bookingapp.dto.error.ErrorDetailDto;
 import io.jsonwebtoken.JwtException;
 import java.time.LocalDateTime;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
@@ -26,6 +28,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             @NonNull HttpHeaders headers,
             @NonNull HttpStatusCode status,
             @NonNull WebRequest request) {
+        log.error("Validation failed for request. First 5 errors: {}",
+                ex.getBindingResult().getAllErrors().stream()
+                        .map(ObjectError::getDefaultMessage)
+                        .limit(5)
+                        .toList()
+        );
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -37,6 +45,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
+        log.error("Registration failed: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -46,6 +55,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication failed: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.UNAUTHORIZED,
                 LocalDateTime.now(),
@@ -55,6 +65,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.warn("Entity not found: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now(),
@@ -64,6 +75,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(JwtException.class)
     protected ResponseEntity<Object> handleJwtException(JwtException ex) {
+        log.warn("JWT processing error: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.UNAUTHORIZED,
                 LocalDateTime.now(),
@@ -71,8 +83,19 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        log.error("Application runtime error: {}", ex.getMessage(), ex);
+        return buildResponseEntity(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "An internal runtime error has occurred.")
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
+        log.error("Unexpected error: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 LocalDateTime.now(),
