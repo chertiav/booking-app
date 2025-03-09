@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @Data
@@ -26,5 +27,6 @@ public class UserLoginRequestDto {
             example = "strongPassword123*",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @ToString.Exclude
     private String password;
 }

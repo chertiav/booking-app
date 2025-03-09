@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @FieldMatch(
@@ -49,13 +50,14 @@ public class UserRegisterRequestDto {
     )
     @Schema(
             description = """
-                         The user's password. The password must be between 8 and 35 characters long 
-                         and must include at least one digit, one lowercase letter, 
+                         The user's password. The password must be between 8 and 35 characters long
+                         and must include at least one digit, one lowercase letter,
                          one uppercase letter, and one special character.
                          """,
             example = "strongPassword123*",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @ToString.Exclude
     private String password;
 
     @Schema(
@@ -63,5 +65,6 @@ public class UserRegisterRequestDto {
             example = "strongPassword123*",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @ToString.Exclude
     private String repeatPassword;
 }

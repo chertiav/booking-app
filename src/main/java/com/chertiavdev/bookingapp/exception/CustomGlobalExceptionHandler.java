@@ -32,8 +32,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 ex.getBindingResult().getAllErrors().stream()
                         .map(ObjectError::getDefaultMessage)
                         .limit(5)
-                        .toList()
-        );
+                        .toList());
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -45,7 +44,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
-        log.error("Registration failed: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -64,7 +62,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
-        log.warn("Authentication failed: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.UNAUTHORIZED,
                 LocalDateTime.now(),
@@ -74,7 +71,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
-        log.warn("Entity not found: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now(),
@@ -82,19 +78,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
-        log.error("Application runtime error: {}", ex.getMessage(), ex);
-        return buildResponseEntity(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                LocalDateTime.now(),
-                getErrorMessage(ex, "An internal runtime error has occurred.")
-        );
-    }
-
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
-        log.error("Unexpected error: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 LocalDateTime.now(),
