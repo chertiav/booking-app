@@ -1,5 +1,6 @@
 package com.chertiavdev.bookingapp.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,23 +28,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(
+    public void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String token = getToken(request);
-        if (token != null && jwtUtil.isValidToken(token)) {
-            String username = jwtUtil.getUsername(token);
-            log.info("Valid JWT token for username: {}", username);
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("Authentication successfully set for username: {}", username);
-        } else {
-            log.warn("JWT token is either null or invalid.");
+        try {
+            if (token != null && jwtUtil.isValidToken(token)) {
+                String username = jwtUtil.getUsername(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (JwtException e) {
+            log.warn(e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
@@ -51,11 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getToken(@NonNull HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TOKEN_PREFIX)) {
-            String token = bearerToken.substring(BEARER_TOKEN_PREFIX.length());
-            log.debug("Extracted JWT token from Authorization header: [masked]");
-            return token;
+            return bearerToken.substring(BEARER_TOKEN_PREFIX.length());
         }
-        log.debug("No Bearer token found in Authorization header");
         return null;
     }
 }

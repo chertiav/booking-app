@@ -33,28 +33,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto register(UserRegisterRequestDto requestDto) throws RegistrationException {
         String email = requestDto.getEmail();
-        log.info("Attempting to register a new user with email: {}", email);
-
         if (userRepository.existsByEmail(email)) {
-            log.warn("Registration failed: User with email {} already exists", email);
             throw new RegistrationException("User with email: " + email + " already exists");
         }
-
         User user = userMapper.toModel(requestDto);
-        log.debug("Mapped UserRegisterRequestDto to User entity with email: {}", user.getEmail());
-
-        try {
-            user.setRoles(getSetOfUserRole(RoleName.USER));
-            log.debug("Assigned roles to new user: {}", user.getRoles());
-        } catch (EntityNotFoundException ex) {
-            log.error("Role assignment failed: {}", ex.getMessage(), ex);
-            throw ex;
-        }
-
-        User savedUser = userRepository.save(user);
-        log.info("User registered successfully [email={}, id={}]", email, savedUser.getId());
-
-        return userMapper.toDto(savedUser);
+        user.setRoles(getSetOfUserRole(RoleName.USER));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -75,6 +59,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public UserWithRoleDto updateRoleByUsersId(Long id, UserUpdateRoleRequestDto requestDto) {
         User user = userRepository.findById(id)

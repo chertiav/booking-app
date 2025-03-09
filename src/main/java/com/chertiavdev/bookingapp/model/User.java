@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @SQLRestriction("is_deleted = false")
 @Entity
 @EqualsAndHashCode
+@ToString
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -43,14 +45,17 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
+    @ToString.Exclude
     @Column(nullable = false)
     private String password;
 
+    @ToString.Exclude
     @Column(nullable = false)
     private boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
     @ManyToMany
+    @ToString.Exclude
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
