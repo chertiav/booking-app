@@ -11,3 +11,7 @@ databaseChangeLog:
       file: db/changelog/changes/05-insert-admin-into-user's-table.yaml
   - include:
       file: db/changelog/changes/06-create-addresses-table.yaml
+  - include:
+      file: db/changelog/changes/07-create-amenities-table.yaml
+  - include:
+      file: db/changelog/changes/08-insert-amenities-into-amenities-table.yaml
