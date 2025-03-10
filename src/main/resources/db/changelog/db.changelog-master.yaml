@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/04-insert-roles-into-role's-table.yaml
   - include:
       file: db/changelog/changes/05-insert-admin-into-user's-table.yaml
+  - include:
+      file: db/changelog/changes/06-create-addresses-table.yaml
