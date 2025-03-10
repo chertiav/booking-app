@@ -1,11 +1,11 @@
 databaseChangeLog:
   - changeSet:
-      id: create-addresses-table
+      id: 09-create-accommodations-table
       author: andrey
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
-            tableName: addresses
+            tableName: accommodations
             columns:
               - column:
                   name: id
@@ -14,28 +14,45 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_addresses
+                    primaryKeyName: pk_accommodations
               - column:
-                  name: city
+                  name: type
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: street
+                  name: address_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: house_number
-                  type: VARCHAR(255)
+                  name: daily_rate
+                  type: DECIMAL
                   constraints:
                     nullable: false
               - column:
-                  name: apartment_number
-                  type: VARCHAR(255)
+                  name: availability
+                  type: INT
+                  constraints:
+                    nullable: false
               - column:
                   name: is_deleted
                   type: BOOLEAN
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+        - addUniqueConstraint:
+            columnNames: address_id
+            constraintName: uc_accommodations_address
+            tableName: accommodations
+        - addForeignKeyConstraint:
+            baseColumnNames: address_id
+            baseTableName: accommodations
+            constraintName: FK_ACCOMMODATIONS_ON_ADDRESS
+            referencedColumnNames: id
+            referencedTableName: addresses
