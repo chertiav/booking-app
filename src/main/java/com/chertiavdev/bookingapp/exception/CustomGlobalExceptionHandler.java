@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
+            @NonNull MethodArgumentNotValidException ex,
             @NonNull HttpHeaders headers,
             @NonNull HttpStatusCode status,
             @NonNull WebRequest request) {
@@ -32,7 +32,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 ex.getBindingResult().getAllErrors().stream()
                         .map(ObjectError::getDefaultMessage)
                         .limit(5)
-                        .toList());
+                        .toList(), ex);
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -44,6 +44,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
+        log.error("RegistrationException occurred: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
@@ -53,6 +54,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     protected ResponseEntity<Object> handleRegistrationException(AuthorizationDeniedException ex) {
+        log.error("AuthorizationDeniedException occurred: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.FORBIDDEN,
                 LocalDateTime.now(),
@@ -62,6 +64,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        log.error("AuthenticationException occurred: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.UNAUTHORIZED,
                 LocalDateTime.now(),
@@ -71,6 +74,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.warn("EntityNotFoundException occurred: {}", ex.getMessage());
         return buildResponseEntity(
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now(),
@@ -80,6 +84,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
+        log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 LocalDateTime.now(),
