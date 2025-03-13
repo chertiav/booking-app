@@ -203,7 +203,7 @@ public class UserController {
                                                     .FORBIDDEN_ERROR_EXAMPLE_MESSAGE,
                                             summary = ApiResponseConstants
                                                     .FORBIDDEN_ERROR_EXAMPLE_DESCRIPTION,
-                                            value = ExampleValues.FORBIDDEN_ERROR_ERROR_EXAMPLE))),
+                                            value = ExampleValues.FORBIDDEN_ERROR_EXAMPLE))),
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
                             description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,

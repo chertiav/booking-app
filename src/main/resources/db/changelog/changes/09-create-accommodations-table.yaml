@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 09-create-accommodations-table
+      id: create-accommodations-table
       author: andrey
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:

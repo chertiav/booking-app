@@ -82,6 +82,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(AccommodationAlreadyExistsException.class)
+    public ResponseEntity<Object> handleAccommodationAlreadyExists(
+            AccommodationAlreadyExistsException ex
+    ) {
+        log.warn("AccommodationAlreadyExistsException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.CONFLICT,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Accommodation with the same data already exists")
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
         log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);
