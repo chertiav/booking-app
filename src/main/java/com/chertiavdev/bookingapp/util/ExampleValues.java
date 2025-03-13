@@ -44,7 +44,7 @@ public class ExampleValues {
             {
                "status": "NOT_FOUND",
                "timestamp": "02-03-2025 19:10:07",
-               "errorMessage": "User not found with email: example@example.com"
+               "errorMessage": "User/Objet not found with email/id: example@example.com/1"
              }
             """;
     public static final String INTERNAL_SERVER_ERROR_ERROR_EXAMPLE = """

@@ -3,9 +3,14 @@ package com.chertiavdev.bookingapp.repository;
 import static com.chertiavdev.bookingapp.model.Accommodation.Type;
 
 import com.chertiavdev.bookingapp.model.Accommodation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long> {
     @Query("""
@@ -27,4 +32,10 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
             @Param("type") Type type,
             @Param("size") String size
     );
+
+    @EntityGraph(attributePaths = {"location", "amenities"})
+    Page<Accommodation> findAllByAvailabilityGreaterThan(Integer availability, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"location", "amenities"})
+    Optional<Accommodation> findByIdAndAvailabilityGreaterThan(Long id, Integer availability);
 }

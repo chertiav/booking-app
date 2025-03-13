@@ -3,24 +3,46 @@ package com.chertiavdev.bookingapp.service.impl;
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.exception.AccommodationAlreadyExistsException;
+import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.AccommodationMapper;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.repository.AccommodationRepository;
 import com.chertiavdev.bookingapp.service.AccommodationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AccommodationServiceImpl implements AccommodationService {
+    private static final int AVAILABILITY_THRESHOLD = 0;
     private final AccommodationRepository accommodationRepository;
     private final AccommodationMapper accommodationMapper;
 
+    @Transactional
     @Override
     public AccommodationDto save(CreateAccommodationRequestDto requestDto) {
         validateAccommodationUniqueness(requestDto);
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
         return accommodationMapper.toDto(accommodationRepository.save(accommodation));
+    }
+
+    @Override
+    public Page<AccommodationDto> findAllAvailable(Pageable pageable) {
+        return accommodationRepository.findAllByAvailabilityGreaterThan(
+                        AVAILABILITY_THRESHOLD, pageable)
+                .map(accommodationMapper::toDto);
+    }
+
+    @Override
+    public AccommodationDto findAvailableById(Long id) {
+        return accommodationRepository.findByIdAndAvailabilityGreaterThan(
+                        id, AVAILABILITY_THRESHOLD)
+                .map(accommodationMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find accommodation by id: "
+                        + id));
     }
 
     private void validateAccommodationUniqueness(CreateAccommodationRequestDto requestDto) {
