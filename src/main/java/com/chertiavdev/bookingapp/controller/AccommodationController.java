@@ -20,9 +20,11 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -56,6 +58,27 @@ public class AccommodationController {
                                             summary = ApiResponseConstants
                                                     .CONFLICT_ERROR_EXAMPLE_DESCRIPTION,
                                             value = ExampleValues.CONFLICT_ERROR_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
+                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
+                                            ),
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
+                                            )
+                                    })),
                     @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_FORBIDDEN,
                             description = ApiResponseConstants.FORBIDDEN_DESCRIPTION,
                             content = @Content(schema = @Schema(
@@ -177,6 +200,7 @@ public class AccommodationController {
                                             summary = ApiResponseConstants
                                                     .GENERAL_ERROR_EXAMPLE_DESCRIPTION,
                                             value = ExampleValues.COMMON_ERROR_EXAMPLE))),
+
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
                             description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
@@ -194,5 +218,154 @@ public class AccommodationController {
     @GetMapping("/{id}")
     public AccommodationDto getAvailableById(@PathVariable Long id) {
         return accommodationService.findAvailableById(id);
+    }
+
+    @Operation(
+            summary = "Update an accommodation by ID",
+            description = "Retrieve updated accommodation by ID",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "Unique identifier of the accommodation.",
+                            required = true,
+                            example = "1"
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
+                            description = "Successfully updated accommodation information",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AccommodationDto.class))),
+                    @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
+                            description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .RESOURCE_NOT_FOUND_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .NOT_FOUND_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.NOT_FOUND_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
+                            description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .VALIDATION_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.VALIDATION_ERROR_EXAMPLE
+                                            ),
+                                            @ExampleObject(
+                                                    name = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_MESSAGE,
+                                                    summary = ApiResponseConstants
+                                                            .GENERAL_ERROR_EXAMPLE_DESCRIPTION,
+                                                    value = ExampleValues.COMMON_ERROR_EXAMPLE
+                                            )
+                                    })),
+                    @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_FORBIDDEN,
+                            description = ApiResponseConstants.FORBIDDEN_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.FORBIDDEN_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
+                            description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .UNAUTHORIZED_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .USER_UNAUTHORIZED_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.UNAUTHORIZED_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
+                            description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues
+                                                    .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
+            }
+    )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public AccommodationDto update(
+            @PathVariable Long id,
+            @RequestBody @Valid CreateAccommodationRequestDto requestDto) {
+        return accommodationService.updateById(id, requestDto);
+    }
+
+    @Operation(
+            summary = "Delete an accommodation by ID",
+            description = "Removes an accommodation by ID. Available only to administrators",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "Unique identifier of the accommodation.",
+                            required = true,
+                            example = "1"
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
+                            description = "Successfully deleted an accommodation"),
+                    @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_FORBIDDEN,
+                            description = ApiResponseConstants.FORBIDDEN_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .FORBIDDEN_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.FORBIDDEN_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_UNAUTHORIZED,
+                            description = ApiResponseConstants.UNAUTHORIZED_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .UNAUTHORIZED_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .USER_UNAUTHORIZED_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues.UNAUTHORIZED_ERROR_EXAMPLE))),
+                    @ApiResponse(
+                            responseCode = ApiResponseConstants.RESPONSE_CODE_INTERNAL_SERVER_ERROR,
+                            description = ApiResponseConstants.INTERNAL_SERVER_ERROR_DESCRIPTION,
+                            content = @Content(schema = @Schema(
+                                    implementation = CommonApiErrorResponseDto.class),
+                                    examples = @ExampleObject(
+                                            name = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_MESSAGE,
+                                            summary = ApiResponseConstants
+                                                    .INTERNAL_SERVER_ERROR_EXAMPLE_DESCRIPTION,
+                                            value = ExampleValues
+                                                    .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
+            }
+    )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id) {
+        accommodationService.deleteById(id);
     }
 }

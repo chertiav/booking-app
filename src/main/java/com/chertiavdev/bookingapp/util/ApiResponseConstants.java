@@ -4,6 +4,7 @@ public class ApiResponseConstants {
     // HTTP code
     public static final String RESPONSE_CODE_OK = "200";
     public static final String RESPONSE_CODE_CREATED = "201";
+    public static final String RESPONSE_CODE_NO_CONTENT = "204";
     public static final String RESPONSE_CODE_BAD_REQUEST = "400";
     public static final String RESPONSE_CODE_UNAUTHORIZED = "401";
     public static final String RESPONSE_CODE_FORBIDDEN = "403";

@@ -2,7 +2,6 @@ package com.chertiavdev.bookingapp.dto.accommodation;
 
 import static com.chertiavdev.bookingapp.model.Accommodation.Type;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +14,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "DTO for creating a new accommodation.")
 public class CreateAccommodationRequestDto {
     @NotNull(message = "Type is mandatory")

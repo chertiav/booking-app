@@ -11,4 +11,8 @@ public interface AccommodationService {
     Page<AccommodationDto> findAllAvailable(Pageable pageable);
 
     AccommodationDto findAvailableById(Long id);
+
+    AccommodationDto updateById(Long id, CreateAccommodationRequestDto requestDto);
+
+    void deleteById(Long id);
 }

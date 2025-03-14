@@ -1,13 +1,11 @@
 package com.chertiavdev.bookingapp.dto.accommodation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "DTO for creating a new accommodations address.")
 public class CreateAddressRequestDto {
     @NotBlank(message = "City is mandatory")

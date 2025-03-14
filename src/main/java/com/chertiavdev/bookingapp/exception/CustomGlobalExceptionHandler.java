@@ -53,7 +53,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
-    protected ResponseEntity<Object> handleRegistrationException(AuthorizationDeniedException ex) {
+    protected ResponseEntity<Object> handleAuthorizationDeniedException(
+            AuthorizationDeniedException ex) {
         log.error("AuthorizationDeniedException occurred: {}", ex.getMessage(), ex);
         return buildResponseEntity(
                 HttpStatus.FORBIDDEN,

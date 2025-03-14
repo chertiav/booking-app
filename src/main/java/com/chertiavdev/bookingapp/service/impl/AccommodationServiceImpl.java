@@ -45,6 +45,23 @@ public class AccommodationServiceImpl implements AccommodationService {
                         + id));
     }
 
+    @Transactional
+    @Override
+    public AccommodationDto updateById(Long id, CreateAccommodationRequestDto requestDto) {
+        validateAccommodationUniqueness(requestDto);
+        Accommodation accommodation = accommodationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Can't update accommodation by id: "
+                        + id));
+        accommodationMapper.updateAccommodationFromDto(requestDto, accommodation);
+        return accommodationMapper.toDto(accommodationRepository.save(accommodation));
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(Long id) {
+        accommodationRepository.deleteById(id);
+    }
+
     private void validateAccommodationUniqueness(CreateAccommodationRequestDto requestDto) {
         if (accommodationRepository.existsByLocationAndTypeAndSize(
                 requestDto.getLocation().getCity(),

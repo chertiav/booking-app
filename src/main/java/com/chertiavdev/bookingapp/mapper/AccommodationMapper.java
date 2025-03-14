@@ -16,11 +16,6 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class, uses = {AmenityListToSetMapper.class, AddressMapper.class})
 public interface AccommodationMapper {
-    @Mapping(target = "amenities", source = "amenities", qualifiedBy = AmenityMapping.class)
-    @Mapping(target = "location", source = "location",
-            qualifiedByName = "mapAddressRequestDtoToModel")
-    Accommodation toModel(CreateAccommodationRequestDto requestDto);
-
     @Mapping(target = "amenitiesIds", ignore = true)
     @Mapping(target = "location", source = "location",
             qualifiedByName = "mapAddressToString")
@@ -35,4 +30,14 @@ public interface AccommodationMapper {
                 .collect(Collectors.toSet());
         accommodationDto.setAmenitiesIds(amenitiesIds);
     }
+
+    @Mapping(target = "amenities", source = "amenities", qualifiedBy = AmenityMapping.class)
+    @Mapping(target = "location", source = "location",
+            qualifiedByName = "mapAddressRequestDtoToModel")
+    Accommodation toModel(CreateAccommodationRequestDto requestDto);
+
+    @Mapping(target = "amenities", source = "amenities", qualifiedBy = AmenityMapping.class)
+    void updateAccommodationFromDto(
+            CreateAccommodationRequestDto requestDto,
+            @MappingTarget Accommodation accommodation);
 }
