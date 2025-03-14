@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-accommodations-table
+      author: andrey
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: accommodations
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_accommodations
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: daily_rate
+                  type: DECIMAL
+                  constraints:
+                    nullable: false
+              - column:
+                  name: availability
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: address_id
+            constraintName: uc_accommodations_address
+            tableName: accommodations
+        - addForeignKeyConstraint:
+            baseColumnNames: address_id
+            baseTableName: accommodations
+            constraintName: FK_ACCOMMODATIONS_ON_ADDRESS
+            referencedColumnNames: id
+            referencedTableName: addresses

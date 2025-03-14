@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id:  insert-amenities-into-amenities-table
+      author: andrey
+      changes:
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "WIFI" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "WASHING_MACHINE" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "BABY_CHANGING" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "BATHROOM" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "KITCHEN" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "PARTY_ROOM" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "SMOKE_DETECTOR" }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "SWIMMING_POOL" }

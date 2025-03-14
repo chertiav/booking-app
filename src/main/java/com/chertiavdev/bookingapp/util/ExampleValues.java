@@ -44,7 +44,7 @@ public class ExampleValues {
             {
                "status": "NOT_FOUND",
                "timestamp": "02-03-2025 19:10:07",
-               "errorMessage": "User not found with email: example@example.com"
+               "errorMessage": "User/Objet not found with email/id: example@example.com/1"
              }
             """;
     public static final String INTERNAL_SERVER_ERROR_ERROR_EXAMPLE = """
@@ -54,11 +54,20 @@ public class ExampleValues {
                "errorMessage": "Internal server error"
              }
             """;
-    public static final String FORBIDDEN_ERROR_ERROR_EXAMPLE = """
+    public static final String FORBIDDEN_ERROR_EXAMPLE = """
             {
                "status": "FORBIDDEN",
                "timestamp": "02-03-2025 19:10:07",
                "errorMessage": "Access Denied"
+             }
+            """;
+    public static final String CONFLICT_ERROR_ERROR_EXAMPLE = """
+            {
+               "status": "CONFLICT",
+               "timestamp": "02-03-2025 19:10:07",
+               "errorMessage": "Accommodation with the same city: Kyiv, street: Khreshchatyk,
+               house number: 15B, apartment number: 36, type: CONDO, and size: 1 Bedroom already
+               exists."
              }
             """;
 }
