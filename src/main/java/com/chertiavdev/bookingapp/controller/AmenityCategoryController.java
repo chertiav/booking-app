@@ -1,10 +1,9 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
-import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
+import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
+import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
-import com.chertiavdev.bookingapp.dto.page.PageResponse;
-import com.chertiavdev.bookingapp.service.AccommodationService;
+import com.chertiavdev.bookingapp.service.AmenityCategoryService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
 import com.chertiavdev.bookingapp.util.ExampleValues;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,9 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,34 +28,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Accommodation Management", description = "Endpoints for managing accommodations")
+@Tag(name = "Amenity Category Management",
+        description = "Endpoints for managing amenity categories")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/accommodations")
-public class AccommodationController {
-    private final AccommodationService accommodationService;
+@RequestMapping("/amenity-category")
+public class AmenityCategoryController {
+    private final AmenityCategoryService amenityCategoryService;
 
     @Operation(
-            summary = "Create a new accommodation",
-            description = "Allows administrators to create a new accommodation.",
+            summary = "Create a new amenity category",
+            description = "Allows administrators to create a new amenity category.",
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "The accommodation was successfully created.",
+                            description = "The category was successfully created.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class))),
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CONFLICT,
-                            description = ApiResponseConstants.CONFLICT_ERROR_DESCRIPTION,
-                            content = @Content(schema = @Schema(
-                                    implementation = CommonApiErrorResponseDto.class),
-                                    examples = @ExampleObject(
-                                            name = ApiResponseConstants
-                                                    .CONFLICT_ERROR_EXAMPLE_MESSAGE,
-                                            summary = ApiResponseConstants
-                                                    .CONFLICT_ERROR_EXAMPLE_DESCRIPTION,
-                                            value = ExampleValues.CONFLICT_ERROR_ERROR_EXAMPLE))),
+                                    schema = @Schema(implementation = AmenityCategoryDto.class))),
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
                             description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
@@ -117,20 +105,22 @@ public class AccommodationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public AccommodationDto create(@RequestBody @Valid CreateAccommodationRequestDto requestDto) {
-        return accommodationService.save(requestDto);
+    public AmenityCategoryDto create(
+            @RequestBody @Valid CreateAmenityCategoryRequestDto requestDto) {
+        return amenityCategoryService.save(requestDto);
     }
 
     @Operation(
-            summary = "Get all available accommodations",
-            description = "Retrieve a paginated list of all available accommodations.",
+            summary = "Get all amenity categories",
+            description = "Retrieve all amenity categories.",
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved list of accommodations.",
+                            description = "Successfully retrieved all amenity categories.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = PageResponse.class))),
+                                    schema = @Schema(type = "array",
+                                            implementation = AmenityCategoryDto.class))),
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_BAD_REQUEST,
                             description = ApiResponseConstants.INVALID_REQUEST_DESCRIPTION,
@@ -157,13 +147,13 @@ public class AccommodationController {
             }
     )
     @GetMapping
-    public PageResponse<AccommodationDto> getAllAvailable(@ParameterObject Pageable pageable) {
-        return PageResponse.of(accommodationService.findAllAvailable(pageable));
+    public List<AmenityCategoryDto> getAll() {
+        return amenityCategoryService.findAll();
     }
 
     @Operation(
-            summary = "Get an available accommodation by ID",
-            description = "Retrieve an available accommodation by ID",
+            summary = "Get an amenity category by ID",
+            description = "Retrieve an amenity category by ID",
             parameters = {
                     @Parameter(
                             name = "id",
@@ -175,10 +165,10 @@ public class AccommodationController {
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved accommodation information",
+                            description = "Successfully retrieved category information",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class))),
+                                    schema = @Schema(implementation = AmenityCategoryDto.class))),
                     @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
                             description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
                             content = @Content(schema = @Schema(
@@ -216,13 +206,13 @@ public class AccommodationController {
             }
     )
     @GetMapping("/{id}")
-    public AccommodationDto getAvailableById(@PathVariable Long id) {
-        return accommodationService.findAvailableById(id);
+    public AmenityCategoryDto getById(@PathVariable Long id) {
+        return amenityCategoryService.findById(id);
     }
 
     @Operation(
-            summary = "Update an accommodation by ID",
-            description = "Retrieve updated accommodation by ID",
+            summary = "Update an amenity category by ID",
+            description = "Retrieve updated amenity category by ID",
             parameters = {
                     @Parameter(
                             name = "id",
@@ -234,10 +224,10 @@ public class AccommodationController {
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully updated accommodation information",
+                            description = "Successfully updated category information",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class))),
+                                    schema = @Schema(implementation = AmenityCategoryDto.class))),
                     @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_NOT_FOUND,
                             description = ApiResponseConstants.NOT_FOUND_DESCRIPTION,
                             content = @Content(schema = @Schema(
@@ -306,15 +296,15 @@ public class AccommodationController {
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public AccommodationDto update(
+    public AmenityCategoryDto update(
             @PathVariable Long id,
-            @RequestBody @Valid CreateAccommodationRequestDto requestDto) {
-        return accommodationService.updateById(id, requestDto);
+            @RequestBody @Valid CreateAmenityCategoryRequestDto requestDto) {
+        return amenityCategoryService.updateById(id, requestDto);
     }
 
     @Operation(
-            summary = "Delete an accommodation by ID",
-            description = "Removes an accommodation by ID. Available only to administrators",
+            summary = "Delete an amenity category by ID",
+            description = "Removes an amenity category by ID. Available only to administrators",
             parameters = {
                     @Parameter(
                             name = "id",
@@ -326,7 +316,7 @@ public class AccommodationController {
             responses = {
                     @ApiResponse(
                             responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
-                            description = "Successfully deleted an accommodation"),
+                            description = "Successfully deleted category"),
                     @ApiResponse(responseCode = ApiResponseConstants.RESPONSE_CODE_FORBIDDEN,
                             description = ApiResponseConstants.FORBIDDEN_DESCRIPTION,
                             content = @Content(schema = @Schema(
@@ -362,10 +352,10 @@ public class AccommodationController {
                                                     .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE))),
             }
     )
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
-        accommodationService.deleteById(id);
+        amenityCategoryService.deleteById(id);
     }
 }

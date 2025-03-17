@@ -14,6 +14,7 @@ import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.RoleRepository;
 import com.chertiavdev.bookingapp.repository.UserRepository;
 import com.chertiavdev.bookingapp.service.UserService;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,8 +70,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private Set<Role> getSetOfUserRole(RoleName roleName) {
-        return Set.of(roleRepository.findByName(roleName)
+        Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found role: "
-                        + roleName.name())));
+                        + roleName.name()));
+        return new HashSet<>(Set.of(role)); // Здесь исправление
     }
 }
