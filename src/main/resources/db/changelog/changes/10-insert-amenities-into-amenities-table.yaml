@@ -1,0 +1,215 @@
+databaseChangeLog:
+  - changeSet:
+      id:  insert-amenities-into-amenities-table
+      author: andrey
+      changes:
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Free Wi-Fi" }
+              - column:  {name: category_id, value: 1}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Air Conditioning/Heating" }
+              - column:  {name: category_id, value: 1}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Television" }
+              - column:  {name: category_id, value: 1}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Bathroom Essentials" }
+              - column:  {name: category_id, value: 1}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Bed Linens" }
+              - column:  {name: category_id, value: 1}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Room Service" }
+              - column:  {name: category_id, value: 2}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "24-Hour Reception" }
+              - column:  {name: category_id, value: 2}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Parking" }
+              - column:  {name: category_id, value: 2}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Laundry Facilities" }
+              - column: { name: category_id, value: 2 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Mini-Bar" }
+              - column: { name: category_id, value: 2 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Iron and Ironing Board" }
+              - column: { name: category_id, value: 2 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Wake-up Service" }
+              - column: { name: category_id, value: 2 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Complimentary Breakfast" }
+              - column: { name: category_id, value: 3 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "On-Site Restaurant or Café" }
+              - column: { name: category_id, value: 3 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Bar or Lounge" }
+              - column: { name: category_id, value: 3 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Coffee Maker" }
+              - column: { name: category_id, value: 3 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Swimming Pool" }
+              - column: { name: category_id, value: 4 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Fitness Center" }
+              - column: { name: category_id, value: 4 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Spa Services" }
+              - column: { name: category_id, value: 4 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Business Center" }
+              - column: { name: category_id, value: 4 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Game Room" }
+              - column: { name: category_id, value: 4 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Babysitting Services" }
+              - column: { name: category_id, value: 5 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Kids' Play Area" }
+              - column: { name: category_id, value: 5 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Cribs/High Chairs" }
+              - column: { name: category_id, value: 5 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Kids' Menu" }
+              - column: { name: category_id, value: 5 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Wheelchair Accessible Rooms" }
+              - column: { name: category_id, value: 6 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Elevator Access" }
+              - column: { name: category_id, value: 6 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Visual and Hearing Impairment Support" }
+              - column: { name: category_id, value: 6 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Energy-Efficient Lighting" }
+              - column: { name: category_id, value: 7 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Sustainable Toiletries" }
+              - column: { name: category_id, value: 7 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Bicycle Rentals" }
+              - column: { name: category_id, value: 7 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Green Cleaning Products" }
+              - column: { name: category_id, value: 7 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Smart TVs" }
+              - column: { name: category_id, value: 8 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Charging Stations" }
+              - column: { name: category_id, value: 8 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Keyless Entry" }
+              - column: { name: category_id, value: 8 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Welcome Gifts" }
+              - column: { name: category_id, value: 9 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Pet-Friendly Rooms" }
+              - column: { name: category_id, value: 9 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Local Tours & Activities" }
+              - column: { name: category_id, value: 9 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Concierge Service" }
+              - column: { name: category_id, value: 9 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Safe Deposit Box" }
+              - column: { name: category_id, value: 10 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "Smoke Detectors" }
+              - column: { name: category_id, value: 10 }
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "24/7 Security" }
+              - column: { name: category_id, value: 10 }

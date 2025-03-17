@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id:  insert-amenities-into-amenities-table
+      author: andrey
+      changes:
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 1 }
+              - column: { name: name, value: "Basic Amenities" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: name, value: "Comfort & Convenience" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 3 }
+              - column: { name: name, value: "Food & Drink" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 4 }
+              - column: { name: name, value: "Leisure & Entertainment" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 5 }
+              - column: { name: name, value: "Family-Friendly Amenities" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 6 }
+              - column: { name: name, value: "Accessibility Features" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 7 }
+              - column: { name: name, value: "Eco-Friendly & Sustainable Amenities" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 8 }
+              - column: { name: name, value: "Technology & Connectivity" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 9 }
+              - column: { name: name, value: "Special Touches" }
+        - insert:
+            tableName: amenity_categories
+            columns:
+              - column: { name: id, value: 10 }
+              - column: { name: name, value: "Security Features" }

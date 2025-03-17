@@ -12,10 +12,14 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/06-create-addresses-table.yaml
   - include:
-      file: db/changelog/changes/07-create-amenities-table.yaml
+      file: db/changelog/changes/07-create-amenity_categories-table.yaml
   - include:
-      file: db/changelog/changes/08-insert-amenities-into-amenities-table.yaml
+      file: db/changelog/changes/08-insert-category-into-amenity_categies-table.yaml
   - include:
-      file: db/changelog/changes/09-create-accommodations-table.yaml
+      file: db/changelog/changes/09-create-amenities-table.yaml
   - include:
-      file: db/changelog/changes/10-create-accommodation_amenities-table.yaml
+      file: db/changelog/changes/10-insert-amenities-into-amenities-table.yaml
+  - include:
+      file: db/changelog/changes/11-create-accommodations-table.yaml
+  - include:
+      file: db/changelog/changes/12-create-accommodation_amenities-table.yaml
