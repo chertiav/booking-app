@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
@@ -18,6 +19,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE amenity_categories SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 @ToString
+@NoArgsConstructor
 @EqualsAndHashCode
 @Entity
 @Table(name = "amenity_categories")
@@ -31,4 +33,8 @@ public class AmenityCategory {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public AmenityCategory(Long id) {
+        this.id = id;
+    }
 }

@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.mapper.amentity;
+package com.chertiavdev.bookingapp.mapper.amenity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

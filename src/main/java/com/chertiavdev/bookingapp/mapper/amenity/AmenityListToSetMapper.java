@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.mapper.amentity;
+package com.chertiavdev.bookingapp.mapper.amenity;
 
 import com.chertiavdev.bookingapp.model.Amenity;
 import java.util.List;
