@@ -10,6 +10,7 @@ import com.chertiavdev.bookingapp.service.AmenityCategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class AmenityCategoryServiceImpl implements AmenityCategoryService {
     private final AmenityCategoryRepository amenityCategoryRepository;
     private final AmenityCategoryMapper amenityCategoryMapper;
 
+    @Transactional
     @Override
     public AmenityCategoryDto save(CreateAmenityCategoryRequestDto requestDto) {
         AmenityCategory amenityCategory = amenityCategoryMapper.toModel(requestDto);
@@ -38,6 +40,7 @@ public class AmenityCategoryServiceImpl implements AmenityCategoryService {
                         + id));
     }
 
+    @Transactional
     @Override
     public AmenityCategoryDto updateById(Long id, CreateAmenityCategoryRequestDto requestDto) {
         AmenityCategory amenityCategory = amenityCategoryRepository.findById(id)
@@ -47,6 +50,7 @@ public class AmenityCategoryServiceImpl implements AmenityCategoryService {
         return amenityCategoryMapper.toDto(amenityCategoryRepository.save(amenityCategory));
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         amenityCategoryRepository.deleteById(id);

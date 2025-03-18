@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/accommodations/**",
                                 "amenity-category/**",
-                                "amenity/**")
+                                "amenities/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
