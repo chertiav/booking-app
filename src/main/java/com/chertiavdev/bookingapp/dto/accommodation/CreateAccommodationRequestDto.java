@@ -2,7 +2,9 @@ package com.chertiavdev.bookingapp.dto.accommodation;
 
 import static com.chertiavdev.bookingapp.model.Accommodation.Type;
 
+import com.chertiavdev.bookingapp.validation.enumvalidator.EnumNamePattern;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,13 +18,14 @@ import lombok.Data;
 @Data
 @Schema(description = "DTO for creating a new accommodation.")
 public class CreateAccommodationRequestDto {
-    @NotNull(message = "Type is mandatory")
+    @EnumNamePattern(regexp = "HOUSE|APARTMENT|CONDO|VACATION_HOME")
     @Schema(description = "Type status",
             example = "HOUSE",
             allowableValues = {"HOUSE", "APARTMENT", "CONDO", "VACATION_HOME"})
     private Type type;
 
     @NotNull(message = "Address location is mandatory")
+    @Valid
     @Schema(description = "Address of the accommodation")
     private CreateAddressRequestDto location;
 

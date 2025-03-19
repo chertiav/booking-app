@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.dto.user;
 
-import com.chertiavdev.bookingapp.validation.FieldMatch;
+import com.chertiavdev.bookingapp.validation.field.match.FieldMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

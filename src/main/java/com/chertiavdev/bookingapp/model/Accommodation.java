@@ -1,5 +1,7 @@
 package com.chertiavdev.bookingapp.model;
 
+import com.chertiavdev.bookingapp.validation.json.TypeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,6 +69,7 @@ public class Accommodation {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    @JsonDeserialize(using = TypeDeserializer.class)
     public enum Type {
         HOUSE,
         APARTMENT,
