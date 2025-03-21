@@ -14,7 +14,7 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/07-create-amenity_categories-table.yaml
   - include:
-      file: db/changelog/changes/08-insert-category-into-amenity_categies-table.yaml
+      file: db/changelog/changes/08-insert-category-into-amenity_categories-table.yaml
   - include:
       file: db/changelog/changes/09-create-amenities-table.yaml
   - include:
@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/changes/11-create-accommodations-table.yaml
   - include:
       file: db/changelog/changes/12-create-accommodation_amenities-table.yaml
+  - include:
+      file: db/changelog/changes/13-create-bookings-table.yaml

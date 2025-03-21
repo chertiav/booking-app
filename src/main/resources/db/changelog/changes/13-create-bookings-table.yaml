@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-bookings-table
+      author: andrey
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: bookings
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_bookings
+              - column:
+                  name: check_in
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: check_out
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accommodation_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: accommodation_id
+            baseTableName: bookings
+            constraintName: FK_BOOKINGS_ON_ACCOMMODATION
+            referencedColumnNames: id
+            referencedTableName: accommodations
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: bookings
+            constraintName: FK_BOOKINGS_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+
