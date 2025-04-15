@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.repository;
+package com.chertiavdev.bookingapp.repository.user;
 
 import com.chertiavdev.bookingapp.model.User;
 import java.util.Optional;

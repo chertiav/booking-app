@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.repository;
+package com.chertiavdev.bookingapp.repository.role;
 
 import com.chertiavdev.bookingapp.model.Role;
 import java.util.Optional;

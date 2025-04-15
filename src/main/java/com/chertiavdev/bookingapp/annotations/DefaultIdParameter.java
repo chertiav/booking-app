@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(
         name = "id",
-        description = "Unique identifier of the accommodation.",
+        description = "Unique identifier",
         required = true,
         example = "1"
 )

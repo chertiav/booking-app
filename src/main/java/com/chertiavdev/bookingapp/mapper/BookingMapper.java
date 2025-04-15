@@ -7,6 +7,7 @@ import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class, uses = {AccommodationMapper.class})
 public interface BookingMapper {
@@ -22,4 +23,15 @@ public interface BookingMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "accommodationId", source = "accommodation.id")
     BookingDto toDto(Booking booking);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "accommodation",
+            source = "requestDto.accommodationId",
+            qualifiedByName = "accommodationById")
+    void updateBookingFromDto(
+            CreateBookingRequestDto requestDto,
+            @MappingTarget Booking booking);
 }

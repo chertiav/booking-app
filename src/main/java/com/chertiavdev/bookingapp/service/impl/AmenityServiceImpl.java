@@ -5,7 +5,7 @@ import com.chertiavdev.bookingapp.dto.amenity.CreateAmenityRequestDto;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.AmenityMapper;
 import com.chertiavdev.bookingapp.model.Amenity;
-import com.chertiavdev.bookingapp.repository.AmenityRepository;
+import com.chertiavdev.bookingapp.repository.amenity.AmenityRepository;
 import com.chertiavdev.bookingapp.service.AmenityService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

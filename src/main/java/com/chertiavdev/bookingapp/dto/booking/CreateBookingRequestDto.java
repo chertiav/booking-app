@@ -9,7 +9,8 @@ import lombok.Data;
 
 @Data
 @DateFieldMatch(startDate = "checkIn", endDate = "checkOut",
-        message = "Check-in date must be before check-out date and")
+        message = "The check-in date must precede the check-out date and must be today or "
+                + "a future date.")
 public class CreateBookingRequestDto {
     @Schema(description = "Date of check-in, yyyy-MM-dd", example = "2025-03-01")
     @NotNull(message = "Check-in date must not be null")

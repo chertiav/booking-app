@@ -5,7 +5,7 @@ import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequ
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.AmenityCategoryMapper;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
-import com.chertiavdev.bookingapp.repository.AmenityCategoryRepository;
+import com.chertiavdev.bookingapp.repository.amenity.category.AmenityCategoryRepository;
 import com.chertiavdev.bookingapp.service.AmenityCategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

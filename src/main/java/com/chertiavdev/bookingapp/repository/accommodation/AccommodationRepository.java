@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.repository;
+package com.chertiavdev.bookingapp.repository.accommodation;
 
 import static com.chertiavdev.bookingapp.model.Accommodation.Type;
 
