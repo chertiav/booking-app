@@ -50,5 +50,5 @@ import java.lang.annotation.Target;
                                 value = ExampleValues
                                         .INTERNAL_SERVER_ERROR_ERROR_EXAMPLE)))
 })
-public @interface DeleteDefaultApiResponses {
+public @interface DefaultApiResponses {
 }

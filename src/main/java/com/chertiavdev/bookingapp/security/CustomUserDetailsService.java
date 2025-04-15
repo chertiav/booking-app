@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.security;
 
-import com.chertiavdev.bookingapp.repository.UserRepository;
+import com.chertiavdev.bookingapp.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

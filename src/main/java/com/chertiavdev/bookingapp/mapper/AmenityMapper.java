@@ -10,6 +10,8 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class, uses = {AmenityCategoryMapper.class})
 public interface AmenityMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "category", source = "requestDto.categoryId",
             qualifiedByName = "amenityCategoryById")
     Amenity toModel(CreateAmenityRequestDto requestDto);
@@ -17,6 +19,8 @@ public interface AmenityMapper {
     @Mapping(target = "categoryId", source = "category.id")
     AmenityDto toDto(Amenity amenity);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "category", source = "requestDto.categoryId",
             qualifiedByName = "amenityCategoryById")
     void update(

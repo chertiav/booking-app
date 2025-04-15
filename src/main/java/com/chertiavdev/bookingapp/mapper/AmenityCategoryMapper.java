@@ -6,15 +6,20 @@ import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequ
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import java.util.Optional;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class)
 public interface AmenityCategoryMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     AmenityCategory toModel(CreateAmenityCategoryRequestDto requestDto);
 
     AmenityCategoryDto toDto(AmenityCategory amenityCategory);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     void updateFromDto(
             CreateAmenityCategoryRequestDto requestDto,
             @MappingTarget AmenityCategory amenityCategory

@@ -1,8 +1,8 @@
 package com.chertiavdev.bookingapp.controller;
 
 import com.chertiavdev.bookingapp.annotations.CreateDefaultApiResponses;
+import com.chertiavdev.bookingapp.annotations.DefaultApiResponses;
 import com.chertiavdev.bookingapp.annotations.DefaultIdParameter;
-import com.chertiavdev.bookingapp.annotations.DeleteDefaultApiResponses;
 import com.chertiavdev.bookingapp.annotations.GetAllPublicDefaultApiResponses;
 import com.chertiavdev.bookingapp.annotations.GetByIdPublicDefaultApiResponses;
 import com.chertiavdev.bookingapp.annotations.UpdateDefaultApiResponses;
@@ -137,7 +137,7 @@ public class AmenityCategoryController {
             }
     )
     @DefaultIdParameter
-    @DeleteDefaultApiResponses
+    @DefaultApiResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")

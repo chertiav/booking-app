@@ -6,7 +6,7 @@ import com.chertiavdev.bookingapp.exception.AccommodationAlreadyExistsException;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.AccommodationMapper;
 import com.chertiavdev.bookingapp.model.Accommodation;
-import com.chertiavdev.bookingapp.repository.AccommodationRepository;
+import com.chertiavdev.bookingapp.repository.accommodation.AccommodationRepository;
 import com.chertiavdev.bookingapp.service.AccommodationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

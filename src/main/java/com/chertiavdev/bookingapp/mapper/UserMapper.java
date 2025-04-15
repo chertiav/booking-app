@@ -16,9 +16,19 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     UserDto toDto(User user);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
     @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     User toModel(UserRegisterRequestDto requestDto);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
     void updateUserFromDto(UserUpdateRequestDto requestDto, @MappingTarget User user);
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToStrings")

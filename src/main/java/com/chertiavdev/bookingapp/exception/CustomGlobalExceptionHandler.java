@@ -95,6 +95,30 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(AccommodationAvailabilityException.class)
+    public ResponseEntity<Object> handleAccommodationAvailabilityException(
+            AccommodationAvailabilityException ex
+    ) {
+        log.warn("AccommodationAvailabilityException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.CONFLICT,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Accommodation is not available")
+        );
+    }
+
+    @ExceptionHandler(BookingAlreadyCancelledException.class)
+    public ResponseEntity<Object> handleBookingAlreadyCancelledException(
+            BookingAlreadyCancelledException ex
+    ) {
+        log.warn("BookingAlreadyCancelledException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.CONFLICT,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Accommodation is not available")
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
         log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);

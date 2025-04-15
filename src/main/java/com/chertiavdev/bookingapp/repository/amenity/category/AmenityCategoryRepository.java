@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.repository;
+package com.chertiavdev.bookingapp.repository.amenity.category;
 
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
