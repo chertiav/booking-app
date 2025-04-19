@@ -1,19 +1,16 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.annotations.CreateDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultIdParameter;
-import com.chertiavdev.bookingapp.annotations.GetAllPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.GetByIdPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.UpdateDefaultApiResponses;
+import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
+import com.chertiavdev.bookingapp.annotations.parameters.DefaultIdParameter;
+import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
 import com.chertiavdev.bookingapp.dto.amenity.AmenityDto;
 import com.chertiavdev.bookingapp.dto.amenity.CreateAmenityRequestDto;
 import com.chertiavdev.bookingapp.service.AmenityService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -37,21 +34,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AmenityController {
     private final AmenityService amenityService;
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Create a new amenity",
-            description = "Allows administrators to create a new amenity.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "The amenity was successfully created.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityDto.class)
-                            )
-                    )
-            }
+            description = "Allows administrators to create a new amenity",
+            responseDescription = "The amenity was successfully created",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED
     )
-    @CreateDefaultApiResponses
+    @CreateApiResponses
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
@@ -59,63 +48,37 @@ public class AmenityController {
         return amenityService.save(requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get all amenities",
-            description = "Retrieve all amenity amenities.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved all amenities.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            type = "array",
-                                            implementation = AmenityDto.class
-                                    )
-                            )
-                    )
-            }
+            description = "Retrieve all amenity amenities",
+            responseDescription = "Successfully retrieved all amenities"
     )
-    @GetAllPublicDefaultApiResponses
+    @GetApiResponses
     @GetMapping
     public List<AmenityDto> getAll() {
         return amenityService.findAll();
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get an amenity by ID",
             description = "Retrieve an amenity by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved amenity information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityDto.class))),
-            }
+            responseDescription = "Successfully retrieved amenity information"
     )
+    @GetApiResponses
+    @NotFoundApiResponse
     @DefaultIdParameter
-    @GetByIdPublicDefaultApiResponses
     @GetMapping("/{id}")
     public AmenityDto getById(@PathVariable Long id) {
         return amenityService.findById(id);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Update an amenity by ID",
             description = "Retrieve updated amenity by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully updated amenity information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityDto.class))),
-
-            }
+            responseDescription = "Successfully updated amenity information"
     )
+    @UpdateApiResponses
     @DefaultIdParameter
-    @UpdateDefaultApiResponses
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public AmenityDto update(
@@ -124,18 +87,14 @@ public class AmenityController {
         return amenityService.updateById(id, requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Delete an amenity by ID",
             description = "Removes an amenity by ID. Available only to administrators",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
-                            description = "Successfully deleted amenity"),
-
-            }
+            responseDescription = "Successfully deleted amenity",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT
     )
+    @BaseAuthApiResponses
     @DefaultIdParameter
-    @DefaultApiResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
