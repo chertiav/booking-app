@@ -14,5 +14,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
+          cache-key: maven-${{ github.sha }}
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
