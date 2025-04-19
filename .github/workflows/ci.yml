@@ -13,10 +13,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-          cache:
-            path: ~/.m2/repository
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml')}}
-            restore-keys: |
-              ${{ runner.os }}-maven-
+          cache: maven
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
