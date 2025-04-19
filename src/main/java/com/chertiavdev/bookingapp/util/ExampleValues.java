@@ -36,8 +36,8 @@ public class ExampleValues {
             {
                "status": "UNAUTHORIZED",
                "timestamp": "02-03-2025 19:10:07",
-               "errorMessage": "Access Denied: Full authentication is required to access this
-               resource"
+               "errorMessage": "Access Denied: Full authentication is required to \
+               access this resource"
              }
             """;
     public static final String NOT_FOUND_ERROR_EXAMPLE = """
@@ -65,8 +65,8 @@ public class ExampleValues {
             {
                "status": "CONFLICT",
                "timestamp": "02-03-2025 19:10:07",
-               "errorMessage": "Accommodation with the same city: Kyiv, street: Khreshchatyk,
-               house number: 15B, apartment number: 36, type: CONDO, and size: 1 Bedroom already
+               "errorMessage": "Accommodation with the same city: Kyiv, street: Khreshchatyk, \
+               house number: 15B, apartment number: 36, type: CONDO, and size: 1 Bedroom already \
                exists."
              }
             """;

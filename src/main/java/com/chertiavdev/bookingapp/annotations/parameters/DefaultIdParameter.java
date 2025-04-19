@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.annotations;
+package com.chertiavdev.bookingapp.annotations.parameters;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import java.lang.annotation.ElementType;

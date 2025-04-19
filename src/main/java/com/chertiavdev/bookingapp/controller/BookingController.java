@@ -1,12 +1,13 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.annotations.ConflictDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.CreateDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultIdParameter;
-import com.chertiavdev.bookingapp.annotations.GetAllPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.GetByIdPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.UpdateDefaultApiResponses;
+import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
+import com.chertiavdev.bookingapp.annotations.parameters.DefaultIdParameter;
+import com.chertiavdev.bookingapp.annotations.responses.BadRequestApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.ConflictApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
@@ -14,10 +15,6 @@ import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,17 +41,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController {
     private final BookingService bookingService;
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Create a new booking",
-            description = "Allows users to create a new booking.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "The booking was successfully created.")
-            }
+            description = "Allows users to create a new booking",
+            responseDescription = "The booking was successfully created",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED
     )
-    @CreateDefaultApiResponses
-    @ConflictDefaultApiResponses
+    @CreateApiResponses
+    @ConflictApiResponse
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public BookingDto create(
@@ -63,16 +58,13 @@ public class BookingController {
         return bookingService.save(requestDto, user);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Search bookings by parameters",
-            description = "Retrieve a paginated list of all bookings books by parameters.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved a paginated list of bookings.")
-            }
+            description = "Retrieve a paginated list of all bookings books by parameters",
+            responseDescription = "Successfully retrieved a paginated list of all bookings "
+                    + "books by parameters"
     )
-    @DefaultApiResponses
+    @BaseAuthApiResponses
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public PageResponse<BookingDto> searchBookings(
@@ -82,18 +74,14 @@ public class BookingController {
         return PageResponse.of(page);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get all user's bookings",
-            description = "Retrieve a paginated list of all user's bookings.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved a paginated list of bookings.")
-            }
+            description = "Retrieve a paginated list of all user's bookings",
+            responseDescription = "Successfully retrieved a paginated list of bookings"
     )
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetAllPublicDefaultApiResponses
-    @DefaultApiResponses
+    @BadRequestApiResponse
+    @BaseAuthApiResponses
     @GetMapping("/my")
     public PageResponse<BookingDto> getBookingsByUser(
             @AuthenticationPrincipal User user,
@@ -102,21 +90,15 @@ public class BookingController {
         return PageResponse.of(page);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get a booking by ID",
             description = "Retrieve a booking by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved booking information",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookingDto.class))
-                    )
-            }
+            responseDescription = "Successfully retrieved booking information"
     )
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetByIdPublicDefaultApiResponses
-    @DefaultApiResponses
+    @BadRequestApiResponse
+    @NotFoundApiResponse
+    @BaseAuthApiResponses
     @DefaultIdParameter
     @GetMapping("/{id}")
     public BookingDto getBookingById(
@@ -125,16 +107,12 @@ public class BookingController {
         return bookingService.findByIdAndUserId(id, user.getId());
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Update a booking by ID",
             description = "Retrieve updated booking by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully updated booking information")
-            }
+            responseDescription = "Successfully updated booking information"
     )
-    @UpdateDefaultApiResponses
+    @UpdateApiResponses
     @DefaultIdParameter
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}")
@@ -145,17 +123,14 @@ public class BookingController {
         return bookingService.updatedByIdAndUserId(id, user.getId(), requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Cancel a booking by ID",
             description = "Cancels a booking by ID. Available only to users",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
-                            description = "Successfully canceled a booking")
-            }
+            responseDescription = "Successfully canceled a booking",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT
     )
-    @ConflictDefaultApiResponses
-    @DefaultApiResponses
+    @ConflictApiResponse
+    @BaseAuthApiResponses
     @DefaultIdParameter
     @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)

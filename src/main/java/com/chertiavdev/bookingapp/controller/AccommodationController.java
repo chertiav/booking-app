@@ -1,21 +1,18 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.annotations.ConflictDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.CreateDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultIdParameter;
-import com.chertiavdev.bookingapp.annotations.GetAllPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.GetByIdPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.UpdateDefaultApiResponses;
+import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
+import com.chertiavdev.bookingapp.annotations.parameters.DefaultIdParameter;
+import com.chertiavdev.bookingapp.annotations.responses.ConflictApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.service.AccommodationService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,20 +37,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccommodationController {
     private final AccommodationService accommodationService;
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Create a new accommodation",
-            description = "Allows administrators to create a new accommodation.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "The accommodation was successfully created.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class))),
-            }
+            description = "Allows administrators to create a new accommodation",
+            responseDescription = "The accommodation was successfully created",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED
     )
-    @CreateDefaultApiResponses
-    @ConflictDefaultApiResponses
+    @CreateApiResponses
+    @ConflictApiResponse
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
@@ -61,56 +52,36 @@ public class AccommodationController {
         return accommodationService.save(requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get all available accommodations",
-            description = "Retrieve a paginated list of all available accommodations.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved list of accommodations.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = PageResponse.class)))
-            }
+            description = "Retrieve a paginated list of all available accommodations",
+            responseDescription = "Successfully retrieved list of accommodations"
     )
-    @GetAllPublicDefaultApiResponses
+    @GetApiResponses
     @GetMapping
     public PageResponse<AccommodationDto> getAllAvailable(@ParameterObject Pageable pageable) {
         return PageResponse.of(accommodationService.findAllAvailable(pageable));
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get an available accommodation by ID",
             description = "Retrieve an available accommodation by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved accommodation information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class)))
-            }
+            responseDescription = "Successfully retrieved accommodation information"
     )
-    @GetByIdPublicDefaultApiResponses
+    @GetApiResponses
+    @NotFoundApiResponse
     @DefaultIdParameter
     @GetMapping("/{id}")
     public AccommodationDto getAvailableById(@PathVariable Long id) {
         return accommodationService.findAvailableById(id);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Update an accommodation by ID",
             description = "Retrieve updated accommodation by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully updated accommodation information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AccommodationDto.class)))
-            }
+            responseDescription = "Successfully updated accommodation information"
     )
-    @UpdateDefaultApiResponses
+    @UpdateApiResponses
     @DefaultIdParameter
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
@@ -120,19 +91,16 @@ public class AccommodationController {
         return accommodationService.updateById(id, requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Delete an accommodation by ID",
             description = "Removes an accommodation by ID. Available only to administrators",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
-                            description = "Successfully deleted an accommodation")
-            }
+            responseDescription = "Successfully deleted an accommodation",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT
     )
-    @DefaultApiResponses
+    @BaseAuthApiResponses
     @DefaultIdParameter
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         accommodationService.deleteById(id);

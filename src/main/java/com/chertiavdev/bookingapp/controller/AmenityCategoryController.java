@@ -1,19 +1,16 @@
 package com.chertiavdev.bookingapp.controller;
 
-import com.chertiavdev.bookingapp.annotations.CreateDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.DefaultIdParameter;
-import com.chertiavdev.bookingapp.annotations.GetAllPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.GetByIdPublicDefaultApiResponses;
-import com.chertiavdev.bookingapp.annotations.UpdateDefaultApiResponses;
+import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
+import com.chertiavdev.bookingapp.annotations.parameters.DefaultIdParameter;
+import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
 import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.service.AmenityCategoryService;
 import com.chertiavdev.bookingapp.util.ApiResponseConstants;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -38,21 +35,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AmenityCategoryController {
     private final AmenityCategoryService amenityCategoryService;
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Create a new amenity category",
-            description = "Allows administrators to create a new amenity category.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED,
-                            description = "The category was successfully created.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityCategoryDto.class)
-                            )
-                    )
-            }
+            description = "Allows administrators to create a new amenity category",
+            responseDescription = "The category was successfully created",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_CREATED
     )
-    @CreateDefaultApiResponses
+    @CreateApiResponses
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
@@ -61,63 +50,37 @@ public class AmenityCategoryController {
         return amenityCategoryService.save(requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get all amenity categories",
-            description = "Retrieve all amenity categories.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved all amenity categories.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            type = "array",
-                                            implementation = AmenityCategoryDto.class
-                                    )
-                            )
-                    )
-            }
+            description = "Retrieve all amenity categories",
+            responseDescription = "Successfully retrieved all amenity categories"
     )
-    @GetAllPublicDefaultApiResponses
+    @GetApiResponses
     @GetMapping
     public List<AmenityCategoryDto> getAll() {
         return amenityCategoryService.findAll();
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Get an amenity category by ID",
             description = "Retrieve an amenity category by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully retrieved category information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityCategoryDto.class))),
-            }
+            responseDescription = "Successfully retrieved category information"
     )
+    @GetApiResponses
+    @NotFoundApiResponse
     @DefaultIdParameter
-    @GetByIdPublicDefaultApiResponses
     @GetMapping("/{id}")
     public AmenityCategoryDto getById(@PathVariable Long id) {
         return amenityCategoryService.findById(id);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Update an amenity category by ID",
             description = "Retrieve updated amenity category by ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_OK,
-                            description = "Successfully updated category information",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AmenityCategoryDto.class))),
-
-            }
+            responseDescription = "Successfully updated category information"
     )
+    @UpdateApiResponses
     @DefaultIdParameter
-    @UpdateDefaultApiResponses
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public AmenityCategoryDto update(
@@ -126,18 +89,14 @@ public class AmenityCategoryController {
         return amenityCategoryService.updateById(id, requestDto);
     }
 
-    @Operation(
+    @ApiOperationDetails(
             summary = "Delete an amenity category by ID",
             description = "Removes an amenity category by ID. Available only to administrators",
-            responses = {
-                    @ApiResponse(
-                            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT,
-                            description = "Successfully deleted category"),
-
-            }
+            responseDescription = "Successfully deleted category",
+            responseCode = ApiResponseConstants.RESPONSE_CODE_NO_CONTENT
     )
+    @BaseAuthApiResponses
     @DefaultIdParameter
-    @DefaultApiResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
