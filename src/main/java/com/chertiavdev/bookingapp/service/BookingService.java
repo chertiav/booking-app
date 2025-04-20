@@ -18,5 +18,5 @@ public interface BookingService {
 
     BookingDto updatedByIdAndUserId(Long id, Long userId, CreateBookingRequestDto requestDto);
 
-    void cancelById(Long id, Long userId);
+    void cancelById(Long id, User user);
 }
