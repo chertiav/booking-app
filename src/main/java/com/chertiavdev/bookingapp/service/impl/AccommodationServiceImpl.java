@@ -8,6 +8,7 @@ import com.chertiavdev.bookingapp.mapper.AccommodationMapper;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.repository.accommodation.AccommodationRepository;
 import com.chertiavdev.bookingapp.service.AccommodationService;
+import com.chertiavdev.bookingapp.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,17 @@ public class AccommodationServiceImpl implements AccommodationService {
     private static final int AVAILABILITY_THRESHOLD = 0;
     private final AccommodationRepository accommodationRepository;
     private final AccommodationMapper accommodationMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     @Override
     public AccommodationDto save(CreateAccommodationRequestDto requestDto) {
         validateAccommodationUniqueness(requestDto);
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
-        return accommodationMapper.toDto(accommodationRepository.save(accommodation));
+        AccommodationDto accommodationDto = accommodationMapper
+                .toDto(accommodationRepository.save(accommodation));
+        notificationService.sendNotification(generateNotification(accommodationDto));
+        return accommodationDto;
     }
 
     @Override
@@ -86,6 +91,21 @@ public class AccommodationServiceImpl implements AccommodationService {
                 requestDto.getLocation().getApartmentNumber(),
                 requestDto.getType(),
                 requestDto.getSize()
+        );
+    }
+
+    private String generateNotification(AccommodationDto accommodationDto) {
+        return String.format("""
+                        New accommodation has been added:
+                        - ID: %d
+                        - Type: %s
+                        - Daily Rate: %.2f
+                        - Location: %s
+                        """,
+                accommodationDto.getId(),
+                accommodationDto.getType(),
+                accommodationDto.getDailyRate(),
+                accommodationDto.getLocation()
         );
     }
 }

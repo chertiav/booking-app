@@ -14,6 +14,7 @@ import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.booking.BookingSpecificationBuilder;
 import com.chertiavdev.bookingapp.service.BookingService;
+import com.chertiavdev.bookingapp.service.NotificationService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private static final String CAN_T_FIND_BOOKING_BY_ID = "Can't find booking by id: ";
+    private static final String ACTION_CREATED = "created";
+    private static final String ACTION_CANCELLED = "cancelled";
     private final BookingRepository bookingRepository;
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
     private final BookingMapper bookingMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     @Override
@@ -39,7 +43,10 @@ public class BookingServiceImpl implements BookingService {
                 requestDto.getCheckOut()
         ));
         Booking booking = bookingMapper.toModel(requestDto, user);
-        return bookingMapper.toDto(bookingRepository.save(booking));
+        bookingRepository.save(booking);
+        notificationService.sendNotification(
+                generateBookingNotification(booking, user, ACTION_CREATED));
+        return bookingMapper.toDto(booking);
     }
 
     @Override
@@ -86,13 +93,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public void cancelById(Long bookingId, Long userId) {
-        Booking booking = bookingRepository.findByIdAndUserId(bookingId, userId)
+    public void cancelById(Long bookingId, User user) {
+        Booking booking = bookingRepository.findByIdAndUserId(bookingId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException(CAN_T_FIND_BOOKING_BY_ID
                         + bookingId));
         validateBookingStatus(bookingId, booking);
         booking.setStatus(CANCELLED);
         bookingRepository.save(booking);
+        notificationService.sendNotification(
+                generateBookingNotification(booking, user, ACTION_CANCELLED));
     }
 
     private void validateBookingAvailability(
@@ -113,6 +122,25 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository
                 .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED)
                 .isEmpty();
+    }
+
+    private String generateBookingNotification(Booking booking, User user, String action) {
+        return String.format("""
+                        Booking has been %s.
+                        - User: %s %s
+                        - Booking ID: %s
+                        - Accommodation ID: %s
+                        - Check-in: %s
+                        - Check-out: %s
+                        """,
+                action,
+                user.getFirstName(),
+                user.getLastName(),
+                booking.getId(),
+                booking.getAccommodation().getId(),
+                booking.getCheckIn(),
+                booking.getCheckOut()
+        );
     }
 
     private static void validateBookingStatus(Long bookingId, Booking booking) {

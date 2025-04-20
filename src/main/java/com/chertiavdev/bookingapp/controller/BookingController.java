@@ -138,6 +138,6 @@ public class BookingController {
     public void cancelById(
             @AuthenticationPrincipal User user,
             @PathVariable Long id) {
-        bookingService.cancelById(id, user.getId());
+        bookingService.cancelById(id, user);
     }
 }
