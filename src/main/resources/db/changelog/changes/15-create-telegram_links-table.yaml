@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-telegram_links-table
+      author: andrey
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: telegram_links
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_telegram_links
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: token
+            constraintName: uc_telegram_links_token
+            tableName: telegram_links
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: telegram_links
+            constraintName: FK_TELEGRAM_LINKS_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users

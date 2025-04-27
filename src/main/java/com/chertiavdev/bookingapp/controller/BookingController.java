@@ -5,6 +5,7 @@ import com.chertiavdev.bookingapp.annotations.parameters.DefaultIdParameter;
 import com.chertiavdev.bookingapp.annotations.responses.BadRequestApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.ConflictApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.ServiceUnavailableApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
 import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
 import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
@@ -49,6 +50,7 @@ public class BookingController {
     )
     @CreateApiResponses
     @ConflictApiResponse
+    @ServiceUnavailableApiResponse
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
@@ -131,6 +133,7 @@ public class BookingController {
     )
     @ConflictApiResponse
     @BaseAuthApiResponses
+    @ServiceUnavailableApiResponse
     @DefaultIdParameter
     @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -50,6 +50,12 @@ public class UserServiceImpl implements UserService {
                         + email));
     }
 
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND + "id:" + id));
+    }
+
     @Transactional
     @Override
     public UserDto updateByEmail(String email, UserUpdateRequestDto requestDto) {

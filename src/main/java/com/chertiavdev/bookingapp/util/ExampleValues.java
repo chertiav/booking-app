@@ -61,13 +61,20 @@ public class ExampleValues {
                "errorMessage": "Access Denied"
              }
             """;
-    public static final String CONFLICT_ERROR_ERROR_EXAMPLE = """
+    public static final String CONFLICT_ERROR_EXAMPLE = """
             {
                "status": "CONFLICT",
                "timestamp": "02-03-2025 19:10:07",
                "errorMessage": "Accommodation with the same city: Kyiv, street: Khreshchatyk, \
                house number: 15B, apartment number: 36, type: CONDO, and size: 1 Bedroom already \
                exists."
+             }
+            """;
+    public static final String SERVICE_UNAVAILABLE_ERROR_EXAMPLE = """
+            {
+               "status": "SERVICE_UNAVAILABLE",
+               "timestamp": "02-03-2025 19:10:07",
+               "errorMessage": "Can't send message"
              }
             """;
 }

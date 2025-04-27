@@ -25,3 +25,7 @@ databaseChangeLog:
       file: db/changelog/changes/12-create-accommodation_amenities-table.yaml
   - include:
       file: db/changelog/changes/13-create-bookings-table.yaml
+  - include:
+      file: db/changelog/changes/14-create-user_telegram-table.yaml
+  - include:
+      file: db/changelog/changes/15-create-telegram_links-table.yaml
