@@ -1,5 +1,8 @@
 package com.chertiavdev.bookingapp.service.impl;
 
+import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
+import static com.chertiavdev.bookingapp.util.NotificationUtils.accommodationCreatedNotification;
+
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.exception.AccommodationAlreadyExistsException;
@@ -30,7 +33,8 @@ public class AccommodationServiceImpl implements AccommodationService {
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
         AccommodationDto accommodationDto = accommodationMapper
                 .toDto(accommodationRepository.save(accommodation));
-        notificationService.sendNotification(generateNotification(accommodationDto));
+        notificationService
+                .sendNotification(accommodationCreatedNotification(accommodationDto), USER);
         return accommodationDto;
     }
 
@@ -91,21 +95,6 @@ public class AccommodationServiceImpl implements AccommodationService {
                 requestDto.getLocation().getApartmentNumber(),
                 requestDto.getType(),
                 requestDto.getSize()
-        );
-    }
-
-    private String generateNotification(AccommodationDto accommodationDto) {
-        return String.format("""
-                        New accommodation has been added:
-                        - ID: %d
-                        - Type: %s
-                        - Daily Rate: %.2f
-                        - Location: %s
-                        """,
-                accommodationDto.getId(),
-                accommodationDto.getType(),
-                accommodationDto.getDailyRate(),
-                accommodationDto.getLocation()
         );
     }
 }

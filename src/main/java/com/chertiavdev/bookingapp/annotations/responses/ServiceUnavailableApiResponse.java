@@ -13,15 +13,17 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ApiResponse(
-        responseCode = "409",
-        description = "Client error",
+@ApiResponse(responseCode = "503",
+        description = "Service unavailable due to a failure in sending a notification",
         content = @Content(schema = @Schema(
                 implementation = CommonApiErrorResponseDto.class),
                 examples = @ExampleObject(
-                        name = "Conflict Error Example",
-                        summary = "A conflict occurred while processing the request, such as "
-                                + "duplicate data or violation of constraints.",
-                        value = ExampleValues.CONFLICT_ERROR_EXAMPLE)))
-public @interface ConflictApiResponse {
+                        name = "Service Unavailable Error Example",
+                        summary = "An example response when the notification service "
+                                + "is unavailable",
+                        value = ExampleValues.SERVICE_UNAVAILABLE_ERROR_EXAMPLE
+                )
+        )
+)
+public @interface ServiceUnavailableApiResponse {
 }

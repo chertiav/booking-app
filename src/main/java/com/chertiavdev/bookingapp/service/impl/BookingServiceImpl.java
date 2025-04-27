@@ -1,6 +1,9 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELLED;
+import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
+import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationForAdmins;
+import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationToUser;
 
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
@@ -29,6 +32,8 @@ public class BookingServiceImpl implements BookingService {
     private static final String CAN_T_FIND_BOOKING_BY_ID = "Can't find booking by id: ";
     private static final String ACTION_CREATED = "created";
     private static final String ACTION_CANCELLED = "cancelled";
+    private static final String BOOKING_PENDING_PAYMENT_MESSAGE =
+            "Your booking request has been submitted and is awaiting payment";
     private final BookingRepository bookingRepository;
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
     private final BookingMapper bookingMapper;
@@ -42,10 +47,11 @@ public class BookingServiceImpl implements BookingService {
                 requestDto.getCheckIn(),
                 requestDto.getCheckOut()
         ));
-        Booking booking = bookingMapper.toModel(requestDto, user);
-        bookingRepository.save(booking);
+        Booking booking = bookingRepository.save(bookingMapper.toModel(requestDto, user));
         notificationService.sendNotification(
-                generateBookingNotification(booking, user, ACTION_CREATED));
+                bookingNotificationForAdmins(booking, user, ACTION_CREATED), ADMIN);
+        notificationService.sendNotificationByUserId(
+                bookingNotificationToUser(booking, BOOKING_PENDING_PAYMENT_MESSAGE), user.getId());
         return bookingMapper.toDto(booking);
     }
 
@@ -101,7 +107,9 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(CANCELLED);
         bookingRepository.save(booking);
         notificationService.sendNotification(
-                generateBookingNotification(booking, user, ACTION_CANCELLED));
+                bookingNotificationForAdmins(booking, user, ACTION_CANCELLED), ADMIN);
+        notificationService.sendNotificationByUserId(
+                bookingNotificationToUser(booking, ACTION_CANCELLED), user.getId());
     }
 
     private void validateBookingAvailability(
@@ -122,25 +130,6 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository
                 .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED)
                 .isEmpty();
-    }
-
-    private String generateBookingNotification(Booking booking, User user, String action) {
-        return String.format("""
-                        Booking has been %s.
-                        - User: %s %s
-                        - Booking ID: %s
-                        - Accommodation ID: %s
-                        - Check-in: %s
-                        - Check-out: %s
-                        """,
-                action,
-                user.getFirstName(),
-                user.getLastName(),
-                booking.getId(),
-                booking.getAccommodation().getId(),
-                booking.getCheckIn(),
-                booking.getCheckOut()
-        );
     }
 
     private static void validateBookingStatus(Long bookingId, Booking booking) {

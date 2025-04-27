@@ -83,6 +83,17 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(NotificationException.class)
+    protected ResponseEntity<Object> handleNotificationException(NotificationException ex) {
+        log.warn("NotificationException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "An error occurred while attempting "
+                        + "to send a notification.")
+        );
+    }
+
     @ExceptionHandler(AccommodationAlreadyExistsException.class)
     public ResponseEntity<Object> handleAccommodationAlreadyExists(
             AccommodationAlreadyExistsException ex
