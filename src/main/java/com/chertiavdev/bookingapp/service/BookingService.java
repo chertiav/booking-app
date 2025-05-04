@@ -4,6 +4,7 @@ import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.model.User;
+import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,6 @@ public interface BookingService {
     BookingDto updatedByIdAndUserId(Long id, Long userId, CreateBookingRequestDto requestDto);
 
     void cancelById(Long id, User user);
+
+    void checkAndNotifyExpiredBookings(LocalDate expiredToDate);
 }

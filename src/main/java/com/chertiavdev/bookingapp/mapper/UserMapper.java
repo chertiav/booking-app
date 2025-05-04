@@ -11,6 +11,7 @@ import com.chertiavdev.bookingapp.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class, uses = {PasswordEncoderMapper.class, RoleMapper.class})
 public interface UserMapper {
@@ -33,4 +34,9 @@ public interface UserMapper {
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToStrings")
     UserWithRoleDto toUserWithRoleDto(User user);
+
+    @Named("mapUserToString")
+    default String mapUserToString(User user) {
+        return String.format("%s %s", user.getFirstName(), user.getLastName());
+    }
 }
