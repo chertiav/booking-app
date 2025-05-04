@@ -50,4 +50,10 @@ public class TelegramLinkServiceImpl implements TelegramLinkService {
                     return link.getUser().getId();
                 });
     }
+
+    @Transactional
+    @Override
+    public void deleteByExpiresAtBefore(Instant now) {
+        telegramLinkRepository.deleteByExpiresAtBefore(now);
+    }
 }

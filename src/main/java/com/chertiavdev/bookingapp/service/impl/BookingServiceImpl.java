@@ -1,9 +1,11 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELLED;
+import static com.chertiavdev.bookingapp.model.Booking.Status.EXPIRED;
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
 import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationForAdmins;
 import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationToUser;
+import static com.chertiavdev.bookingapp.util.NotificationUtils.buildBookingExpiredAlert;
 
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
@@ -13,12 +15,14 @@ import com.chertiavdev.bookingapp.exception.BookingAlreadyCancelledException;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.BookingMapper;
 import com.chertiavdev.bookingapp.model.Booking;
+import com.chertiavdev.bookingapp.model.Booking.Status;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.booking.BookingSpecificationBuilder;
 import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.service.NotificationService;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +38,7 @@ public class BookingServiceImpl implements BookingService {
     private static final String ACTION_CANCELLED = "cancelled";
     private static final String BOOKING_PENDING_PAYMENT_MESSAGE =
             "Your booking request has been submitted and is awaiting payment";
+    private static final String NO_EXPIRED_BOOKINGS_TODAY = "No expired bookings today!";
     private final BookingRepository bookingRepository;
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
     private final BookingMapper bookingMapper;
@@ -104,12 +109,27 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new EntityNotFoundException(CAN_T_FIND_BOOKING_BY_ID
                         + bookingId));
         validateBookingStatus(bookingId, booking);
-        booking.setStatus(CANCELLED);
-        bookingRepository.save(booking);
+        updateBookingStatus(booking, CANCELLED);
         notificationService.sendNotification(
                 bookingNotificationForAdmins(booking, user, ACTION_CANCELLED), ADMIN);
         notificationService.sendNotificationByUserId(
                 bookingNotificationToUser(booking, ACTION_CANCELLED), user.getId());
+    }
+
+    @Transactional
+    @Override
+    public void checkAndNotifyExpiredBookings(LocalDate expiredToDate) {
+        List<Booking> upcomingBookings = bookingRepository.findUpcomingBookings(expiredToDate);
+        if (!upcomingBookings.isEmpty()) {
+            upcomingBookings.forEach(booking -> {
+                updateBookingStatus(booking, EXPIRED);
+                String message = buildBookingExpiredAlert(
+                        bookingMapper.toBookingExpiredNotificationDto(booking));
+                notificationService.sendNotification(message, ADMIN);
+            });
+        } else {
+            notificationService.sendNotification(NO_EXPIRED_BOOKINGS_TODAY, ADMIN);
+        }
     }
 
     private void validateBookingAvailability(
@@ -150,5 +170,10 @@ public class BookingServiceImpl implements BookingService {
                 .filter(booking -> !bookingId.equals(booking.getId()))
                 .findAny()
                 .isEmpty();
+    }
+
+    private void updateBookingStatus(Booking booking, Status status) {
+        booking.setStatus(status);
+        bookingRepository.save(booking);
     }
 }

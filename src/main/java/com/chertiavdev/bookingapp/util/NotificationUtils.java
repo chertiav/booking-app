@@ -1,6 +1,7 @@
 package com.chertiavdev.bookingapp.util;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
+import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.User;
 
@@ -55,5 +56,24 @@ public class NotificationUtils {
                 booking.getCheckOut()
         );
     }
-}
 
+    public static String buildBookingExpiredAlert(BookingExpiredNotificationDto notificationDto) {
+        return String.format("""
+                        ⚠ *Booking Expired!*
+                        
+                        📌 *Booking ID:* %d
+                        👤 *Customer:* %s
+                        📧 *Customer Email:* %s
+                        🏨 *Location:* %s
+                        📅 *Check-Out Date:* %s
+                        📋 *Status:* %s
+                        """,
+                notificationDto.getBookingId(),
+                notificationDto.getCustomer(),
+                notificationDto.getCustomerEmail(),
+                notificationDto.getLocation(),
+                notificationDto.getCheckOut(),
+                notificationDto.getStatus()
+        );
+    }
+}
