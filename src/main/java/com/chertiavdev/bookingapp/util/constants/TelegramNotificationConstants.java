@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.util;
+package com.chertiavdev.bookingapp.util.constants;
 
 public class TelegramNotificationConstants {
     public static final String TEST_TELEGRAM_TOKEN = "test-token";

@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.util;
+package com.chertiavdev.bookingapp.util.constants;
 
 public class ApiResponseConstants {
     public static final String RESPONSE_CODE_CREATED = "201";

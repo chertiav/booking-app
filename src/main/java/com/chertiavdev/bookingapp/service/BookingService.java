@@ -4,6 +4,7 @@ import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.model.User;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,6 @@ public interface BookingService {
     void cancelById(Long id, User user);
 
     void checkAndNotifyExpiredBookings(LocalDate expiredToDate);
+
+    BigDecimal calculateTotalPrice(Long bookingId, Long userId);
 }

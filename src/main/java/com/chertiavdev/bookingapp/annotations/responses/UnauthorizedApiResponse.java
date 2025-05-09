@@ -1,7 +1,7 @@
 package com.chertiavdev.bookingapp.annotations.responses;
 
+import com.chertiavdev.bookingapp.annotations.examples.ExampleValues;
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
-import com.chertiavdev.bookingapp.util.ExampleValues;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;

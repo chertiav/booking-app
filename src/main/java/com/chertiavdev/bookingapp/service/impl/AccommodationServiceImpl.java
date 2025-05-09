@@ -1,7 +1,7 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.accommodationCreatedNotification;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.accommodationCreatedNotification;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;

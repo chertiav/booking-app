@@ -1,5 +1,6 @@
 package com.chertiavdev.bookingapp.controller;
 
+import com.chertiavdev.bookingapp.annotations.examples.ExampleValues;
 import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
 import com.chertiavdev.bookingapp.annotations.responses.UnauthorizedApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
@@ -10,8 +11,7 @@ import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
 import com.chertiavdev.bookingapp.exception.RegistrationException;
 import com.chertiavdev.bookingapp.security.AuthenticationService;
 import com.chertiavdev.bookingapp.service.UserService;
-import com.chertiavdev.bookingapp.util.ApiResponseConstants;
-import com.chertiavdev.bookingapp.util.ExampleValues;
+import com.chertiavdev.bookingapp.util.constants.ApiResponseConstants;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.util;
+package com.chertiavdev.bookingapp.util.helpers;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;

@@ -3,9 +3,9 @@ package com.chertiavdev.bookingapp.service.impl;
 import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELLED;
 import static com.chertiavdev.bookingapp.model.Booking.Status.EXPIRED;
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationForAdmins;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationToUser;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.buildBookingExpiredAlert;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationForAdmins;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationToUser;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.buildBookingExpiredAlert;
 
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
@@ -21,6 +21,7 @@ import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.booking.BookingSpecificationBuilder;
 import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.service.NotificationService;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -130,6 +131,13 @@ public class BookingServiceImpl implements BookingService {
         } else {
             notificationService.sendNotification(NO_EXPIRED_BOOKINGS_TODAY, ADMIN);
         }
+    }
+
+    @Override
+    public BigDecimal calculateTotalPrice(Long bookingId, Long userId) {
+        return bookingRepository.calculateTotalPriceByBookingIdAndUserId(bookingId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with ID: " + bookingId
+                        + " for user ID: " + userId + " not found."));
     }
 
     private void validateBookingAvailability(

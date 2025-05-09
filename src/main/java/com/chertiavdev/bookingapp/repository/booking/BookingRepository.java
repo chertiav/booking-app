@@ -1,6 +1,7 @@
 package com.chertiavdev.bookingapp.repository.booking;
 
 import com.chertiavdev.bookingapp.model.Booking;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +37,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long>,
             + "AND b.checkOut <= :expiredToDate "
             + "ORDER BY b.id, b.checkOut")
     List<Booking> findUpcomingBookings(@Param("expiredToDate") LocalDate expiredToDate);
+
+    @Query(value = "SELECT "
+            + "COALESCE(SUM(a.daily_rate * (b.check_out - b.check_in)), 0) AS total_price "
+            + "FROM bookings b "
+            + "JOIN accommodations a ON a.id = b.accommodation_id "
+            + "WHERE b.id = :bookingId AND b.user_id = :userId",
+            nativeQuery = true)
+    Optional<BigDecimal> calculateTotalPriceByBookingIdAndUserId(
+            Long bookingId,
+            Long userId
+    );
 }
