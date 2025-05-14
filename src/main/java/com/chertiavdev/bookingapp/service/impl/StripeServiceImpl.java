@@ -1,6 +1,5 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.exception.StripeServiceException;
 import com.chertiavdev.bookingapp.service.StripeService;
 import com.stripe.exception.StripeException;
@@ -28,7 +27,7 @@ public class StripeServiceImpl implements StripeService {
     private String currency;
 
     @Override
-    public Session createSession(CreatePaymentRequestDto requestDto, BigDecimal amount) {
+    public Session createSession(Long bookingId, BigDecimal amount) {
         try {
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -41,7 +40,7 @@ public class StripeServiceImpl implements StripeService {
                                             SessionCreateParams.LineItem.PriceData.builder()
                                                     .setCurrency(currency)
                                                     .setUnitAmount(convertToCents(amount))
-                                                    .setProductData(createProductData(requestDto))
+                                                    .setProductData(createProductData(bookingId))
                                                     .build())
                                     .build())
                     .build();
@@ -78,9 +77,9 @@ public class StripeServiceImpl implements StripeService {
         return amount.multiply(BigDecimal.valueOf(100)).longValue();
     }
 
-    private ProductData createProductData(CreatePaymentRequestDto requestDto) {
+    private ProductData createProductData(Long bookingId) {
         return ProductData.builder()
-                .setName(BOOKING_PREFIX + requestDto.getBookingId())
+                .setName(BOOKING_PREFIX + bookingId)
                 .build();
     }
 

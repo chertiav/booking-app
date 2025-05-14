@@ -16,4 +16,6 @@ public interface PaymentService {
     PaymentDto handleCancel(String sessionId);
 
     void expirePendingPayments();
+
+    PaymentDto renewPayment(Long paymentId, Long userId);
 }

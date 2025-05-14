@@ -1,9 +1,9 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Booking.Status.CONFIRMED;
+import static com.chertiavdev.bookingapp.model.Booking.Status.PENDING;
 import static com.chertiavdev.bookingapp.model.Payment.Status.EXPIRED;
 import static com.chertiavdev.bookingapp.model.Payment.Status.PAID;
-import static com.chertiavdev.bookingapp.model.Payment.Status.PENDING;
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
 import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.PAYMENT_CANCELLED_NOTIFICATION;
 import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.PAYMENT_NOTIFICATION;
@@ -11,7 +11,9 @@ import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationCons
 
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
+import com.chertiavdev.bookingapp.exception.AccessDeniedException;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
+import com.chertiavdev.bookingapp.exception.PaymentRenewException;
 import com.chertiavdev.bookingapp.mapper.PaymentMapper;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Payment;
@@ -54,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentDto initiatePayment(CreatePaymentRequestDto requestDto, User user) {
         BigDecimal amountToPay = bookingService
                 .calculateTotalPrice(requestDto.getBookingId(), user.getId());
-        Session session = stripeService.createSession(requestDto, amountToPay);
+        Session session = stripeService.createSession(requestDto.getBookingId(), amountToPay);
         return paymentMapper.toDto(paymentRepository.save(
                 paymentMapper.toModel(requestDto, session, amountToPay)
         ));
@@ -89,7 +91,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     @Override
     public void expirePendingPayments() {
-        List<Payment> payments = paymentRepository.findAllByStatus(PENDING);
+        List<Payment> payments = paymentRepository.findAllByStatus(Payment.Status.PENDING);
         if (!payments.isEmpty()) {
             payments.forEach(payment -> {
                 if (stripeService.isSessionExpired(payment.getSessionId())) {
@@ -98,6 +100,21 @@ public class PaymentServiceImpl implements PaymentService {
                 }
             });
         }
+    }
+
+    @Transactional
+    @Override
+    public PaymentDto renewPayment(Long paymentId, Long userId) {
+        Payment payment = getPaymentById(paymentId);
+        Long paymentUserId = payment.getBooking().getUser().getId();
+        Booking booking = payment.getBooking();
+
+        checkSessionOwnership(paymentId, userId, paymentUserId);
+        verifyRenewalEligibility(payment, booking);
+
+        updatePayment(booking.getId(), payment);
+
+        return paymentMapper.toDto(payment);
     }
 
     private void processPaymentAndBookingUpdate(Payment payment) {
@@ -120,5 +137,33 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.getId(), payment.getAmountToPay());
         notificationService.sendNotification(message, ADMIN);
         notificationService.sendNotificationByUserId(message, userId);
+    }
+
+    private static void checkSessionOwnership(Long paymentId, Long userId, Long paymentUserId) {
+        if (!paymentUserId.equals(userId)) {
+            throw new AccessDeniedException("Can't renew session by payment id" + paymentId);
+        }
+    }
+
+    private Payment getPaymentById(Long paymentId) {
+        return paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find payment by id: "
+                        + paymentId));
+    }
+
+    private static void verifyRenewalEligibility(Payment payment, Booking booking) {
+        if (!payment.getStatus().equals(EXPIRED) && !booking.getStatus().equals(PENDING)) {
+            throw new PaymentRenewException("Can't renew payment by id: " + payment.getId()
+                    + " payment status must be: " + EXPIRED + " and"
+                    + " booking status must be: " + PENDING);
+        }
+    }
+
+    private void updatePayment(Long bookingId, Payment payment) {
+        Session session = stripeService.createSession(bookingId, payment.getAmountToPay());
+        payment.setSessionId(session.getId());
+        payment.setSessionUrl(session.getUrl());
+        payment.setStatus(Payment.Status.PENDING);
+        paymentRepository.save(payment);
     }
 }

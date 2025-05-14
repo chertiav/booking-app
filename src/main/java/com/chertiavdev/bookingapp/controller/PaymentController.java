@@ -2,10 +2,13 @@ package com.chertiavdev.bookingapp.controller;
 
 import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
 import com.chertiavdev.bookingapp.annotations.responses.BadRequestApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.ConflictApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.ServiceUnavailableApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
 import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
 import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponses;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
@@ -74,6 +77,7 @@ public class PaymentController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ServiceUnavailableApiResponse
     @CreateApiResponses
     @PreAuthorize("hasRole('ROLE_USER')")
     public PaymentDto createPayment(
@@ -89,6 +93,7 @@ public class PaymentController {
             responseDescription = "Returns the details of the completed payment"
     )
     @PreAuthorize("hasRole('ROLE_USER')")
+    @ServiceUnavailableApiResponse
     @BaseAuthApiResponses
     @NotFoundApiResponse
     @GetApiResponses
@@ -109,5 +114,22 @@ public class PaymentController {
     @GetMapping("/cancel")
     public PaymentDto cancel(@RequestParam(name = "session_id") String sessionId) {
         return paymentService.handleCancel(sessionId);
+    }
+
+    @ApiOperationDetails(
+            summary = "Renew a payment",
+            description = "Allows a user to renew an existing payment based on its identifier.",
+            responseDescription = "Returns the updated payment details after successful renewal."
+    )
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @ServiceUnavailableApiResponse
+    @ConflictApiResponse
+    @UpdateApiResponses
+    @PostMapping("/renew")
+    public PaymentDto renew(
+            @RequestParam("payment_id") Long paymentId,
+            @AuthenticationPrincipal User user
+    ) {
+        return paymentService.renewPayment(paymentId, user.getId());
     }
 }
