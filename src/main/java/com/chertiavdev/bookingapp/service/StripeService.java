@@ -6,4 +6,8 @@ import java.math.BigDecimal;
 
 public interface StripeService {
     Session createSession(CreatePaymentRequestDto requestDto, BigDecimal amount);
+
+    boolean isSessionPaid(String sessionId);
+
+    boolean isSessionExpired(String sessionId);
 }

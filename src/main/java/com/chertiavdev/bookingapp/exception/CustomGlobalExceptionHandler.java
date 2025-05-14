@@ -130,6 +130,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleBookingAlreadyCancelledException(
+            AccessDeniedException ex
+    ) {
+        log.warn("AccessDeniedException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.FORBIDDEN,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Access denied")
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGlobalException(Exception ex) {
         log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);

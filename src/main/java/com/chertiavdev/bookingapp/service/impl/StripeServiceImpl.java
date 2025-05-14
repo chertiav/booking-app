@@ -16,9 +16,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class StripeServiceImpl implements StripeService {
     private static final String PAYMENT_SUCCESS_URL = "/api/payments/success";
     private static final String PAYMENT_CANCEL_URL = "/api/payments/cancel";
-    private static final String CHECKOUT_SESSION_QUERY_PARAM = "?session_id={CHECKOUT_SESSION_ID}";
     private static final long DEFAULT_QUANTITY = 1L;
     private static final String BOOKING_PREFIX = "Booking #";
+    private static final String PAYMENT_STATUS_PAID = "paid";
+    private static final String PAYMENT_STATUS_EXPIRED = "expired";
+    private static final String SESSION_ID_QUERY_PARAM = "session_id";
+    private static final String CHECKOUT_SESSION_ID_TOKEN = "{CHECKOUT_SESSION_ID}";
     @Value("${app.base.url}")
     private String appBaseUrl;
     @Value("${stripe.secret.currency}")
@@ -29,8 +32,7 @@ public class StripeServiceImpl implements StripeService {
         try {
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(buildPaymentUrl(PAYMENT_SUCCESS_URL)
-                            + CHECKOUT_SESSION_QUERY_PARAM)
+                    .setSuccessUrl(buildPaymentUrl(PAYMENT_SUCCESS_URL))
                     .setCancelUrl(buildPaymentUrl(PAYMENT_CANCEL_URL))
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
@@ -49,6 +51,29 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
+    public boolean isSessionPaid(String sessionId) {
+        try {
+            Session session = Session.retrieve(sessionId);
+            System.out.println(session.getExpiresAt());
+            return PAYMENT_STATUS_PAID.equals(session.getPaymentStatus());
+        } catch (StripeException ex) {
+            throw new StripeServiceException("Can't retrieve session by id: " + sessionId
+                    + ". Reason: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isSessionExpired(String sessionId) {
+        try {
+            Session session = Session.retrieve(sessionId);
+            return PAYMENT_STATUS_EXPIRED.equals(session.getStatus());
+        } catch (StripeException ex) {
+            throw new StripeServiceException("Can't retrieve session by id: " + sessionId
+                    + ". Reason: " + ex.getMessage());
+        }
+    }
+
     private long convertToCents(BigDecimal amount) {
         return amount.multiply(BigDecimal.valueOf(100)).longValue();
     }
@@ -61,6 +86,7 @@ public class StripeServiceImpl implements StripeService {
 
     private String buildPaymentUrl(String url) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(appBaseUrl);
+        uriBuilder.queryParam(SESSION_ID_QUERY_PARAM, CHECKOUT_SESSION_ID_TOKEN);
         return uriBuilder.path(url).build().toString();
     }
 }

@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELLED;
+import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELED;
 import static com.chertiavdev.bookingapp.model.Booking.Status.EXPIRED;
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationForAdmins;
@@ -16,9 +16,11 @@ import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
 import com.chertiavdev.bookingapp.mapper.BookingMapper;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Booking.Status;
+import com.chertiavdev.bookingapp.model.Payment;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.booking.BookingSpecificationBuilder;
+import com.chertiavdev.bookingapp.repository.payment.PaymentRepository;
 import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.service.NotificationService;
 import java.math.BigDecimal;
@@ -44,6 +46,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
     private final BookingMapper bookingMapper;
     private final NotificationService notificationService;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     @Override
@@ -110,7 +113,8 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new EntityNotFoundException(CAN_T_FIND_BOOKING_BY_ID
                         + bookingId));
         validateBookingStatus(bookingId, booking);
-        updateBookingStatus(booking, CANCELLED);
+        updateBookingStatus(booking, CANCELED);
+        updatePaymentStatusByBookingId(booking.getId(), Payment.Status.CANCELED);
         notificationService.sendNotification(
                 bookingNotificationForAdmins(booking, user, ACTION_CANCELLED), ADMIN);
         notificationService.sendNotificationByUserId(
@@ -156,12 +160,12 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED)
+                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED)
                 .isEmpty();
     }
 
     private static void validateBookingStatus(Long bookingId, Booking booking) {
-        if (booking.getStatus().equals(CANCELLED)) {
+        if (booking.getStatus().equals(CANCELED)) {
             throw new BookingAlreadyCancelledException("Booking with ID " + bookingId
                     + " has already been cancelled.");
         }
@@ -174,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED).stream()
+                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED).stream()
                 .filter(booking -> !bookingId.equals(booking.getId()))
                 .findAny()
                 .isEmpty();
@@ -183,5 +187,13 @@ public class BookingServiceImpl implements BookingService {
     private void updateBookingStatus(Booking booking, Status status) {
         booking.setStatus(status);
         bookingRepository.save(booking);
+    }
+
+    public void updatePaymentStatusByBookingId(Long bookingId, Payment.Status status) {
+        paymentRepository.findByBookingId(bookingId)
+                .ifPresent(payment -> {
+                    payment.setStatus(status);
+                    paymentRepository.save(payment);
+                });
     }
 }

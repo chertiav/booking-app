@@ -10,4 +10,10 @@ public interface PaymentService {
     Page<PaymentDto> getPayments(Long userId, Pageable pageable);
 
     PaymentDto initiatePayment(CreatePaymentRequestDto requestDto, User user);
+
+    PaymentDto handleSuccess(String sessionId);
+
+    PaymentDto handleCancel(String sessionId);
+
+    void expirePendingPayments();
 }

@@ -2,11 +2,14 @@ package com.chertiavdev.bookingapp.controller;
 
 import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
 import com.chertiavdev.bookingapp.annotations.responses.BadRequestApiResponse;
+import com.chertiavdev.bookingapp.annotations.responses.NotFoundApiResponse;
 import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
 import com.chertiavdev.bookingapp.annotations.responses.groups.CreateApiResponses;
+import com.chertiavdev.bookingapp.annotations.responses.groups.GetApiResponses;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
+import com.chertiavdev.bookingapp.exception.AccessDeniedException;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.service.PaymentService;
 import com.chertiavdev.bookingapp.util.constants.ApiResponseConstants;
@@ -56,7 +59,10 @@ public class PaymentController {
         if (user.getAuthorities().stream().anyMatch(RoleUtil::isAdminRole)) {
             return PageResponse.of(paymentService.getPayments(userId, pageable));
         }
-        return PageResponse.of(paymentService.getPayments(user.getId(), pageable));
+        if (user.getId().equals(userId)) {
+            return PageResponse.of(paymentService.getPayments(user.getId(), pageable));
+        }
+        throw new AccessDeniedException("Can't retrieve payments for user " + userId);
     }
 
     @ApiOperationDetails(
@@ -75,5 +81,33 @@ public class PaymentController {
             @AuthenticationPrincipal User user
     ) {
         return paymentService.initiatePayment(requestDto, user);
+    }
+
+    @ApiOperationDetails(
+            summary = "Handle successful payment session",
+            description = "This endpoint processes a successful payment session by its session ID.",
+            responseDescription = "Returns the details of the completed payment"
+    )
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @BaseAuthApiResponses
+    @NotFoundApiResponse
+    @GetApiResponses
+    @GetMapping("/success")
+    public PaymentDto success(@RequestParam(name = "session_id") String sessionId) {
+        return paymentService.handleSuccess(sessionId);
+    }
+
+    @ApiOperationDetails(
+            summary = "Handle cancelled payment session",
+            description = "This endpoint processes a cancelled payment session by its session ID.",
+            responseDescription = "Returns the details of the cancelled payment"
+    )
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @BaseAuthApiResponses
+    @NotFoundApiResponse
+    @GetApiResponses
+    @GetMapping("/cancel")
+    public PaymentDto cancel(@RequestParam(name = "session_id") String sessionId) {
+        return paymentService.handleCancel(sessionId);
     }
 }
