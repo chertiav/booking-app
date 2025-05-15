@@ -16,3 +16,25 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+    networks:
+      - app_network
+  app:
+    image: booking_app_store
+    container_name: booking_app_store
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    build: .
+    env_file: ./.env
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+      - $DEBUG_PORT:$DEBUG_PORT
+    environment:
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT}"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
