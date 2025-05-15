@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.util;
+package com.chertiavdev.bookingapp.util.constants;
 
 public class TelegramNotificationConstants {
     public static final String TEST_TELEGRAM_TOKEN = "test-token";
@@ -20,4 +20,10 @@ public class TelegramNotificationConstants {
             Once you receive a command in the format `/start <token>`, come back here and send it.
             """;
     public static final String HELP_MENU_ENTRY_FORMAT = "%s - %s";
+    public static final String PAYMENT_NOT_COMPLETED_NOTIFICATION = "The payment with id: %d has "
+            + "not been completed. Please try again within 24 hours using the provided link";
+    public static final String PAYMENT_CANCELLED_NOTIFICATION = "Payment cancelled. You can "
+            + "complete this payment within 24 hours using the provided link";
+    public static final String PAYMENT_NOTIFICATION =
+            "Payment by id: %d for the amount: %.2f was completed successfully";
 }

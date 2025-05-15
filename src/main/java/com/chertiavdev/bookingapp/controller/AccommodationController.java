@@ -13,7 +13,7 @@ import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.service.AccommodationService;
-import com.chertiavdev.bookingapp.util.ApiResponseConstants;
+import com.chertiavdev.bookingapp.util.constants.ApiResponseConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

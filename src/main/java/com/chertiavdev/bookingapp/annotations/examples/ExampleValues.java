@@ -1,4 +1,4 @@
-package com.chertiavdev.bookingapp.util;
+package com.chertiavdev.bookingapp.annotations.examples;
 
 public class ExampleValues {
     public static final String EXAMPLE_USER_LOGGING = """

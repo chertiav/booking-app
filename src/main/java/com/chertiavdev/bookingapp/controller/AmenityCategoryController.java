@@ -10,7 +10,7 @@ import com.chertiavdev.bookingapp.annotations.responses.groups.UpdateApiResponse
 import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.service.AmenityCategoryService;
-import com.chertiavdev.bookingapp.util.ApiResponseConstants;
+import com.chertiavdev.bookingapp.util.constants.ApiResponseConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;

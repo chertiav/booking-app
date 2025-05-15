@@ -15,7 +15,7 @@ import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.service.BookingService;
-import com.chertiavdev.bookingapp.util.ApiResponseConstants;
+import com.chertiavdev.bookingapp.util.constants.ApiResponseConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

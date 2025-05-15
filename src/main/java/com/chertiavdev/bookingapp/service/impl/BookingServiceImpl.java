@@ -1,11 +1,11 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELLED;
+import static com.chertiavdev.bookingapp.model.Booking.Status.CANCELED;
 import static com.chertiavdev.bookingapp.model.Booking.Status.EXPIRED;
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationForAdmins;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.bookingNotificationToUser;
-import static com.chertiavdev.bookingapp.util.NotificationUtils.buildBookingExpiredAlert;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationForAdmins;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationToUser;
+import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.buildBookingExpiredAlert;
 
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
@@ -13,14 +13,17 @@ import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.exception.AccommodationAvailabilityException;
 import com.chertiavdev.bookingapp.exception.BookingAlreadyCancelledException;
 import com.chertiavdev.bookingapp.exception.EntityNotFoundException;
+import com.chertiavdev.bookingapp.exception.PendingPaymentsException;
 import com.chertiavdev.bookingapp.mapper.BookingMapper;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Booking.Status;
+import com.chertiavdev.bookingapp.model.Payment;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.booking.BookingSpecificationBuilder;
 import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.service.NotificationService;
+import com.chertiavdev.bookingapp.service.PaymentService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,18 +38,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookingServiceImpl implements BookingService {
     private static final String CAN_T_FIND_BOOKING_BY_ID = "Can't find booking by id: ";
     private static final String ACTION_CREATED = "created";
-    private static final String ACTION_CANCELLED = "cancelled";
+    private static final String ACTION_CANCELED = "canceled";
     private static final String BOOKING_PENDING_PAYMENT_MESSAGE =
             "Your booking request has been submitted and is awaiting payment";
     private static final String NO_EXPIRED_BOOKINGS_TODAY = "No expired bookings today!";
-    private final BookingRepository bookingRepository;
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
-    private final BookingMapper bookingMapper;
     private final NotificationService notificationService;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
+    private final PaymentService paymentService;
 
     @Transactional
     @Override
     public BookingDto save(CreateBookingRequestDto requestDto, User user) {
+        checkPendingPayments(user);
         validateBookingAvailability(requestDto, isBookingAvailable(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
@@ -109,11 +114,12 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new EntityNotFoundException(CAN_T_FIND_BOOKING_BY_ID
                         + bookingId));
         validateBookingStatus(bookingId, booking);
-        updateBookingStatus(booking, CANCELLED);
+        updateBookingStatus(booking, CANCELED);
+        paymentService.updateStatusByBookingId(booking.getId(), Payment.Status.CANCELED);
         notificationService.sendNotification(
-                bookingNotificationForAdmins(booking, user, ACTION_CANCELLED), ADMIN);
+                bookingNotificationForAdmins(booking, user, ACTION_CANCELED), ADMIN);
         notificationService.sendNotificationByUserId(
-                bookingNotificationToUser(booking, ACTION_CANCELLED), user.getId());
+                bookingNotificationToUser(booking, ACTION_CANCELED), user.getId());
     }
 
     @Transactional
@@ -129,6 +135,13 @@ public class BookingServiceImpl implements BookingService {
             });
         } else {
             notificationService.sendNotification(NO_EXPIRED_BOOKINGS_TODAY, ADMIN);
+        }
+    }
+
+    private void checkPendingPayments(User user) {
+        if (paymentService.getPendingPaymentsCountByUserId(user.getId()) > 0) {
+            throw new PendingPaymentsException("User can't create new booking because has "
+                    + "pending payments");
         }
     }
 
@@ -148,12 +161,12 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED)
+                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED)
                 .isEmpty();
     }
 
     private static void validateBookingStatus(Long bookingId, Booking booking) {
-        if (booking.getStatus().equals(CANCELLED)) {
+        if (booking.getStatus().equals(CANCELED)) {
             throw new BookingAlreadyCancelledException("Booking with ID " + bookingId
                     + " has already been cancelled.");
         }
@@ -166,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELLED).stream()
+                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED).stream()
                 .filter(booking -> !bookingId.equals(booking.getId()))
                 .findAny()
                 .isEmpty();

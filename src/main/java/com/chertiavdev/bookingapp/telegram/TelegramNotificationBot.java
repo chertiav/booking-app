@@ -1,13 +1,13 @@
 package com.chertiavdev.bookingapp.telegram;
 
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.EXPIRED_TOKEN_NOTIFICATION;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.HELP_MENU;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.HELP_MENU_ENTRY_FORMAT;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.START_COMMAND_MESSAGE;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.SUCCESSFULLY_UNSUBSCRIBED_FROM_NOTIFICATIONS;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.SUCCESSFUL_TELEGRAM_LINK_MESSAGE;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.TEST_TELEGRAM_TOKEN;
-import static com.chertiavdev.bookingapp.util.TelegramNotificationConstants.UNKNOWN_COMMAND_USE_HELP_TO_SEE_THE_AVAILABLE_COMMANDS;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.EXPIRED_TOKEN_NOTIFICATION;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.HELP_MENU;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.HELP_MENU_ENTRY_FORMAT;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.START_COMMAND_MESSAGE;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.SUCCESSFULLY_UNSUBSCRIBED_FROM_NOTIFICATIONS;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.SUCCESSFUL_TELEGRAM_LINK_MESSAGE;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.TEST_TELEGRAM_TOKEN;
+import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.UNKNOWN_COMMAND_USE_HELP_TO_SEE_THE_AVAILABLE_COMMANDS;
 
 import com.chertiavdev.bookingapp.exception.NotificationException;
 import com.chertiavdev.bookingapp.service.TelegramLinkService;

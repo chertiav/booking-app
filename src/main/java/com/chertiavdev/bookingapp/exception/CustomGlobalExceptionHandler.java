@@ -63,6 +63,32 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(SpecificationProviderNotFoundException.class)
+    public ResponseEntity<Object> handleSpecificationProviderNotFoundException(
+            SpecificationProviderNotFoundException ex
+    ) {
+        log.warn("SpecificationProviderNotFoundException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "The requested specification provider "
+                        + "could not be found.")
+        );
+    }
+
+    @ExceptionHandler(StripeServiceException.class)
+    public ResponseEntity<Object> handleStripeServiceException(
+            StripeServiceException ex
+    ) {
+        log.error("StripeServiceException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "An error occurred while interacting with the "
+                        + "Stripe API. Please try again later.")
+        );
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
         log.error("AuthenticationException occurred: {}", ex.getMessage());
@@ -127,6 +153,31 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.CONFLICT,
                 LocalDateTime.now(),
                 getErrorMessage(ex, "Accommodation is not available")
+        );
+    }
+
+    @ExceptionHandler(PaymentRenewException.class)
+    public ResponseEntity<Object> handlePaymentRenewException(
+            PaymentRenewException ex
+    ) {
+        log.warn("PaymentRenewException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.CONFLICT,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Payment renewal could not be completed due to a"
+                        + " conflict with the current state of the payment.")
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(
+            AccessDeniedException ex
+    ) {
+        log.warn("AccessDeniedException occurred: {}", ex.getMessage());
+        return buildResponseEntity(
+                HttpStatus.FORBIDDEN,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Access denied")
         );
     }
 

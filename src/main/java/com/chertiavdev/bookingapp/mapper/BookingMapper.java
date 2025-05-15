@@ -6,9 +6,11 @@ import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.User;
+import java.util.Optional;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class,
         uses = {AccommodationMapper.class, AddressMapper.class, UserMapper.class}
@@ -45,4 +47,11 @@ public interface BookingMapper {
     @Mapping(target = "customerEmail", source = "user.email")
     @Mapping(target = "status", source = "status")
     BookingExpiredNotificationDto toBookingExpiredNotificationDto(Booking booking);
+
+    @Named("bookingById")
+    default Booking bookingById(Long id) {
+        return Optional.ofNullable(id)
+                .map(Booking::new)
+                .orElse(new Booking());
+    }
 }
