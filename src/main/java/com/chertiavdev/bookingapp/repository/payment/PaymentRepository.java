@@ -33,4 +33,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             + "WHERE b.id = :bookingId "
             + "AND b.isDeleted = false")
     Optional<Payment> findByBookingId(@Param("bookingId") Long bookingId);
+
+    @Query("SELECT COUNT(p.id) FROM Payment p "
+            + "JOIN p.booking b "
+            + "JOIN b.user u "
+            + "WHERE u.id = :userId "
+            + "AND p.status = 'PENDING' "
+            + "AND b.isDeleted = false")
+    Long findPendingPaymentsCount(@Param("userId") Long userId);
 }

@@ -20,7 +20,6 @@ import com.chertiavdev.bookingapp.model.Payment;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.booking.BookingRepository;
 import com.chertiavdev.bookingapp.repository.payment.PaymentRepository;
-import com.chertiavdev.bookingapp.service.BookingService;
 import com.chertiavdev.bookingapp.service.NotificationService;
 import com.chertiavdev.bookingapp.service.PaymentService;
 import com.chertiavdev.bookingapp.service.StripeService;
@@ -37,11 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
-    private final PaymentMapper paymentMapper;
-    private final StripeService stripeService;
-    private final BookingService bookingService;
     private final BookingRepository bookingRepository;
     private final NotificationService notificationService;
+    private final StripeService stripeService;
+    private final PaymentMapper paymentMapper;
 
     @Override
     public Page<PaymentDto> getPayments(Long userId, Pageable pageable) {
@@ -54,8 +52,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     @Override
     public PaymentDto initiatePayment(CreatePaymentRequestDto requestDto, User user) {
-        BigDecimal amountToPay = bookingService
-                .calculateTotalPrice(requestDto.getBookingId(), user.getId());
+        BigDecimal amountToPay = bookingRepository
+                .calculateTotalPriceByBookingIdAndUserId(requestDto.getBookingId(), user.getId());
         Session session = stripeService.createSession(requestDto.getBookingId(), amountToPay);
         return paymentMapper.toDto(paymentRepository.save(
                 paymentMapper.toModel(requestDto, session, amountToPay)
@@ -71,8 +69,9 @@ public class PaymentServiceImpl implements PaymentService {
             processPaymentAndBookingUpdate(payment);
             notifySuccess(payment, userId);
         } else {
-            notificationService
-                    .sendNotificationByUserId(PAYMENT_NOT_COMPLETED_NOTIFICATION, userId);
+            notificationService.sendNotificationByUserId(
+                            String.format(PAYMENT_NOT_COMPLETED_NOTIFICATION, payment.getId()),
+                            userId);
         }
         return paymentMapper.toDto(payment);
     }
@@ -115,6 +114,21 @@ public class PaymentServiceImpl implements PaymentService {
         updatePayment(booking.getId(), payment);
 
         return paymentMapper.toDto(payment);
+    }
+
+    @Override
+    public Long getPendingPaymentsCountByUserId(Long userId) {
+        return paymentRepository.findPendingPaymentsCount(userId);
+    }
+
+    @Transactional
+    @Override
+    public void updateStatusByBookingId(Long bookingId, Payment.Status status) {
+        paymentRepository.findByBookingId(bookingId)
+                .ifPresent(payment -> {
+                    payment.setStatus(status);
+                    paymentRepository.save(payment);
+                });
     }
 
     private void processPaymentAndBookingUpdate(Payment payment) {

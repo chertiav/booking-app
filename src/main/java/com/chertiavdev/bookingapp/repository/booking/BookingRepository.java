@@ -44,7 +44,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>,
             + "JOIN accommodations a ON a.id = b.accommodation_id "
             + "WHERE b.id = :bookingId AND b.user_id = :userId",
             nativeQuery = true)
-    Optional<BigDecimal> calculateTotalPriceByBookingIdAndUserId(
+    BigDecimal calculateTotalPriceByBookingIdAndUserId(
             Long bookingId,
             Long userId
     );
