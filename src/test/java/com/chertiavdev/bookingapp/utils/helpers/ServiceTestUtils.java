@@ -5,6 +5,8 @@ import static com.chertiavdev.bookingapp.model.Accommodation.Type.HOUSE;
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAddressRequestDto;
+import com.chertiavdev.bookingapp.dto.amenity.AmenityDto;
+import com.chertiavdev.bookingapp.dto.amenity.CreateAmenityRequestDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
@@ -118,14 +120,6 @@ public class ServiceTestUtils {
                 .collect(Collectors.toSet());
     }
 
-    /*
-    public static void scaleBookPrices(List<Book> books) {
-        books.forEach(book -> book.setPrice(
-                book.getPrice().setScale(2, RoundingMode.HALF_UP)
-        ));
-    }
-    * */
-
     //=======================Amenities===========================================
     public static Set<Amenity> loadAllAmenity() {
         return Set.of(
@@ -144,9 +138,37 @@ public class ServiceTestUtils {
         return amenity;
     }
 
+    public static CreateAmenityRequestDto createSampleAmenityRequest() {
+        CreateAmenityRequestDto requestDto = new CreateAmenityRequestDto();
+        requestDto.setName(ServiceTestConstants.CATEGORY_NAME);
+        requestDto.setCategoryId(ServiceTestConstants.SAMPLE_TEST_ID_1);
+        return requestDto;
+    }
+
+    public static Amenity amenityFromRequestDto(
+            CreateAmenityRequestDto requestDto
+    ) {
+        Amenity amenity = new Amenity();
+        amenity.setName(requestDto.getName());
+        amenity.setCategory(new AmenityCategory(requestDto.getCategoryId()));
+        amenity.setDeleted(false);
+
+        return amenity;
+    }
+
+    public static AmenityDto mapAmenityToDto(Amenity amenity) {
+        AmenityDto amenityDto = new AmenityDto();
+        amenityDto.setId(amenity.getId());
+        amenityDto.setName(amenity.getName());
+        amenityDto.setCategoryId(amenity.getCategory().getId());
+
+        return amenityDto;
+    }
+
+    //=======================AmenityCategories===========================================
     public static CreateAmenityCategoryRequestDto createSampleAmenityCategoryRequest() {
         CreateAmenityCategoryRequestDto requestDto = new CreateAmenityCategoryRequestDto();
-        requestDto.setName("Test category");
+        requestDto.setName(ServiceTestConstants.AMENITY_CATEGORY_NAME);
         return requestDto;
     }
 

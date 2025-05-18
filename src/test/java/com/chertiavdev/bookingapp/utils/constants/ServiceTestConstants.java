@@ -18,9 +18,14 @@ public final class ServiceTestConstants {
     public static final String ACCOMMODATION_NOT_FOUND_MESSAGE = "Can't find accommodation by id: ";
     public static final String ACCOMMODATION_UPDATE_ERROR_MESSAGE =
             "Can't update accommodation by id: ";
+    public static final String AMENITY_CATEGORY_NAME = "Test amenity category";
     public static final String AMENITY_CATEGORY_NOT_FOUND_MESSAGE =
             "Can't find amenity category by id: ";
     public static final String AMENITY_CATEGORY_NAME_UPDATE = "Updated category name";
     public static final String AMENITY_CATEGORY_UPDATE_ERROR_MESSAGE =
             "Can't update category by id: ";
+    public static final String CATEGORY_NAME = "Test category";
+    public static final String AMENITY_NOT_FOUND_MESSAGE = "Can't find amenity by id: ";
+    public static final String AMENITY_NAME_UPDATE = "Updated amenity name";
+    public static final String AMENITY_UPDATE_ERROR_MESSAGE = "Can't update amenity by id: ";
 }
