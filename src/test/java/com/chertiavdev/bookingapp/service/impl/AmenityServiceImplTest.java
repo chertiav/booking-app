@@ -207,7 +207,7 @@ class AmenityServiceImplTest {
 
     @Test
     @DisplayName("Should delete Amenity successfully when valid ID is provided")
-    void deleteById() {
+    void deleteById_ValidId_ShouldDeleteAmenity() {
         //Given
         doNothing().when(amenityRepository).deleteById(SAMPLE_TEST_ID_1);
 

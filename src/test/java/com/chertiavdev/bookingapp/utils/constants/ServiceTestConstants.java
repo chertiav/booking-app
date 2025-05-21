@@ -28,4 +28,24 @@ public final class ServiceTestConstants {
     public static final String AMENITY_NOT_FOUND_MESSAGE = "Can't find amenity by id: ";
     public static final String AMENITY_NAME_UPDATE = "Updated amenity name";
     public static final String AMENITY_UPDATE_ERROR_MESSAGE = "Can't update amenity by id: ";
+    public static final int BOOKING_DAYS_UNTIL_CHECKOUT = 5;
+    public static final String BOOKING_ACTION_CREATED = "created";
+    public static final String BOOKING_ACTION_CANCELED = "canceled";
+    public static final String BOOKING_PENDING_PAYMENT_MESSAGE =
+            "Your booking request has been submitted and is awaiting payment";
+    public static final long BOOKING_PENDING_PAYMENTS_COUNT = 0L;
+    public static final long BOOKING_HAS_PENDING_PAYMENTS_COUNT = 1L;
+    public static final String BOOKING_USER_HAS_PAYMENT_MESSAGE =
+            "User can't create new booking because has pending payments";
+    public static final String BOOKING_UNAVAILABLE_ACCOMMODATION_MESSAGE =
+            "Accommodation is not available for the requested dates: ";
+    public static final String BOOKING_NOT_FOUND_MESSAGE = "Can't find booking by id: ";
+    public static final String BOOKING_UPDATE_ERROR_MESSAGE = "Can't update booking by id: ";
+    public static final String BOOKING_ALREADY_CANCELLED_MESSAGE =
+            "Booking with ID %s has already been cancelled.";
+    public static final String BOOKING_UPDATE_STATUS_MESSAGE =
+            "The booking status should be updated to %s.";
+    public static final String BOOKING_NO_EXPIRED_BOOKINGS_TODAY = "No expired bookings today!";
+    public static final String SEARCH_USER_ID_KEY = "user";
+    public static final String SEARCH_STATUS_KEY = "status";
 }

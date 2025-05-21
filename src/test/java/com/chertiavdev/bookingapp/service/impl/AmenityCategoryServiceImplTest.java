@@ -213,7 +213,7 @@ class AmenityCategoryServiceImplTest {
 
     @Test
     @DisplayName("Should delete AmenityCategory successfully when valid ID is provided")
-    void deleteById() {
+    void deleteById_ValidId_ShouldDeleteAmenityCategory() {
         //Given
         doNothing().when(amenityCategoryRepository).deleteById(SAMPLE_TEST_ID_1);
 

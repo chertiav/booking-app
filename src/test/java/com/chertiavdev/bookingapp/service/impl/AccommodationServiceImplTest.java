@@ -368,7 +368,7 @@ class AccommodationServiceImplTest {
 
     @Test
     @DisplayName("Should delete accommodation successfully when valid ID is provided")
-    void deleteById() {
+    void deleteById_ValidId_ShouldDeleteAccommodation() {
         // Given
         doNothing().when(accommodationRepository).deleteById(SAMPLE_TEST_ID_1);
 

@@ -1,6 +1,18 @@
 package com.chertiavdev.bookingapp.utils.helpers;
 
 import static com.chertiavdev.bookingapp.model.Accommodation.Type.HOUSE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_AVAILABILITY;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DEFAULT_AMENITIES;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_SIZE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_APARTMENT_NUMBER_25;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_CITY_KYIV;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_HOUSE_NUMBER_15B;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_STREET_KHRESHCHATYK;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.CATEGORY_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
@@ -9,17 +21,24 @@ import com.chertiavdev.bookingapp.dto.amenity.AmenityDto;
 import com.chertiavdev.bookingapp.dto.amenity.CreateAmenityRequestDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
+import com.chertiavdev.bookingapp.dto.booking.BookingDto;
+import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
+import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
+import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Address;
 import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
-import com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants;
+import com.chertiavdev.bookingapp.model.Booking;
+import com.chertiavdev.bookingapp.model.User;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 public class ServiceTestUtils {
 
@@ -31,10 +50,10 @@ public class ServiceTestUtils {
         CreateAccommodationRequestDto requestDto = new CreateAccommodationRequestDto();
         requestDto.setType(HOUSE);
         requestDto.setLocation(createSampleAddressRequest());
-        requestDto.setSize(ServiceTestConstants.ACCOMMODATION_SIZE);
-        requestDto.setAmenities(ServiceTestConstants.ACCOMMODATION_DEFAULT_AMENITIES);
-        requestDto.setDailyRate(ServiceTestConstants.ACCOMMODATION_DAILY_RATE);
-        requestDto.setAvailability(ServiceTestConstants.ACCOMMODATION_AVAILABILITY);
+        requestDto.setSize(ACCOMMODATION_SIZE);
+        requestDto.setAmenities(ACCOMMODATION_DEFAULT_AMENITIES);
+        requestDto.setDailyRate(ACCOMMODATION_DAILY_RATE);
+        requestDto.setAvailability(ACCOMMODATION_AVAILABILITY);
 
         return requestDto;
     }
@@ -80,12 +99,173 @@ public class ServiceTestUtils {
         );
     }
 
+
+
+    //=======================Amenities===========================================
+    public static Set<Amenity> loadAllAmenity() {
+        return Set.of(
+                createAmenity(1L, "Free Wi-Fi", 1L),
+                createAmenity(2L, "Air Conditioning/Heating", 1L),
+                createAmenity(3L, "Television", 2L)
+        );
+    }
+
+    public static Amenity createAmenity(Long id, String name, Long categoryId) {
+        Amenity amenity = new Amenity();
+        amenity.setId(id);
+        amenity.setName(name);
+        amenity.setCategory(new AmenityCategory(categoryId));
+        amenity.setDeleted(false);
+        return amenity;
+    }
+
+    public static CreateAmenityRequestDto createSampleAmenityRequest() {
+        CreateAmenityRequestDto requestDto = new CreateAmenityRequestDto();
+        requestDto.setName(CATEGORY_NAME);
+        requestDto.setCategoryId(SAMPLE_TEST_ID_1);
+        return requestDto;
+    }
+
+    public static Amenity amenityFromRequestDto(
+            CreateAmenityRequestDto requestDto
+    ) {
+        Amenity amenity = new Amenity();
+        amenity.setName(requestDto.getName());
+        amenity.setCategory(new AmenityCategory(requestDto.getCategoryId()));
+        amenity.setDeleted(false);
+
+        return amenity;
+    }
+
+    public static AmenityDto mapAmenityToDto(Amenity amenity) {
+        AmenityDto amenityDto = new AmenityDto();
+        amenityDto.setId(amenity.getId());
+        amenityDto.setName(amenity.getName());
+        amenityDto.setCategoryId(amenity.getCategory().getId());
+
+        return amenityDto;
+    }
+
+    //=======================AmenityCategories===========================================
+    public static CreateAmenityCategoryRequestDto createSampleAmenityCategoryRequest() {
+        CreateAmenityCategoryRequestDto requestDto = new CreateAmenityCategoryRequestDto();
+        requestDto.setName(AMENITY_CATEGORY_NAME);
+        return requestDto;
+    }
+
+    public static AmenityCategory amenityCategoryFromRequestDto(
+            CreateAmenityCategoryRequestDto requestDto
+    ) {
+        AmenityCategory amenityCategory = new AmenityCategory();
+        amenityCategory.setName(requestDto.getName());
+        amenityCategory.setDeleted(false);
+
+        return amenityCategory;
+    }
+
+    public static AmenityCategoryDto mapAmenityCategorToDto(AmenityCategory amenityCategory) {
+        AmenityCategoryDto amenityCategoryDto = new AmenityCategoryDto();
+        amenityCategoryDto.setId(amenityCategory.getId());
+        amenityCategoryDto.setName(amenityCategory.getName());
+
+        return amenityCategoryDto;
+    }
+
+    //=======================Booking===========================================
+    public static CreateBookingRequestDto createSampleBookingRequest() {
+        CreateBookingRequestDto requestDto = new CreateBookingRequestDto();
+        requestDto.setCheckIn(LocalDate.now());
+        requestDto.setCheckOut(LocalDate.now().plusDays(BOOKING_DAYS_UNTIL_CHECKOUT));
+        requestDto.setAccommodationId(SAMPLE_TEST_ID_1);
+
+        return requestDto;
+    }
+
+    public static Booking bookingFromRequestDto(
+            CreateBookingRequestDto requestDto
+    ) {
+        Booking booking = new Booking();
+        booking.setCheckIn(requestDto.getCheckIn());
+        booking.setCheckOut(requestDto.getCheckOut());
+        booking.setAccommodation(new Accommodation(requestDto.getAccommodationId()));
+        booking.setStatus(Booking.Status.PENDING);
+        booking.setDeleted(false);
+
+        return booking;
+    }
+
+    public static BookingDto mapBookingToDto(Booking booking) {
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setId(booking.getId());
+        bookingDto.setCheckIn(booking.getCheckIn());
+        bookingDto.setCheckOut(booking.getCheckOut());
+        bookingDto.setAccommodationId(booking.getAccommodation().getId());
+        bookingDto.setUserId(booking.getUser().getId());
+        bookingDto.setStatus(booking.getStatus());
+
+        return bookingDto;
+    }
+
+    public static BookingSearchParameters createBookingSearchParameters(
+            String userId, String status
+    ) {
+        String[] users = new String[]{userId};
+        String[] statuses = new String[]{status};
+        return new BookingSearchParameters(users, statuses);
+    }
+
+    public static Specification<Booking> getBookingSpecification(
+            String firstValueKey,
+            String firstValue,
+            String secondValueKey,
+            String secondValue) {
+        return Specification
+                .where(createEqualSpecification(firstValueKey, firstValue))
+                .and(createEqualSpecification(secondValueKey, secondValue));
+    }
+
+    public static Specification<Booking> createEqualSpecification(String key, String value) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(key), value);
+    }
+
+    public static BookingExpiredNotificationDto createBookingExpiredNotificationDto(
+            Booking booking,
+            User user) {
+        BookingExpiredNotificationDto notificationDto = new BookingExpiredNotificationDto();
+        notificationDto.setBookingId(booking.getId());
+        notificationDto.setCheckOut(booking.getCheckOut());
+        notificationDto.setLocation(createAddressString());
+        notificationDto.setCustomer(createFullName(user));
+        notificationDto.setCustomerEmail(user.getEmail());
+        notificationDto.setStatus(booking.getStatus().name());
+
+        return notificationDto;
+    }
+
+    //=======================User===========================================
+
+    public static User createTestUser() {
+        User user = new User();
+        user.setId(SAMPLE_TEST_ID_1);
+        user.setFirstName("Test");
+        user.setLastName("Testov");
+        user.setEmail("<EMAIL>");
+        user.setPassword("<PASSWORD>");
+        user.setDeleted(false);
+        return user;
+    }
+    //========================methods for all services======================================
+
+    public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
+        return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
+    }
     private static CreateAddressRequestDto createSampleAddressRequest() {
         CreateAddressRequestDto requestDto = new CreateAddressRequestDto();
-        requestDto.setStreet(ServiceTestConstants.ADDRESS_STREET_KHRESHCHATYK);
-        requestDto.setCity(ServiceTestConstants.ADDRESS_CITY_KYIV);
-        requestDto.setHouseNumber(ServiceTestConstants.ADDRESS_HOUSE_NUMBER_15B);
-        requestDto.setApartmentNumber(ServiceTestConstants.ADDRESS_APARTMENT_NUMBER_25);
+        requestDto.setStreet(ADDRESS_STREET_KHRESHCHATYK);
+        requestDto.setCity(ADDRESS_CITY_KYIV);
+        requestDto.setHouseNumber(ADDRESS_HOUSE_NUMBER_15B);
+        requestDto.setApartmentNumber(ADDRESS_APARTMENT_NUMBER_25);
 
         return requestDto;
     }
@@ -120,78 +300,15 @@ public class ServiceTestUtils {
                 .collect(Collectors.toSet());
     }
 
-    //=======================Amenities===========================================
-    public static Set<Amenity> loadAllAmenity() {
-        return Set.of(
-                createAmenity(1L, "Free Wi-Fi", 1L),
-                createAmenity(2L, "Air Conditioning/Heating", 1L),
-                createAmenity(3L, "Television", 2L)
-        );
+    private static String createAddressString() {
+        return String.format("%s %s, %s, %s",
+                ADDRESS_STREET_KHRESHCHATYK,
+                ADDRESS_HOUSE_NUMBER_15B,
+                ADDRESS_APARTMENT_NUMBER_25,
+                ADDRESS_CITY_KYIV);
     }
 
-    public static Amenity createAmenity(Long id, String name, Long categoryId) {
-        Amenity amenity = new Amenity();
-        amenity.setId(id);
-        amenity.setName(name);
-        amenity.setCategory(new AmenityCategory(categoryId));
-        amenity.setDeleted(false);
-        return amenity;
-    }
-
-    public static CreateAmenityRequestDto createSampleAmenityRequest() {
-        CreateAmenityRequestDto requestDto = new CreateAmenityRequestDto();
-        requestDto.setName(ServiceTestConstants.CATEGORY_NAME);
-        requestDto.setCategoryId(ServiceTestConstants.SAMPLE_TEST_ID_1);
-        return requestDto;
-    }
-
-    public static Amenity amenityFromRequestDto(
-            CreateAmenityRequestDto requestDto
-    ) {
-        Amenity amenity = new Amenity();
-        amenity.setName(requestDto.getName());
-        amenity.setCategory(new AmenityCategory(requestDto.getCategoryId()));
-        amenity.setDeleted(false);
-
-        return amenity;
-    }
-
-    public static AmenityDto mapAmenityToDto(Amenity amenity) {
-        AmenityDto amenityDto = new AmenityDto();
-        amenityDto.setId(amenity.getId());
-        amenityDto.setName(amenity.getName());
-        amenityDto.setCategoryId(amenity.getCategory().getId());
-
-        return amenityDto;
-    }
-
-    //=======================AmenityCategories===========================================
-    public static CreateAmenityCategoryRequestDto createSampleAmenityCategoryRequest() {
-        CreateAmenityCategoryRequestDto requestDto = new CreateAmenityCategoryRequestDto();
-        requestDto.setName(ServiceTestConstants.AMENITY_CATEGORY_NAME);
-        return requestDto;
-    }
-
-    public static AmenityCategory amenityCategoryFromRequestDto(
-            CreateAmenityCategoryRequestDto requestDto
-    ) {
-        AmenityCategory amenityCategory = new AmenityCategory();
-        amenityCategory.setName(requestDto.getName());
-        amenityCategory.setDeleted(false);
-
-        return amenityCategory;
-    }
-
-    public static AmenityCategoryDto mapAmenityCategorToDto(AmenityCategory amenityCategory) {
-        AmenityCategoryDto amenityCategoryDto = new AmenityCategoryDto();
-        amenityCategoryDto.setId(amenityCategory.getId());
-        amenityCategoryDto.setName(amenityCategory.getName());
-
-        return amenityCategoryDto;
-    }
-
-    //========================methods for all services======================================
-    public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
-        return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
+    private static String createFullName(User user) {
+        return String.format("%s %s", user.getFirstName(), user.getLastName());
     }
 }
