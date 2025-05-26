@@ -48,4 +48,6 @@ public final class ServiceTestConstants {
     public static final String BOOKING_NO_EXPIRED_BOOKINGS_TODAY = "No expired bookings today!";
     public static final String SEARCH_USER_ID_KEY = "user";
     public static final String SEARCH_STATUS_KEY = "status";
+    public static final String DEFAULT_NOTIFICATION_MESSAGE = "test message";
+    public static final String NOTIFICATION_SEND_ERROR_PREFIX = "Can't send message: ";
 }

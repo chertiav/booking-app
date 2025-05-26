@@ -31,6 +31,7 @@ import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.User;
+import com.chertiavdev.bookingapp.model.UserTelegram;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -98,8 +99,6 @@ public class ServiceTestUtils {
                 requestDto.getSize()
         );
     }
-
-
 
     //=======================Amenities===========================================
     public static Set<Amenity> loadAllAmenity() {
@@ -244,7 +243,6 @@ public class ServiceTestUtils {
     }
 
     //=======================User===========================================
-
     public static User createTestUser() {
         User user = new User();
         user.setId(SAMPLE_TEST_ID_1);
@@ -255,11 +253,25 @@ public class ServiceTestUtils {
         user.setDeleted(false);
         return user;
     }
-    //========================methods for all services======================================
 
+    //=======================UserTelegram===================================================
+    public static UserTelegram createTestUserTelegram() {
+        User user = createTestUser();
+        user.setId(SAMPLE_TEST_ID_1);
+
+        UserTelegram userTelegram = new UserTelegram();
+        userTelegram.setId(SAMPLE_TEST_ID_1);
+        userTelegram.setUser(user);
+        userTelegram.setChatId(723471541L);
+        userTelegram.setDeleted(false);
+        return userTelegram;
+    }
+
+    //========================methods for all services======================================
     public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
         return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
     }
+
     private static CreateAddressRequestDto createSampleAddressRequest() {
         CreateAddressRequestDto requestDto = new CreateAddressRequestDto();
         requestDto.setStreet(ADDRESS_STREET_KHRESHCHATYK);
