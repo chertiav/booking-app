@@ -166,7 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private static void verifyRenewalEligibility(Payment payment, Booking booking) {
-        if (!payment.getStatus().equals(EXPIRED) && !booking.getStatus().equals(PENDING)) {
+        if (!payment.getStatus().equals(EXPIRED) || !booking.getStatus().equals(PENDING)) {
             throw new PaymentRenewException("Can't renew payment by id: " + payment.getId()
                     + " payment status must be: " + EXPIRED + " and"
                     + " booking status must be: " + PENDING);

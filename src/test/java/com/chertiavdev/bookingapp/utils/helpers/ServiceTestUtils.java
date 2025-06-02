@@ -12,6 +12,8 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AD
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.CATEGORY_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_ID;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_URL;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
@@ -25,13 +27,18 @@ import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
+import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
+import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Address;
 import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import com.chertiavdev.bookingapp.model.Booking;
+import com.chertiavdev.bookingapp.model.Payment;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
+import com.stripe.model.checkout.Session;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -265,6 +272,62 @@ public class ServiceTestUtils {
         userTelegram.setChatId(723471541L);
         userTelegram.setDeleted(false);
         return userTelegram;
+    }
+
+    //=======================Payment===========================================
+    public static Payment createSamplePayment() {
+        Payment payment = new Payment();
+        payment.setId(SAMPLE_TEST_ID_1);
+        payment.setStatus(Payment.Status.PENDING);
+        payment.setBooking(new Booking(SAMPLE_TEST_ID_1));
+        payment.setSessionId(PAYMENT_SESSION_ID);
+        payment.setSessionId(PAYMENT_SESSION_URL);
+        payment.setAmountToPay(BigDecimal.TEN);
+        payment.setDeleted(false);
+
+        return payment;
+    }
+
+    public static PaymentDto mapPaymentToDto(Payment payment) {
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setId(payment.getId());
+        paymentDto.setBookingId(payment.getBooking().getId());
+        paymentDto.setSessionId(payment.getSessionId());
+        paymentDto.setSessionUrl(payment.getSessionUrl());
+        paymentDto.setAmountToPay(payment.getAmountToPay());
+        paymentDto.setStatus(payment.getStatus().name());
+
+        return paymentDto;
+    }
+
+    public static CreatePaymentRequestDto createSamplePaymentRequest() {
+        CreatePaymentRequestDto requestDto = new CreatePaymentRequestDto();
+        requestDto.setBookingId(SAMPLE_TEST_ID_1);
+
+        return requestDto;
+    }
+
+    public static Payment paymentFromRequestDto(
+            CreatePaymentRequestDto requestDto
+    ) {
+        Payment payment = new Payment();
+        payment.setStatus(Payment.Status.PENDING);
+        payment.setBooking(new Booking(requestDto.getBookingId()));
+        payment.setSessionId(PAYMENT_SESSION_ID);
+        payment.setSessionId(PAYMENT_SESSION_URL);
+        payment.setAmountToPay(BigDecimal.TEN);
+        payment.setDeleted(false);
+
+        return payment;
+    }
+
+    //=====================================Session=========================================
+    public static Session createSampleSession() {
+        Session session = new Session();
+        session.setId(PAYMENT_SESSION_ID);
+        session.setUrl(PAYMENT_SESSION_URL);
+
+        return session;
     }
 
     //========================methods for all services======================================

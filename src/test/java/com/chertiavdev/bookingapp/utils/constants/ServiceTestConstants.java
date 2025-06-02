@@ -50,4 +50,18 @@ public final class ServiceTestConstants {
     public static final String SEARCH_STATUS_KEY = "status";
     public static final String DEFAULT_NOTIFICATION_MESSAGE = "test message";
     public static final String NOTIFICATION_SEND_ERROR_PREFIX = "Can't send message: ";
+    public static final String PAYMENT_SESSION_ID = "1234567890";
+    public static final String PAYMENT_SESSION_URL = "session_id_1234567890";
+    public static final String CAN_T_RETRIEVE_SESSION_BY_ID = "Can't retrieve session by id";
+    public static final String SESSION_ID_RETRIEVAL_ERROR_TEMPLATE = "%s: %s. Reason: %s: %s";
+    public static final String EXPECTED_PAYMENT_STATUS_PAID_MESSAGE = "Payment status should be %s";
+    public static final String EXPECTED_BOOKING_STATUS_MESSAGE = "Booking status should be %s";
+    public static final String PAYMENT_SESSION_NOT_FOUND_MESSAGE =
+            "Can't find payment by session id: ";
+    public static final String PAYMENT_SESSION_NOT_FOUND_BY_ID_MESSAGE =
+            "Can't find payment by id: ";
+    public static final String PAYMENT_RENEWAL_INVALID_USER_MESSAGE =
+            "Can't renew session by payment id";
+    public static final String PAYMENT_RENEWAL_INVALID_STATUS_MESSAGE = "Can't renew payment by "
+            + "id: %s payment status must be: %s and booking status must be: %s";
 }
