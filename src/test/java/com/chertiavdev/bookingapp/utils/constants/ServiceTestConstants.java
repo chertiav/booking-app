@@ -64,4 +64,18 @@ public final class ServiceTestConstants {
             "Can't renew session by payment id";
     public static final String PAYMENT_RENEWAL_INVALID_STATUS_MESSAGE = "Can't renew payment by "
             + "id: %s payment status must be: %s and booking status must be: %s";
+    public static final String STRIPE_APP_BASE_URL_NAME = "appBaseUrl";
+    public static final String STRIPE_APP_BASE_URL = "http://localhost:8080";
+    public static final String STRIPE_CURRENCY_NAME = "currency";
+    public static final String STRIPE_CURRENCY_USD = "usd";
+    public static final String SESSION_ID_QUERY_STRING = "?session_id={CHECKOUT_SESSION_ID}";
+    public static final long DEFAULT_SESSION_ITEM_QUANTITY = 1L;
+    public static final String BOOKING_SESSION_PREFIX = "Booking #";
+    public static final String SESSION_STATUS_OPEN = "open";
+    public static final String SESSION_STATUS_EXPIRED = "expired";
+    public static final String PAYMENT_STATUS_UNPAID = "unpaid";
+    public static final String PAYMENT_STATUS_PAID = "paid";
+    public static final String SESSION_PAYMENT_SUCCESS_URL = "/api/payments/success";
+    public static final String SESSION_PAYMENT_CANCEL_URL = "/api/payments/cancel";
+    public static final String STRIPE_API_ERROR_MESSAGE = "Error when working with Stripe API";
 }
