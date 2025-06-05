@@ -29,17 +29,22 @@ import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Address;
 import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Payment;
+import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
 import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -328,6 +333,35 @@ public class ServiceTestUtils {
         session.setUrl(PAYMENT_SESSION_URL);
 
         return session;
+    }
+
+    //================================TelegramLink==========================================
+    public static TelegramLink createTelegramLink(
+            User user,
+            String token,
+            Instant expiresAt,
+            boolean isDeleted) {
+        TelegramLink telegramLink = new TelegramLink();
+        telegramLink.setUser(user);
+        telegramLink.setToken(token);
+        telegramLink.setExpiresAt(expiresAt);
+        telegramLink.setDeleted(isDeleted);
+        return telegramLink;
+    }
+
+    public static TelegramLinkRequestDto createTelegramLinkRequestDto(
+            TelegramLink savedTelegramLink
+    ) {
+        TelegramLinkRequestDto dto = new TelegramLinkRequestDto();
+        dto.setLink(savedTelegramLink.getToken());
+        return dto;
+    }
+
+    public static Instant calculateExpirationInstant(int minutes, boolean isFuture) {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        return isFuture
+                ? now.plusMinutes(minutes).toInstant()
+                : now.minusMinutes(minutes).toInstant();
     }
 
     //========================methods for all services======================================

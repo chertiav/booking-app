@@ -78,4 +78,8 @@ public final class ServiceTestConstants {
     public static final String SESSION_PAYMENT_SUCCESS_URL = "/api/payments/success";
     public static final String SESSION_PAYMENT_CANCEL_URL = "/api/payments/cancel";
     public static final String STRIPE_API_ERROR_MESSAGE = "Error when working with Stripe API";
+    public static final String DEFAULT_TEST_TOKEN = "test-token";
+    public static final int NUMBER_OF_MINUTES = 10;
+    public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
+    public static final String TEST_BOT_USERNAME = "TestBot";
 }

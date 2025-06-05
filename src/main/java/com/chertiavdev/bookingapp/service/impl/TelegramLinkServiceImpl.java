@@ -32,7 +32,6 @@ public class TelegramLinkServiceImpl implements TelegramLinkService {
 
         String token = UUID.randomUUID().toString().replace("-", "");
         TelegramLink telegramLink = telegramLinkMapper.toModel(user, token, NUMBER_OF_MINUTES);
-        telegramLinkRepository.save(telegramLink);
 
         return telegramLinkMapper.toDto(
                 telegramLinkRepository.save(telegramLink),

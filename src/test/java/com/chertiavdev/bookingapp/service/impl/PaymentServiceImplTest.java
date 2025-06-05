@@ -669,6 +669,7 @@ class PaymentServiceImplTest {
 
         //When
         paymentService.updateStatusByBookingId(booking.getId(), Payment.Status.PAID);
+
         //Then
         assertEquals(Payment.Status.PAID, payment.getStatus(),
                 String.format(EXPECTED_PAYMENT_STATUS_PAID_MESSAGE, Payment.Status.PAID));
