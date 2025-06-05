@@ -15,6 +15,10 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.CA
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_URL;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.VALID_USER_PASSWORD;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
@@ -29,6 +33,11 @@ import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
+import com.chertiavdev.bookingapp.dto.user.UserDto;
+import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
+import com.chertiavdev.bookingapp.dto.user.UserWithRoleDto;
 import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Address;
@@ -36,6 +45,7 @@ import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Payment;
+import com.chertiavdev.bookingapp.model.Role;
 import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
@@ -45,6 +55,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -258,12 +269,101 @@ public class ServiceTestUtils {
     public static User createTestUser() {
         User user = new User();
         user.setId(SAMPLE_TEST_ID_1);
-        user.setFirstName("Test");
-        user.setLastName("Testov");
-        user.setEmail("<EMAIL>");
-        user.setPassword("<PASSWORD>");
+        user.setFirstName(USERNAME_FIRST);
+        user.setLastName(USERNAME_FIRST);
+        user.setEmail(USERNAME_LAST);
+        user.setPassword(VALID_USER_PASSWORD);
         user.setDeleted(false);
         return user;
+    }
+
+    public static UserRegisterRequestDto createUserRegisterRequest() {
+        UserRegisterRequestDto requestDto = new UserRegisterRequestDto();
+        requestDto.setEmail(USER_EMAIL_EXAMPLE);
+        requestDto.setPassword(VALID_USER_PASSWORD);
+        requestDto.setRepeatPassword(VALID_USER_PASSWORD);
+        requestDto.setFirstName(USERNAME_FIRST);
+        requestDto.setLastName(USERNAME_LAST);
+        return requestDto;
+    }
+
+    public static User createUserFromDto(UserRegisterRequestDto requestDto) {
+        User userToModel = new User();
+        userToModel.setEmail(requestDto.getEmail());
+        userToModel.setPassword(requestDto.getPassword());
+        userToModel.setFirstName(requestDto.getFirstName());
+        userToModel.setLastName(requestDto.getLastName());
+        return userToModel;
+    }
+
+    public static Role createUserRole(Role.RoleName roleName, Long id) {
+        Role userRole = new Role();
+        userRole.setId(id);
+        userRole.setName(roleName);
+        return userRole;
+    }
+
+    public static User initializeUser(UserRegisterRequestDto requestDto, Role userRole, Long id) {
+        User savedUser = new User();
+        savedUser.setId(id);
+        savedUser.setEmail(requestDto.getEmail());
+        savedUser.setFirstName(requestDto.getFirstName());
+        savedUser.setLastName(requestDto.getLastName());
+        savedUser.setPassword(requestDto.getPassword());
+        savedUser.setDeleted(false);
+        savedUser.setRoles(new HashSet<>(Set.of(userRole)));
+        return savedUser;
+    }
+
+    public static UserDto mapToUserDto(User savedUser) {
+        UserDto expected = new UserDto();
+        expected.setId(savedUser.getId());
+        expected.setEmail(savedUser.getEmail());
+        expected.setFirstName(savedUser.getFirstName());
+        expected.setLastName(savedUser.getLastName());
+        return expected;
+    }
+
+    public static UserUpdateRequestDto createUserUpdateRequestDto(
+            String firstName, String lastName
+    ) {
+        UserUpdateRequestDto requestDto = new UserUpdateRequestDto();
+        requestDto.setFirstName(firstName);
+        requestDto.setLastName(lastName);
+        return requestDto;
+    }
+
+    public static UserDto updateNamesUserDto(UserDto userDto, String firstName, String lastName) {
+        userDto.setFirstName(firstName);
+        userDto.setLastName(lastName);
+        return userDto;
+    }
+
+    public static User updateNamesUser(User user, String firstName, String lastName) {
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        return user;
+    }
+
+    public static UserWithRoleDto mapToUserWithRoleDto(User user) {
+        UserWithRoleDto userWithRoleDto = new UserWithRoleDto();
+        userWithRoleDto.setId(user.getId());
+        userWithRoleDto.setEmail(user.getEmail());
+        userWithRoleDto.setFirstName(user.getFirstName());
+        userWithRoleDto.setLastName(user.getLastName());
+        userWithRoleDto.setRoles(getUserRoleAuthorities(user));
+        return userWithRoleDto;
+    }
+
+    public static Set<String> getUserRoleAuthorities(User user) {
+        return user.getRoles().stream()
+                .map(Role::getAuthority).collect(Collectors.toSet());
+    }
+
+    public static UserUpdateRoleRequestDto createUserUpdateRoleRequestDto(Role.RoleName roleName) {
+        UserUpdateRoleRequestDto requestDto = new UserUpdateRoleRequestDto();
+        requestDto.setRoleName(roleName);
+        return requestDto;
     }
 
     //=======================UserTelegram===================================================

@@ -82,4 +82,15 @@ public final class ServiceTestConstants {
     public static final int NUMBER_OF_MINUTES = 10;
     public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
     public static final String TEST_BOT_USERNAME = "TestBot";
+    public static final String USER_EMAIL_EXAMPLE = "example@example.com";
+    public static final String VALID_USER_PASSWORD = "strongPassword123*";
+    public static final String USERNAME_FIRST = "John";
+    public static final String USERNAME_LAST = "Doe";
+    public static final String USER_ALREADY_EXISTS_MESSAGE = "User with email: %s already exists";
+    public static final String ROLE_NOT_FOUND_ERROR_MESSAGE = "Role not found role: ";
+    public static final String USER_NOT_FOUND_ERROR_MESSAGE = "User not found with %s%s";
+    public static final String EMAIL_PREFIX = "email:";
+    public static final String USER_ID_PREFIX = "id:";
+    public static final String USERNAME_UPDATE_FIRST = "Sansa";
+    public static final String USERNAME_UPDATE_LAST = "Stark";
 }
