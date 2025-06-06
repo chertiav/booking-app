@@ -79,6 +79,6 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found role: "
                         + roleName.name()));
-        return new HashSet<>(Set.of(role)); // Здесь исправление
+        return new HashSet<>(Set.of(role));
     }
 }
