@@ -11,6 +11,7 @@ import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculat
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTelegramLink;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTelegramLinkRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUser;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -173,7 +174,7 @@ class TelegramLinkServiceImplTest {
         doNothing().when(telegramLinkRepository).deleteByExpiresAtBefore(expirationInstant);
 
         // When
-        telegramLinkService.deleteByExpiresAtBefore(expirationInstant);
+        assertDoesNotThrow(() -> telegramLinkService.deleteByExpiresAtBefore(expirationInstant));
 
         // Then
         verify(telegramLinkRepository).deleteByExpiresAtBefore(expirationInstant);

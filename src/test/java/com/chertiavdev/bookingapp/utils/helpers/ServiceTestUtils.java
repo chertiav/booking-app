@@ -367,14 +367,10 @@ public class ServiceTestUtils {
     }
 
     //=======================UserTelegram===================================================
-    public static UserTelegram createTestUserTelegram() {
-        User user = createTestUser();
-        user.setId(SAMPLE_TEST_ID_1);
-
+    public static UserTelegram createTestUserTelegram(User user, long chatId) {
         UserTelegram userTelegram = new UserTelegram();
-        userTelegram.setId(SAMPLE_TEST_ID_1);
         userTelegram.setUser(user);
-        userTelegram.setChatId(723471541L);
+        userTelegram.setChatId(chatId);
         userTelegram.setDeleted(false);
         return userTelegram;
     }

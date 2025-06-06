@@ -93,4 +93,6 @@ public final class ServiceTestConstants {
     public static final String USER_ID_PREFIX = "id:";
     public static final String USERNAME_UPDATE_FIRST = "Sansa";
     public static final String USERNAME_UPDATE_LAST = "Stark";
+    public static final long USER_TELEGRAM_CHAT_ID = 723471541L;
+    public static final long USER_TELEGRAM_NEW_CHAT_ID = 853471541L;
 }

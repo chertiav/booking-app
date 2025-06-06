@@ -668,7 +668,8 @@ class PaymentServiceImplTest {
         }).when(paymentRepository).save(payment);
 
         //When
-        paymentService.updateStatusByBookingId(booking.getId(), Payment.Status.PAID);
+        assertDoesNotThrow(() ->
+                paymentService.updateStatusByBookingId(booking.getId(), Payment.Status.PAID));
 
         //Then
         assertEquals(Payment.Status.PAID, payment.getStatus(),
@@ -689,7 +690,8 @@ class PaymentServiceImplTest {
         when(paymentRepository.findByBookingId(SAMPLE_TEST_ID_1)).thenReturn(Optional.empty());
 
         //When
-        paymentService.updateStatusByBookingId(SAMPLE_TEST_ID_1, Payment.Status.PAID);
+        assertDoesNotThrow(() ->
+                paymentService.updateStatusByBookingId(SAMPLE_TEST_ID_1, Payment.Status.PAID));
 
         // Then
         verify(paymentRepository).findByBookingId(SAMPLE_TEST_ID_1);

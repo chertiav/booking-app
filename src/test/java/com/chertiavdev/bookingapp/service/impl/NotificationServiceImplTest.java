@@ -4,8 +4,11 @@ import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_NOTIFICATION_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NOTIFICATION_SEND_ERROR_PREFIX;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUser;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_CHAT_ID;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserTelegram;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRegisterRequest;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRole;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.initializeUser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -13,6 +16,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.chertiavdev.bookingapp.exception.NotificationException;
+import com.chertiavdev.bookingapp.model.Role;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
 import com.chertiavdev.bookingapp.service.UserTelegramService;
@@ -49,7 +53,10 @@ class NotificationServiceImplTest {
     @DisplayName("Send notification to all users with target role")
     void sendNotification_Valid_ShouldSendNotificationToAllUsersWithTargetRole() {
         //Given
-        UserTelegram userTelegram = createTestUserTelegram();
+        User user = initializeUser(createUserRegisterRequest(),
+                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
+        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
+        userTelegram.setId(SAMPLE_TEST_ID_1);
 
         when(userTelegramService.getAllUserByRole(USER)).thenReturn(List.of(userTelegram));
 
@@ -68,8 +75,10 @@ class NotificationServiceImplTest {
     @DisplayName("Send notification to user with target role by valid user id")
     void sendNotificationByUserId_ValidId_ShouldSendNotification() {
         //Given
-        User user = createTestUser();
-        UserTelegram userTelegram = createTestUserTelegram();
+        User user = initializeUser(createUserRegisterRequest(),
+                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
+        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
+        userTelegram.setId(SAMPLE_TEST_ID_1);
 
         when(userTelegramService.getByUserId(user.getId())).thenReturn(Optional.of(userTelegram));
 
@@ -103,7 +112,10 @@ class NotificationServiceImplTest {
     @DisplayName("Should handle NotificationException and continue execution")
     void sendNotificationByUserId_WithTelegramBotThrowingException_ShouldHandleException() {
         // Given
-        UserTelegram userTelegram = createTestUserTelegram();
+        User user = initializeUser(createUserRegisterRequest(),
+                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
+        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
+        userTelegram.setId(SAMPLE_TEST_ID_1);
 
         when(userTelegramService.getByUserId(SAMPLE_TEST_ID_1))
                 .thenReturn(Optional.of(userTelegram));
