@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.chertiavdev.bookingapp.model.User;
-import lombok.SneakyThrows;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import javax.sql.DataSource;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -102,7 +102,7 @@ class UserRepositoryTest {
 
         //Then
         assertTrue(actual.isPresent(), ACTUAL_RESULT_SHOULD_BE_PRESENT);
-        assertEquals(expected, actual.get(),  ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
+        assertEquals(expected, actual.get(), ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
     }
 
     @Test

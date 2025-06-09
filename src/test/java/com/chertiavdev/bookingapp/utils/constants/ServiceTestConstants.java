@@ -7,6 +7,7 @@ public final class ServiceTestConstants {
     public static final String ACCOMMODATION_SIZE = "Studio";
     public static final BigDecimal ACCOMMODATION_DAILY_RATE = BigDecimal.valueOf(75.50);
     public static final int ACCOMMODATION_AVAILABILITY = 1;
+    public static final int AVAILABILITY_THRESHOLD = 0;
     public static final List<Long> ACCOMMODATION_DEFAULT_AMENITIES = List.of(1L, 2L, 3L);
     public static final String ADDRESS_STREET_KHRESHCHATYK = "Khreshchatyk";
     public static final String ADDRESS_CITY_KYIV = "Kyiv";

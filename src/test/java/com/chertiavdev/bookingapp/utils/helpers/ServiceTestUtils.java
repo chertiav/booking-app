@@ -51,6 +51,7 @@ import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
 import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -90,10 +91,17 @@ public class ServiceTestUtils {
         accommodation.setLocation(addressFromRequestDto(requestDto.getLocation()));
         accommodation.setSize(requestDto.getSize());
         accommodation.setAmenities(getAmenitiesById(requestDto.getAmenities()));
-        accommodation.setDailyRate(requestDto.getDailyRate());
+        accommodation.setDailyRate(requestDto.getDailyRate()
+                .setScale(2, RoundingMode.HALF_UP));
         accommodation.setAvailability(requestDto.getAvailability());
 
         return accommodation;
+    }
+
+    public static Set<Amenity> getAmenitiesById(List<Long> amenitiesIds) {
+        return loadAllAmenity().stream()
+                .filter(amenity -> amenitiesIds.contains(amenity.getId()))
+                .collect(Collectors.toSet());
     }
 
     public static AccommodationDto mapAccommodationToDto(Accommodation accommodation) {
@@ -483,12 +491,6 @@ public class ServiceTestUtils {
         address.setApartmentNumber(requestDto.getApartmentNumber());
 
         return address;
-    }
-
-    private static Set<Amenity> getAmenitiesById(List<Long> amenitiesIds) {
-        return loadAllAmenity().stream()
-                .filter(amenity -> amenitiesIds.contains(amenity.getId()))
-                .collect(Collectors.toSet());
     }
 
     private static String mapAddressToString(Address address) {
