@@ -17,4 +17,6 @@ public final class TestConstants {
             "The content of the page does not match the expected value.";
     public static final String ACTUAL_RESULT_SHOULD_BE_PRESENT =
             "The actual result should be present.";
+    public static final String ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT =
+            "The actual result shouldn't be present.";
 }

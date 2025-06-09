@@ -82,7 +82,8 @@ public final class ServiceTestConstants {
     public static final int NUMBER_OF_MINUTES = 10;
     public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
     public static final String TEST_BOT_USERNAME = "TestBot";
-    public static final String USER_EMAIL_EXAMPLE = "example@example.com";
+    public static final String USER_EMAIL_EXAMPLE = "two@example.com";
+    public static final String USER_INVALID_EMAIL_EXAMPLE = "one@example.com";
     public static final String VALID_USER_PASSWORD = "strongPassword123*";
     public static final String USERNAME_FIRST = "John";
     public static final String USERNAME_LAST = "Doe";

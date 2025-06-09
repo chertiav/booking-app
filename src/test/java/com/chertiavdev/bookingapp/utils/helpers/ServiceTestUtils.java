@@ -270,8 +270,8 @@ public class ServiceTestUtils {
         User user = new User();
         user.setId(SAMPLE_TEST_ID_1);
         user.setFirstName(USERNAME_FIRST);
-        user.setLastName(USERNAME_FIRST);
-        user.setEmail(USERNAME_LAST);
+        user.setLastName(USERNAME_LAST);
+        user.setEmail(USER_EMAIL_EXAMPLE);
         user.setPassword(VALID_USER_PASSWORD);
         user.setDeleted(false);
         return user;
