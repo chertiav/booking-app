@@ -32,7 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>,
             + "JOIN FETCH b.accommodation a "
             + "JOIN FETCH a.location l "
             + "JOIN FETCH b.user u "
-            + "WHERE b.status NOT IN ('CANCELLED', 'EXPIRED')"
+            + "WHERE b.status NOT IN ('CANCELED', 'EXPIRED')"
             + "AND b.isDeleted = false "
             + "AND b.checkOut <= :expiredToDate "
             + "ORDER BY b.id, b.checkOut")

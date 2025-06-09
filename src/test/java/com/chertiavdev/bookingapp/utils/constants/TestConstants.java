@@ -15,4 +15,6 @@ public final class TestConstants {
             "The page size does not match the expected value.";
     public static final String CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE =
             "The content of the page does not match the expected value.";
+    public static final String ACTUAL_RESULT_SHOULD_BE_PRESENT =
+            "The actual result should be present.";
 }
