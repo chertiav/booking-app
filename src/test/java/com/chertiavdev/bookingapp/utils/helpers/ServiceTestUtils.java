@@ -46,6 +46,7 @@ import com.chertiavdev.bookingapp.model.AmenityCategory;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.Payment;
 import com.chertiavdev.bookingapp.model.Role;
+import com.chertiavdev.bookingapp.model.Role.RoleName;
 import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
@@ -273,14 +274,22 @@ public class ServiceTestUtils {
         return notificationDto;
     }
 
+    public static BigDecimal calculateTotalPriceByBooking(Booking booking) {
+        return booking.getAccommodation().getDailyRate()
+                .multiply(BigDecimal.valueOf(BOOKING_DAYS_UNTIL_CHECKOUT));
+    }
+
     //=======================User===========================================
-    public static User createTestUser() {
+    public static User createTestUser(
+            Long id, String firstName, String lastName, String email, RoleName roleName
+    ) {
         User user = new User();
-        user.setId(SAMPLE_TEST_ID_1);
-        user.setFirstName(USERNAME_FIRST);
-        user.setLastName(USERNAME_LAST);
-        user.setEmail(USER_EMAIL_EXAMPLE);
+        user.setId(id);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
         user.setPassword(VALID_USER_PASSWORD);
+        user.setRoles(new HashSet<>(Set.of(createUserRole(roleName, id))));
         user.setDeleted(false);
         return user;
     }
@@ -304,7 +313,7 @@ public class ServiceTestUtils {
         return userToModel;
     }
 
-    public static Role createUserRole(Role.RoleName roleName, Long id) {
+    public static Role createUserRole(RoleName roleName, Long id) {
         Role userRole = new Role();
         userRole.setId(id);
         userRole.setName(roleName);
@@ -368,7 +377,7 @@ public class ServiceTestUtils {
                 .map(Role::getAuthority).collect(Collectors.toSet());
     }
 
-    public static UserUpdateRoleRequestDto createUserUpdateRoleRequestDto(Role.RoleName roleName) {
+    public static UserUpdateRoleRequestDto createUserUpdateRoleRequestDto(RoleName roleName) {
         UserUpdateRoleRequestDto requestDto = new UserUpdateRoleRequestDto();
         requestDto.setRoleName(roleName);
         return requestDto;

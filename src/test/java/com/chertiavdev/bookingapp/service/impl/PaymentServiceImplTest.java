@@ -1,6 +1,7 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
+import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
 import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.PAYMENT_CANCELLED_NOTIFICATION;
 import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.PAYMENT_NOTIFICATION;
 import static com.chertiavdev.bookingapp.util.constants.TelegramNotificationConstants.PAYMENT_NOT_COMPLETED_NOTIFICATION;
@@ -15,6 +16,9 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PA
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SESSION_ID_RETRIEVAL_ERROR_TEMPLATE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
@@ -170,7 +174,8 @@ class PaymentServiceImplTest {
     @DisplayName("When valid data has been provided, the payment is successfully made.")
     void initiatePayment_ValidData_ShouldReturnPaymentDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         CreatePaymentRequestDto requestDto = createSamplePaymentRequest();
         BigDecimal amountToPay = BigDecimal.TEN;
         Session session = createSampleSession();
@@ -214,7 +219,8 @@ class PaymentServiceImplTest {
             + "should throw StripeServiceException")
     void initiatePayment_StripeServiceException_ShouldThrowStripeServiceException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         CreatePaymentRequestDto requestDto = createSamplePaymentRequest();
         BigDecimal amountToPay = BigDecimal.TEN;
         String expected = String.format(SESSION_ID_RETRIEVAL_ERROR_TEMPLATE,
@@ -246,7 +252,8 @@ class PaymentServiceImplTest {
             + "when session is paid")
     void handleSuccess_SessionIsPaid_ShouldReturnPaymentDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
@@ -303,7 +310,8 @@ class PaymentServiceImplTest {
             + "send notifications without updating payment status when session isn't paid")
     void handleSuccess_SessionIsNotPaid_ShouldReturnPaymentDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -366,7 +374,8 @@ class PaymentServiceImplTest {
     @DisplayName("Handle cancel should return PaymentDto and send notifications")
     void handleCancel_ValidSessionId_ShouldReturnPaymentDtoAndSendNotifications() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
@@ -489,7 +498,8 @@ class PaymentServiceImplTest {
     @DisplayName("Renew payment should update the payment status and return the updated PaymentDto")
     void renewPayment_ValidData_ShouldReturnPaymentDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
@@ -548,7 +558,8 @@ class PaymentServiceImplTest {
     @DisplayName("RenewPayment should throw an exception if the payment doesn't belong to the user")
     void renewPayment_PaymentDoesNotBelongUser_ShouldReturnPaymentDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
@@ -561,7 +572,7 @@ class PaymentServiceImplTest {
 
         //When
         Exception exception = assertThrows(AccessDeniedException.class,
-                () -> paymentService.renewPayment(payment.getId(), SAMPLE_TEST_ID_2));
+                () -> paymentService.renewPayment(payment.getId(), SAMPLE_TEST_ID_1));
 
         //Then
         String expected = PAYMENT_RENEWAL_INVALID_USER_MESSAGE + payment.getId();
@@ -577,7 +588,8 @@ class PaymentServiceImplTest {
     @DisplayName("RenewPayment should throw an exception when invalid status is provided")
     void renewPayment_InvalidStatus_ShouldThrowPaymentRenewException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         // Case 1: Payment is not EXPIRED, but booking status is PENDING
         Booking pendingBooking = bookingFromRequestDto(createSampleBookingRequest());
@@ -651,7 +663,8 @@ class PaymentServiceImplTest {
     @DisplayName("Updating status by booking ID when valid ID is provided")
     void updateStatusByBookingId_ValidId_ShouldUpdateStatusAndSave() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);

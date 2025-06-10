@@ -1,6 +1,7 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
+import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationForAdmins;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationToUser;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.buildBookingExpiredAlert;
@@ -20,6 +21,9 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SA
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SEARCH_STATUS_KEY;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SEARCH_USER_ID_KEY;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
@@ -96,7 +100,8 @@ class BookingServiceImplTest {
     void save_ValidData_ShouldReturnSavedBookingDto() {
         //Given
         CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking bookingModel = bookingFromRequestDto(requestDto);
         bookingModel.setUser(user);
 
@@ -111,8 +116,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(Collections.emptyList());
         when(bookingMapper.toModel(requestDto, user)).thenReturn(bookingModel);
         when(bookingRepository.save(bookingModel)).thenReturn(booking);
@@ -129,8 +133,7 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verify(bookingMapper).toModel(requestDto, user);
         verify(bookingRepository).save(bookingModel);
@@ -149,7 +152,8 @@ class BookingServiceImplTest {
     void save_UserHasPending_ShouldReturnException() {
         //Given
         CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         when(paymentService.getPendingPaymentsCountByUserId(user.getId()))
                 .thenReturn(BOOKING_HAS_PENDING_PAYMENTS_COUNT);
@@ -171,7 +175,8 @@ class BookingServiceImplTest {
     void save_UnavailableAccommodation_ShouldReturnException() {
         //Given
         CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(requestDto);
         booking.setId(SAMPLE_TEST_ID_1);
@@ -182,8 +187,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(List.of(booking));
 
         //When
@@ -201,9 +205,7 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
-        );
+                requestDto.getCheckOut());
         verifyNoMoreInteractions(paymentService, bookingRepository);
     }
 
@@ -211,7 +213,8 @@ class BookingServiceImplTest {
     @DisplayName("Search bookings with given parameters and pagination")
     void search_ValidParameters_ShouldReturnPageOfBookingDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -268,7 +271,8 @@ class BookingServiceImplTest {
     @DisplayName("Find all bookings by userId should return BookingDto when a valid ID is provided")
     void findByUserId_ValidUserId_ShouldReturnPageOfBookingDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -312,7 +316,8 @@ class BookingServiceImplTest {
     @DisplayName("Find all bookings by userId when repository returns empty page")
     void findAll_WhenRepositoryReturnsEmptyPage_ShouldReturnEmptyPage() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Pageable pageable = PageRequest.of(0, 20);
         Page<Booking> bookingPage = createPage(List.of(), pageable);
         Page<BookingDto> expected = createPage(List.of(), pageable);
@@ -348,7 +353,8 @@ class BookingServiceImplTest {
             + "BookingDto when valid data is provided")
     void findByIdAndUserId_ValidData_ShouldReturnBookingDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -376,7 +382,8 @@ class BookingServiceImplTest {
             + "the ID is invalid")
     void findByIdAndUserId_InvalidId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
                 .thenReturn(Optional.empty());
@@ -400,7 +407,8 @@ class BookingServiceImplTest {
             + "BookingDto when valid data is provided")
     void updatedByIdAndUserId_ValidData_ShouldReturnBookingDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -416,8 +424,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(Collections.emptyList());
         doAnswer(invocation -> {
             Booking updatedBooking = invocation.getArgument(1);
@@ -442,8 +449,7 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verify(bookingMapper).updateBookingFromDto(requestDto, booking);
         verify(bookingRepository).save(booking);
@@ -456,7 +462,8 @@ class BookingServiceImplTest {
             + "when the ID is invalid")
     void updatedByIdAndUserId_InvalidId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         CreateBookingRequestDto requestDto = createSampleBookingRequest();
 
         when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
@@ -483,7 +490,8 @@ class BookingServiceImplTest {
             + "when the booking's status is CANCELED.")
     void updatedByIdAndUserId_InvalidBookingStatus_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -516,7 +524,8 @@ class BookingServiceImplTest {
     void updatedByIdAndUserId_UnavailableAccommodation_ShouldReturnException() {
         //Given
         CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         Booking booking = bookingFromRequestDto(requestDto);
         booking.setId(SAMPLE_TEST_ID_1);
@@ -530,8 +539,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(List.of(overlappingBooking));
 
         //When
@@ -551,8 +559,7 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verifyNoMoreInteractions(bookingRepository);
     }
@@ -561,7 +568,8 @@ class BookingServiceImplTest {
     @DisplayName("Canceling a booking by ID and user ID successfully when valid data is provided")
     void cancelById_ValidData_ShouldCancelBooking() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -594,7 +602,8 @@ class BookingServiceImplTest {
             + "should throw exception when the booking ID is invalid")
     void cancelById_InvalidBookingId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
 
         when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
                 .thenReturn(Optional.empty());
@@ -618,7 +627,8 @@ class BookingServiceImplTest {
             + "when the booking's status is CANCELED.")
     void cancelById_InvalidBookingStatus_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);
@@ -646,7 +656,8 @@ class BookingServiceImplTest {
     @DisplayName("Checking and updating a booking when the check-out date of booking has expired")
     void checkAndNotifyExpiredBookings_ExpiredBookingCheckOut_ShouldSetExpiredForBooking() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Booking booking = bookingFromRequestDto(createSampleBookingRequest());
         booking.setId(SAMPLE_TEST_ID_1);
         booking.setUser(user);

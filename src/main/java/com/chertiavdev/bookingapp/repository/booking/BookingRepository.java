@@ -16,13 +16,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long>,
         JpaSpecificationExecutor<Booking> {
     @Query("SELECT b FROM Booking b "
             + "WHERE b.accommodation.id = :accommodationId "
-            + "AND b.status != :statusCancelled "
+            + "AND b.status NOT IN ('CANCELED', 'EXPIRED') "
             + "AND b.isDeleted = false "
             + "AND (b.checkIn < :checkOut AND b.checkOut > :checkIn)")
     List<Booking> findOverlappingBookings(@Param("accommodationId") Long accommodationId,
                                           @Param("checkIn") LocalDate checkIn,
-                                          @Param("checkOut") LocalDate checkOut,
-                                          @Param("statusCancelled") Booking.Status statusCancelled);
+                                          @Param("checkOut") LocalDate checkOut);
 
     Page<Booking> findBookingsByUserId(Long userId, Pageable pageable);
 

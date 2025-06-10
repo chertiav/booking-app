@@ -1,10 +1,15 @@
 package com.chertiavdev.bookingapp.service.impl;
 
+import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_TEST_TOKEN;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NUMBER_OF_MINUTES;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TELEGRAM_LINK_TEMPLATE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_BOT_USERNAME;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculateExpirationInstant;
@@ -57,7 +62,8 @@ class TelegramLinkServiceImplTest {
     @DisplayName("Create link for user successfully when valid data is provided")
     void createLink_ValidData_ShouldReturnTelegramLinkRequestDto() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Instant expirationInstant = calculateExpirationInstant(NUMBER_OF_MINUTES, true);
 
         TelegramLink telegramLink = createTelegramLink(
@@ -96,7 +102,8 @@ class TelegramLinkServiceImplTest {
             + "and deleting the link afterwards when valid token is provided.")
     void getUserIdByToken_ExistingCurrentLink_ShouldReturnUserIdAndDeleteLink() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Instant expirationInstant = calculateExpirationInstant(NUMBER_OF_MINUTES, true);
 
         TelegramLink telegramLink = createTelegramLink(
@@ -126,7 +133,8 @@ class TelegramLinkServiceImplTest {
             + " provided, should return EmptyOptional ")
     void getUserIdByToken_NonExistingLink_ShouldReturnEmptyOptional() {
         //Given
-        User user = createTestUser();
+        User user = createTestUser(
+                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
         Instant expirationInstant = calculateExpirationInstant(NUMBER_OF_MINUTES, false);
 
         TelegramLink telegramLink = createTelegramLink(

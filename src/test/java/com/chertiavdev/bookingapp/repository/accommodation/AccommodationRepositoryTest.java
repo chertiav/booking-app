@@ -69,7 +69,7 @@ class AccommodationRepositoryTest {
             executeSqlScripts(connection,
                     "database/accommodation/address/add-address-into-address-table.sql",
                     "database/accommodation/add-accommodations-into-accommodations-table.sql",
-                    "database/accommodation/amenities/"
+                    "database/amenities/"
                             + "add-amenities-into-accommodation_amenities-table.sql"
             );
         }
@@ -80,7 +80,7 @@ class AccommodationRepositoryTest {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             executeSqlScripts(connection,
-                    "database/accommodation/amenities/"
+                    "database/amenities/"
                            + "remove-all-amenities-from-accommodation_amenities-table.sql",
                     "database/accommodation/remove-all-accommodations-from-accommodation-table.sql",
                     "database/accommodation/address/remove-all-address-from-address-table.sql"
