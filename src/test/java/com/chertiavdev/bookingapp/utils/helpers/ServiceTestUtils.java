@@ -1,24 +1,6 @@
 package com.chertiavdev.bookingapp.utils.helpers;
 
-import static com.chertiavdev.bookingapp.model.Accommodation.Type.HOUSE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_AVAILABILITY;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DEFAULT_AMENITIES;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_SIZE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_APARTMENT_NUMBER_25;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_CITY_KYIV;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_HOUSE_NUMBER_15B;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_STREET_KHRESHCHATYK;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.CATEGORY_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_URL;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.VALID_USER_PASSWORD;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
@@ -38,7 +20,8 @@ import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserWithRoleDto;
-import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.UserTelegramStatusDto;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Address;
 import com.chertiavdev.bookingapp.model.Amenity;
@@ -72,37 +55,58 @@ public class ServiceTestUtils {
     }
 
     //=======================Accommodation===========================================
-    public static CreateAccommodationRequestDto createSampleAccommodationRequest() {
-        CreateAccommodationRequestDto requestDto = new CreateAccommodationRequestDto();
-        requestDto.setType(HOUSE);
-        requestDto.setLocation(createSampleAddressRequest());
-        requestDto.setSize(ACCOMMODATION_SIZE);
-        requestDto.setAmenities(ACCOMMODATION_DEFAULT_AMENITIES);
-        requestDto.setDailyRate(ACCOMMODATION_DAILY_RATE);
-        requestDto.setAvailability(ACCOMMODATION_AVAILABILITY);
-
-        return requestDto;
-    }
-
-    public static Accommodation accommodationFromRequestDto(
-            CreateAccommodationRequestDto requestDto
+    public static Accommodation createTestAccommodation(
+            Long id, Accommodation.Type type, String size, Address location,
+            Set<Amenity> amenities, BigDecimal dailyRate, Integer availability
     ) {
         Accommodation accommodation = new Accommodation();
-        accommodation.setType(requestDto.getType());
-        accommodation.setLocation(addressFromRequestDto(requestDto.getLocation()));
-        accommodation.setSize(requestDto.getSize());
-        accommodation.setAmenities(getAmenitiesById(requestDto.getAmenities()));
-        accommodation.setDailyRate(requestDto.getDailyRate()
-                .setScale(2, RoundingMode.HALF_UP));
-        accommodation.setAvailability(requestDto.getAvailability());
-
+        accommodation.setId(id);
+        accommodation.setType(type);
+        accommodation.setSize(size);
+        accommodation.setLocation(location);
+        accommodation.setAmenities(amenities);
+        accommodation.setDailyRate(dailyRate.setScale(2, RoundingMode.HALF_UP));
+        accommodation.setAvailability(availability);
+        accommodation.setDeleted(false);
         return accommodation;
     }
 
-    public static Set<Amenity> getAmenitiesById(List<Long> amenitiesIds) {
-        return loadAllAmenity().stream()
-                .filter(amenity -> amenitiesIds.contains(amenity.getId()))
-                .collect(Collectors.toSet());
+    public static Address createTestAddress(
+            Long id, String city, String street, String houseNumber, String apartmentNumber
+    ) {
+        Address address = new Address();
+        address.setId(id);
+        address.setCity(city);
+        address.setStreet(street);
+        address.setHouseNumber(houseNumber);
+        address.setApartmentNumber(apartmentNumber);
+        address.setDeleted(false);
+        return address;
+    }
+
+    public static CreateAccommodationRequestDto createTestAccommodationRequestDto(
+            Accommodation.Type type, CreateAddressRequestDto location, String size,
+            List<Long> amenities, BigDecimal dailyRate, Integer availability
+    ) {
+        CreateAccommodationRequestDto requestDto = new CreateAccommodationRequestDto();
+        requestDto.setType(type);
+        requestDto.setLocation(location);
+        requestDto.setSize(size);
+        requestDto.setAmenities(amenities);
+        requestDto.setDailyRate(dailyRate);
+        requestDto.setAvailability(availability);
+        return requestDto;
+    }
+
+    public static CreateAddressRequestDto createTestAddressRequestDto(
+            String city, String street, String houseNumber, String apartmentNumber
+    ) {
+        CreateAddressRequestDto requestDto = new CreateAddressRequestDto();
+        requestDto.setCity(city);
+        requestDto.setStreet(street);
+        requestDto.setHouseNumber(houseNumber);
+        requestDto.setApartmentNumber(apartmentNumber);
+        return requestDto;
     }
 
     public static AccommodationDto mapAccommodationToDto(Accommodation accommodation) {
@@ -114,8 +118,21 @@ public class ServiceTestUtils {
         accommodationDto.setAmenitiesIds(getSetOfAmenitiesId(accommodation.getAmenities()));
         accommodationDto.setDailyRate(accommodation.getDailyRate());
         accommodationDto.setAvailability(accommodation.getAvailability());
-
         return accommodationDto;
+    }
+
+    public static String mapAddressToString(Address address) {
+        return String.format("%s %s, %s, %s",
+                address.getStreet(),
+                address.getHouseNumber(),
+                address.getApartmentNumber(),
+                address.getCity());
+    }
+
+    public static Set<Long> getSetOfAmenitiesId(Set<Amenity> amenities) {
+        return amenities.stream()
+                .map(Amenity::getId)
+                .collect(Collectors.toSet());
     }
 
     public static String generateAccommodationExistsMessage(
@@ -133,39 +150,22 @@ public class ServiceTestUtils {
     }
 
     //=======================Amenities===========================================
-    public static Set<Amenity> loadAllAmenity() {
-        return Set.of(
-                createAmenity(1L, "Free Wi-Fi", 1L),
-                createAmenity(2L, "Air Conditioning/Heating", 1L),
-                createAmenity(3L, "Television", 2L)
-        );
-    }
-
-    public static Amenity createAmenity(Long id, String name, Long categoryId) {
+    public static Amenity createTestAmenity(Long id, String name, AmenityCategory amenityCategory) {
         Amenity amenity = new Amenity();
         amenity.setId(id);
         amenity.setName(name);
-        amenity.setCategory(new AmenityCategory(categoryId));
+        amenity.setCategory(amenityCategory);
         amenity.setDeleted(false);
         return amenity;
     }
 
-    public static CreateAmenityRequestDto createSampleAmenityRequest() {
-        CreateAmenityRequestDto requestDto = new CreateAmenityRequestDto();
-        requestDto.setName(CATEGORY_NAME);
-        requestDto.setCategoryId(SAMPLE_TEST_ID_1);
-        return requestDto;
-    }
-
-    public static Amenity amenityFromRequestDto(
-            CreateAmenityRequestDto requestDto
+    public static CreateAmenityRequestDto createTestAmenityRequestDto(
+            String name, Long categoryId
     ) {
-        Amenity amenity = new Amenity();
-        amenity.setName(requestDto.getName());
-        amenity.setCategory(new AmenityCategory(requestDto.getCategoryId()));
-        amenity.setDeleted(false);
-
-        return amenity;
+        CreateAmenityRequestDto requestDto = new CreateAmenityRequestDto();
+        requestDto.setName(name);
+        requestDto.setCategoryId(categoryId);
+        return requestDto;
     }
 
     public static AmenityDto mapAmenityToDto(Amenity amenity) {
@@ -173,54 +173,48 @@ public class ServiceTestUtils {
         amenityDto.setId(amenity.getId());
         amenityDto.setName(amenity.getName());
         amenityDto.setCategoryId(amenity.getCategory().getId());
-
         return amenityDto;
     }
 
     //=======================AmenityCategories===========================================
-    public static CreateAmenityCategoryRequestDto createSampleAmenityCategoryRequest() {
-        CreateAmenityCategoryRequestDto requestDto = new CreateAmenityCategoryRequestDto();
-        requestDto.setName(AMENITY_CATEGORY_NAME);
-        return requestDto;
-    }
-
-    public static AmenityCategory amenityCategoryFromRequestDto(
-            CreateAmenityCategoryRequestDto requestDto
-    ) {
+    public static AmenityCategory createTestAmenityCategory(Long id, String name) {
         AmenityCategory amenityCategory = new AmenityCategory();
-        amenityCategory.setName(requestDto.getName());
+        amenityCategory.setId(id);
+        amenityCategory.setName(name);
         amenityCategory.setDeleted(false);
-
         return amenityCategory;
     }
 
-    public static AmenityCategoryDto mapAmenityCategorToDto(AmenityCategory amenityCategory) {
-        AmenityCategoryDto amenityCategoryDto = new AmenityCategoryDto();
-        amenityCategoryDto.setId(amenityCategory.getId());
-        amenityCategoryDto.setName(amenityCategory.getName());
+    public static CreateAmenityCategoryRequestDto createTestAmenityCategoryRequest(String name) {
+        CreateAmenityCategoryRequestDto requestDto = new CreateAmenityCategoryRequestDto();
+        requestDto.setName(name);
+        return requestDto;
+    }
 
+    public static AmenityCategoryDto createTestAmenityCategoryDto(Long id, String name) {
+        AmenityCategoryDto amenityCategoryDto = new AmenityCategoryDto();
+        amenityCategoryDto.setId(id);
+        amenityCategoryDto.setName(name);
         return amenityCategoryDto;
     }
 
     //=======================Booking===========================================
-    public static CreateBookingRequestDto createSampleBookingRequest() {
-        CreateBookingRequestDto requestDto = new CreateBookingRequestDto();
-        requestDto.setCheckIn(LocalDate.now());
-        requestDto.setCheckOut(LocalDate.now().plusDays(BOOKING_DAYS_UNTIL_CHECKOUT));
-        requestDto.setAccommodationId(SAMPLE_TEST_ID_1);
-
-        return requestDto;
-    }
-
-    public static Booking bookingFromRequestDto(
-            CreateBookingRequestDto requestDto
+    public static Booking createTestBooking(
+            Long id,
+            LocalDate checkIn,
+            LocalDate checkOut,
+            Accommodation accommodation,
+            User user,
+            Booking.Status status
     ) {
         Booking booking = new Booking();
-        booking.setCheckIn(requestDto.getCheckIn());
-        booking.setCheckOut(requestDto.getCheckOut());
-        booking.setAccommodation(new Accommodation(requestDto.getAccommodationId()));
-        booking.setStatus(Booking.Status.PENDING);
-        booking.setDeleted(false);
+
+        booking.setId(id);
+        booking.setCheckIn(checkIn);
+        booking.setCheckOut(checkOut);
+        booking.setAccommodation(accommodation);
+        booking.setUser(user);
+        booking.setStatus(status);
 
         return booking;
     }
@@ -235,6 +229,18 @@ public class ServiceTestUtils {
         bookingDto.setStatus(booking.getStatus());
 
         return bookingDto;
+    }
+
+    public static CreateBookingRequestDto createTestBookingRequestDto(
+            LocalDate checkInDate,
+            LocalDate checkoutDate,
+            long bookingId
+    ) {
+        CreateBookingRequestDto requestDto = new CreateBookingRequestDto();
+        requestDto.setCheckIn(checkInDate);
+        requestDto.setCheckOut(checkoutDate);
+        requestDto.setAccommodationId(bookingId);
+        return requestDto;
     }
 
     public static BookingSearchParameters createBookingSearchParameters(
@@ -262,16 +268,34 @@ public class ServiceTestUtils {
 
     public static BookingExpiredNotificationDto createBookingExpiredNotificationDto(
             Booking booking,
-            User user) {
+            User user,
+            String address) {
         BookingExpiredNotificationDto notificationDto = new BookingExpiredNotificationDto();
         notificationDto.setBookingId(booking.getId());
         notificationDto.setCheckOut(booking.getCheckOut());
-        notificationDto.setLocation(createAddressString());
+        notificationDto.setLocation(address);
         notificationDto.setCustomer(createFullName(user));
         notificationDto.setCustomerEmail(user.getEmail());
         notificationDto.setStatus(booking.getStatus().name());
 
         return notificationDto;
+    }
+
+    public static String createFullName(User user) {
+        return String.format("%s %s", user.getFirstName(), user.getLastName());
+    }
+
+    public static String createAddressString(
+            String street,
+            String houseNumber,
+            String apartmentNumber,
+            String city
+    ) {
+        return String.format("%s %s, %s, %s",
+                street,
+                houseNumber,
+                apartmentNumber,
+                city);
     }
 
     public static BigDecimal calculateTotalPriceByBooking(Booking booking) {
@@ -281,67 +305,39 @@ public class ServiceTestUtils {
 
     //=======================User===========================================
     public static User createTestUser(
-            Long id, String firstName, String lastName, String email, RoleName roleName
+            Long id, String firstName, String lastName, String password, String email, Role role
     ) {
         User user = new User();
         user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
-        user.setPassword(VALID_USER_PASSWORD);
-        user.setRoles(new HashSet<>(Set.of(createUserRole(roleName, id))));
+        user.setPassword(password);
+        user.setRoles(new HashSet<>(Set.of(role)));
         user.setDeleted(false);
         return user;
     }
 
-    public static UserRegisterRequestDto createUserRegisterRequest() {
-        UserRegisterRequestDto requestDto = new UserRegisterRequestDto();
-        requestDto.setEmail(USER_EMAIL_EXAMPLE);
-        requestDto.setPassword(VALID_USER_PASSWORD);
-        requestDto.setRepeatPassword(VALID_USER_PASSWORD);
-        requestDto.setFirstName(USERNAME_FIRST);
-        requestDto.setLastName(USERNAME_LAST);
-        return requestDto;
-    }
-
-    public static User createUserFromDto(UserRegisterRequestDto requestDto) {
-        User userToModel = new User();
-        userToModel.setEmail(requestDto.getEmail());
-        userToModel.setPassword(requestDto.getPassword());
-        userToModel.setFirstName(requestDto.getFirstName());
-        userToModel.setLastName(requestDto.getLastName());
-        return userToModel;
-    }
-
-    public static Role createUserRole(RoleName roleName, Long id) {
+    public static Role createTestUserRole(RoleName roleName, Long roleId) {
         Role userRole = new Role();
-        userRole.setId(id);
+        userRole.setId(roleId);
         userRole.setName(roleName);
         return userRole;
     }
 
-    public static User initializeUser(UserRegisterRequestDto requestDto, Role userRole, Long id) {
-        User savedUser = new User();
-        savedUser.setId(id);
-        savedUser.setEmail(requestDto.getEmail());
-        savedUser.setFirstName(requestDto.getFirstName());
-        savedUser.setLastName(requestDto.getLastName());
-        savedUser.setPassword(requestDto.getPassword());
-        savedUser.setDeleted(false);
-        savedUser.setRoles(new HashSet<>(Set.of(userRole)));
-        return savedUser;
+    public static UserRegisterRequestDto createTestUserRegisterRequest(
+            String email, String password, String repeatPassword, String firstName, String lastName
+    ) {
+        UserRegisterRequestDto requestDto = new UserRegisterRequestDto();
+        requestDto.setEmail(email);
+        requestDto.setPassword(password);
+        requestDto.setRepeatPassword(repeatPassword);
+        requestDto.setFirstName(firstName);
+        requestDto.setLastName(lastName);
+        return requestDto;
     }
 
-    public static UserDto mapToUserDto(User savedUser) {
-        UserDto expected = new UserDto();
-        expected.setId(savedUser.getId());
-        expected.setEmail(savedUser.getEmail());
-        expected.setFirstName(savedUser.getFirstName());
-        expected.setLastName(savedUser.getLastName());
-        return expected;
-    }
-
-    public static UserUpdateRequestDto createUserUpdateRequestDto(
+    public static UserUpdateRequestDto createTestUserUpdateRequestDto(
             String firstName, String lastName
     ) {
         UserUpdateRequestDto requestDto = new UserUpdateRequestDto();
@@ -350,16 +346,19 @@ public class ServiceTestUtils {
         return requestDto;
     }
 
-    public static UserDto updateNamesUserDto(UserDto userDto, String firstName, String lastName) {
-        userDto.setFirstName(firstName);
-        userDto.setLastName(lastName);
-        return userDto;
+    public static UserDto mapToUserDto(User user) {
+        UserDto expected = new UserDto();
+        expected.setId(user.getId());
+        expected.setEmail(user.getEmail());
+        expected.setFirstName(user.getFirstName());
+        expected.setLastName(user.getLastName());
+        return expected;
     }
 
-    public static User updateNamesUser(User user, String firstName, String lastName) {
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        return user;
+    public static UserUpdateRoleRequestDto createTestUserUpdateRoleRequestDto(RoleName roleName) {
+        UserUpdateRoleRequestDto requestDto = new UserUpdateRoleRequestDto();
+        requestDto.setRoleName(roleName);
+        return requestDto;
     }
 
     public static UserWithRoleDto mapToUserWithRoleDto(User user) {
@@ -372,37 +371,48 @@ public class ServiceTestUtils {
         return userWithRoleDto;
     }
 
+    public static User updateNamesUser(User user, String firstName, String lastName) {
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        return user;
+    }
+
     public static Set<String> getUserRoleAuthorities(User user) {
         return user.getRoles().stream()
                 .map(Role::getAuthority).collect(Collectors.toSet());
     }
 
-    public static UserUpdateRoleRequestDto createUserUpdateRoleRequestDto(RoleName roleName) {
-        UserUpdateRoleRequestDto requestDto = new UserUpdateRoleRequestDto();
-        requestDto.setRoleName(roleName);
-        return requestDto;
-    }
-
     //=======================UserTelegram===================================================
-    public static UserTelegram createTestUserTelegram(User user, long chatId) {
+    public static UserTelegram createTestUserTelegram(
+            Long id, User user, long chatId, boolean isDeleted
+    ) {
         UserTelegram userTelegram = new UserTelegram();
+        userTelegram.setId(id);
         userTelegram.setUser(user);
         userTelegram.setChatId(chatId);
-        userTelegram.setDeleted(false);
+        userTelegram.setDeleted(isDeleted);
         return userTelegram;
     }
 
-    //=======================Payment===========================================
-    public static Payment createSamplePayment() {
-        Payment payment = new Payment();
-        payment.setId(SAMPLE_TEST_ID_1);
-        payment.setStatus(Payment.Status.PENDING);
-        payment.setBooking(new Booking(SAMPLE_TEST_ID_1));
-        payment.setSessionId(PAYMENT_SESSION_ID);
-        payment.setSessionId(PAYMENT_SESSION_URL);
-        payment.setAmountToPay(BigDecimal.TEN);
-        payment.setDeleted(false);
+    public static UserTelegramStatusDto createTestUserTelegramStatusDto(UserTelegram userTelegram) {
+        UserTelegramStatusDto userTelegramStatusDto = new UserTelegramStatusDto();
+        userTelegramStatusDto.setEnabled(!userTelegram.isDeleted());
+        return userTelegramStatusDto;
+    }
 
+    //=======================Payment===========================================
+    public static Payment createTestPayment(
+            Long id, Payment.Status status, Booking booking, String sessionId,
+            String sessionUrl, BigDecimal amountToPay, boolean isDeleted
+    ) {
+        Payment payment = new Payment();
+        payment.setId(id);
+        payment.setStatus(status);
+        payment.setBooking(booking);
+        payment.setSessionId(sessionId);
+        payment.setSessionUrl(sessionUrl);
+        payment.setAmountToPay(amountToPay);
+        payment.setDeleted(isDeleted);
         return payment;
     }
 
@@ -414,47 +424,35 @@ public class ServiceTestUtils {
         paymentDto.setSessionUrl(payment.getSessionUrl());
         paymentDto.setAmountToPay(payment.getAmountToPay());
         paymentDto.setStatus(payment.getStatus().name());
-
         return paymentDto;
     }
 
-    public static CreatePaymentRequestDto createSamplePaymentRequest() {
+    public static CreatePaymentRequestDto createTestPaymentRequestDto(Long bookingId) {
         CreatePaymentRequestDto requestDto = new CreatePaymentRequestDto();
-        requestDto.setBookingId(SAMPLE_TEST_ID_1);
-
+        requestDto.setBookingId(bookingId);
         return requestDto;
     }
 
-    public static Payment paymentFromRequestDto(
-            CreatePaymentRequestDto requestDto
-    ) {
-        Payment payment = new Payment();
-        payment.setStatus(Payment.Status.PENDING);
-        payment.setBooking(new Booking(requestDto.getBookingId()));
-        payment.setSessionId(PAYMENT_SESSION_ID);
-        payment.setSessionId(PAYMENT_SESSION_URL);
-        payment.setAmountToPay(BigDecimal.TEN);
-        payment.setDeleted(false);
-
-        return payment;
-    }
-
     //=====================================Session=========================================
-    public static Session createSampleSession() {
+    public static Session createTestSession(
+            String sessionId, String sessionUrl, BigDecimal amountToPay
+    ) {
         Session session = new Session();
-        session.setId(PAYMENT_SESSION_ID);
-        session.setUrl(PAYMENT_SESSION_URL);
-
+        session.setId(sessionId);
+        session.setUrl(sessionUrl);
+        session.setAmountTotal(amountToPay.longValue());
         return session;
     }
 
-    //================================TelegramLink==========================================
-    public static TelegramLink createTelegramLink(
+    //================================UserTelegramLink==========================================
+    public static TelegramLink createTestTelegramLink(
+            Long id,
             User user,
             String token,
             Instant expiresAt,
             boolean isDeleted) {
         TelegramLink telegramLink = new TelegramLink();
+        telegramLink.setId(id);
         telegramLink.setUser(user);
         telegramLink.setToken(token);
         telegramLink.setExpiresAt(expiresAt);
@@ -462,12 +460,10 @@ public class ServiceTestUtils {
         return telegramLink;
     }
 
-    public static TelegramLinkRequestDto createTelegramLinkRequestDto(
-            TelegramLink savedTelegramLink
-    ) {
-        TelegramLinkRequestDto dto = new TelegramLinkRequestDto();
-        dto.setLink(savedTelegramLink.getToken());
-        return dto;
+    public static TelegramLinkDto createTestTelegramLinkDto(TelegramLink telegramLink) {
+        TelegramLinkDto telegramLinkDto = new TelegramLinkDto();
+        telegramLinkDto.setLink(telegramLink.getToken());
+        return telegramLinkDto;
     }
 
     public static Instant calculateExpirationInstant(int minutes, boolean isFuture) {
@@ -480,51 +476,5 @@ public class ServiceTestUtils {
     //========================methods for all services======================================
     public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
         return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
-    }
-
-    private static CreateAddressRequestDto createSampleAddressRequest() {
-        CreateAddressRequestDto requestDto = new CreateAddressRequestDto();
-        requestDto.setStreet(ADDRESS_STREET_KHRESHCHATYK);
-        requestDto.setCity(ADDRESS_CITY_KYIV);
-        requestDto.setHouseNumber(ADDRESS_HOUSE_NUMBER_15B);
-        requestDto.setApartmentNumber(ADDRESS_APARTMENT_NUMBER_25);
-
-        return requestDto;
-    }
-
-    private static Address addressFromRequestDto(CreateAddressRequestDto requestDto) {
-        Address address = new Address();
-        address.setStreet(requestDto.getStreet());
-        address.setCity(requestDto.getCity());
-        address.setHouseNumber(requestDto.getHouseNumber());
-        address.setApartmentNumber(requestDto.getApartmentNumber());
-
-        return address;
-    }
-
-    private static String mapAddressToString(Address address) {
-        return String.format("%s %s, %s, %s",
-                address.getStreet(),
-                address.getHouseNumber(),
-                address.getApartmentNumber(),
-                address.getCity());
-    }
-
-    private static Set<Long> getSetOfAmenitiesId(Set<Amenity> amenities) {
-        return amenities.stream()
-                .map(Amenity::getId)
-                .collect(Collectors.toSet());
-    }
-
-    private static String createAddressString() {
-        return String.format("%s %s, %s, %s",
-                ADDRESS_STREET_KHRESHCHATYK,
-                ADDRESS_HOUSE_NUMBER_15B,
-                ADDRESS_APARTMENT_NUMBER_25,
-                ADDRESS_CITY_KYIV);
-    }
-
-    private static String createFullName(User user) {
-        return String.format("%s %s", user.getFirstName(), user.getLastName());
     }
 }

@@ -2,21 +2,17 @@ package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_NOTIFICATION_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NOTIFICATION_SEND_ERROR_PREFIX;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_CHAT_ID;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserTelegram;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRegisterRequest;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRole;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.initializeUser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.chertiavdev.bookingapp.data.builders.UserTelegramTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.UserTestDataBuilder;
 import com.chertiavdev.bookingapp.exception.NotificationException;
-import com.chertiavdev.bookingapp.model.Role;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.model.UserTelegram;
 import com.chertiavdev.bookingapp.service.UserTelegramService;
@@ -37,6 +33,7 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Notification Service Implementation Test")
 class NotificationServiceImplTest {
+    private UserTelegramTestDataBuilder userTelegramTestDataBuilder;
     @InjectMocks
     private NotificationServiceImpl notificationService;
     @Mock
@@ -47,16 +44,16 @@ class NotificationServiceImplTest {
     @BeforeEach
     void setUp() {
         AsyncTaskExecutor executor = new ConcurrentTaskExecutor(new SyncTaskExecutor());
+        userTelegramTestDataBuilder = new UserTelegramTestDataBuilder(
+                new UserTestDataBuilder()
+        );
     }
 
     @Test
     @DisplayName("Send notification to all users with target role")
     void sendNotification_Valid_ShouldSendNotificationToAllUsersWithTargetRole() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegram.setId(SAMPLE_TEST_ID_1);
+        UserTelegram userTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
 
         when(userTelegramService.getAllUserByRole(USER)).thenReturn(List.of(userTelegram));
 
@@ -75,10 +72,8 @@ class NotificationServiceImplTest {
     @DisplayName("Send notification to user with target role by valid user id")
     void sendNotificationByUserId_ValidId_ShouldSendNotification() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegram.setId(SAMPLE_TEST_ID_1);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram userTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
 
         when(userTelegramService.getByUserId(user.getId())).thenReturn(Optional.of(userTelegram));
 
@@ -98,26 +93,24 @@ class NotificationServiceImplTest {
     @DisplayName("Send notification to user with target role by invalid user id")
     void sendNotificationByUserId_InvalidId_ShouldNotSendNotificationToUser() {
         //Given
-        when(userTelegramService.getByUserId(SAMPLE_TEST_ID_1)).thenReturn(Optional.empty());
+        when(userTelegramService.getByUserId(INVALID_TEST_ID)).thenReturn(Optional.empty());
 
         //When
         notificationService
-                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, SAMPLE_TEST_ID_1);
+                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, INVALID_TEST_ID);
 
         //Then
-        verify(userTelegramService).getByUserId(SAMPLE_TEST_ID_1);
+        verify(userTelegramService).getByUserId(INVALID_TEST_ID);
     }
 
     @Test
     @DisplayName("Should handle NotificationException and continue execution")
     void sendNotificationByUserId_WithTelegramBotThrowingException_ShouldHandleException() {
         // Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegram.setId(SAMPLE_TEST_ID_1);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram userTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
 
-        when(userTelegramService.getByUserId(SAMPLE_TEST_ID_1))
+        when(userTelegramService.getByUserId(user.getId()))
                 .thenReturn(Optional.of(userTelegram));
 
         doThrow(new NotificationException(NOTIFICATION_SEND_ERROR_PREFIX
@@ -127,16 +120,16 @@ class NotificationServiceImplTest {
 
         // When
         notificationService
-                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, SAMPLE_TEST_ID_1);
+                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, user.getId());
 
         // Then
-        verify(userTelegramService).getByUserId(SAMPLE_TEST_ID_1);
+        verify(userTelegramService).getByUserId(user.getId());
         verify(telegramNotificationBot)
                 .sendNotification(userTelegram.getChatId(), DEFAULT_NOTIFICATION_MESSAGE);
         verifyNoMoreInteractions(userTelegramService);
 
         assertDoesNotThrow(() -> notificationService
-                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, SAMPLE_TEST_ID_1)
+                .sendNotificationByUserId(DEFAULT_NOTIFICATION_MESSAGE, user.getId())
         );
     }
 }

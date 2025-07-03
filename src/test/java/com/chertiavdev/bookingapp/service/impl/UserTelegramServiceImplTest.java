@@ -5,10 +5,6 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.US
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_NEW_CHAT_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserTelegram;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRegisterRequest;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createUserRole;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.initializeUser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.chertiavdev.bookingapp.data.builders.UserTelegramTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.UserTestDataBuilder;
 import com.chertiavdev.bookingapp.dto.user.telegram.UserTelegramStatusDto;
 import com.chertiavdev.bookingapp.mapper.UserTelegramMapper;
 import com.chertiavdev.bookingapp.model.Role;
@@ -26,6 +24,7 @@ import com.chertiavdev.bookingapp.repository.user.telegram.UserTelegramRepositor
 import com.chertiavdev.bookingapp.service.UserService;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserTelegram Service Implementation Test")
 class UserTelegramServiceImplTest {
+    private UserTelegramTestDataBuilder userTelegramTestDataBuilder;
     @InjectMocks
     private UserTelegramServiceImpl userTelegramService;
     @Mock
@@ -45,17 +45,20 @@ class UserTelegramServiceImplTest {
     @Mock
     private UserService userService;
 
+    @BeforeEach
+    void setUp() {
+        userTelegramTestDataBuilder = new UserTelegramTestDataBuilder(
+                new UserTestDataBuilder()
+        );
+    }
+
     @Test
     @DisplayName("Create new UserTelegram when valid User and chatId are provided")
     void create_ValidUserAndChatId_ShouldCreateNewUserTelegram() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-
-        UserTelegram userTelegramToModel = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-
-        UserTelegram expected = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        expected.setId(SAMPLE_TEST_ID_1);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram userTelegramToModel = userTelegramTestDataBuilder.getUserTelegramJohn();
+        UserTelegram expected = userTelegramTestDataBuilder.getUserTelegramJohn();
 
         when(userTelegramMapper.toModel(user, USER_TELEGRAM_CHAT_ID))
                 .thenReturn(userTelegramToModel);
@@ -75,11 +78,8 @@ class UserTelegramServiceImplTest {
             + "and valid data is provided")
     void update_ValidDataAndUserTelegramNotDeleted_ShouldUpdateSuccessfully() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-
-        UserTelegram existedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        UserTelegram updatedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_NEW_CHAT_ID);
+        UserTelegram existedUserTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
+        UserTelegram updatedUserTelegram = userTelegramTestDataBuilder.getUpdatedUserTelegramJohn();
 
         when(userTelegramRepository.save(updatedUserTelegram)).thenReturn(updatedUserTelegram);
 
@@ -97,11 +97,8 @@ class UserTelegramServiceImplTest {
             + "is provided")
     void update_ValidDataAndUserTelegramIsDeleted_ShouldRestoreAndUpdateSuccessfully() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-
-        UserTelegram existedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        existedUserTelegram.setDeleted(true);
+        UserTelegram existedUserTelegram = userTelegramTestDataBuilder
+                .getDeletedUserTelegramSansa();
 
         doNothing().when(userTelegramRepository)
                 .restoreUserTelegram(existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
@@ -120,16 +117,15 @@ class UserTelegramServiceImplTest {
     @DisplayName("Linking a UserTelegram successfully when no link is present")
     void link_NoLinkPresent_ShouldLinkSuccessfully() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegramToModel = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegramToModel.setId(SAMPLE_TEST_ID_1);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram userTelegramToModel = userTelegramTestDataBuilder.getUserTelegramJohnToModel();
+        UserTelegram savedUserTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
 
         when(userService.findById(user.getId())).thenReturn(user);
         when(userTelegramRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
         when(userTelegramMapper.toModel(user, USER_TELEGRAM_CHAT_ID))
                 .thenReturn(userTelegramToModel);
-        when(userTelegramRepository.save(userTelegramToModel)).thenReturn(userTelegramToModel);
+        when(userTelegramRepository.save(userTelegramToModel)).thenReturn(savedUserTelegram);
 
         //When
         assertDoesNotThrow(() -> userTelegramService
@@ -148,13 +144,9 @@ class UserTelegramServiceImplTest {
             + "and it has not been deleted")
     void link_LinkPresentAndNotDeleted_ShouldLinkSuccessfully() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram existedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        existedUserTelegram.setId(SAMPLE_TEST_ID_1);
-
-        UserTelegram updatedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_NEW_CHAT_ID);
-        updatedUserTelegram.setId(SAMPLE_TEST_ID_1);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram existedUserTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
+        UserTelegram updatedUserTelegram = userTelegramTestDataBuilder.getUpdatedUserTelegramJohn();
 
         when(userService.findById(user.getId())).thenReturn(user);
         when(userTelegramRepository.findByUserId(user.getId()))
@@ -177,11 +169,9 @@ class UserTelegramServiceImplTest {
             + "and it has been deleted")
     void link_LinkPresentAndDeleted_ShouldRestoreAndUpdateSuccessfullyAndLinkSuccessfully() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram existedUserTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        existedUserTelegram.setId(SAMPLE_TEST_ID_1);
-        existedUserTelegram.setDeleted(true);
+        User user = userTelegramTestDataBuilder.getUserSansa();
+        UserTelegram existedUserTelegram = userTelegramTestDataBuilder
+                .getDeletedUserTelegramSansa();
 
         when(userService.findById(user.getId())).thenReturn(user);
         when(userTelegramRepository.findByUserId(user.getId()))
@@ -206,21 +196,21 @@ class UserTelegramServiceImplTest {
             + "valid data is provided should return UserTelegramStatusDto")
     void getStatus_ValidDataAndStatusTrue_ShouldReturnUserTelegramStatusDto() {
         //Given
-        UserTelegramStatusDto expected = new UserTelegramStatusDto();
-        expected.setEnabled(true);
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegramStatusDto expected = userTelegramTestDataBuilder.getUserTelegramStatusDtoJohn();
 
-        when(userTelegramRepository.existsByUserId(SAMPLE_TEST_ID_1)).thenReturn(true);
+        when(userTelegramRepository.existsByUserId(user.getId())).thenReturn(true);
         when(userTelegramMapper.toUserTelegramStatusDto(true)).thenReturn(expected);
 
         //When
-        UserTelegramStatusDto actual = userTelegramService.getStatus(SAMPLE_TEST_ID_1);
+        UserTelegramStatusDto actual = userTelegramService.getStatus(user.getId());
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual,
                 ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(userTelegramRepository).existsByUserId(SAMPLE_TEST_ID_1);
+        verify(userTelegramRepository).existsByUserId(user.getId());
         verify(userTelegramMapper).toUserTelegramStatusDto(true);
         verifyNoMoreInteractions(userTelegramRepository, userTelegramMapper);
     }
@@ -230,21 +220,22 @@ class UserTelegramServiceImplTest {
             + "valid data is provided should return UserTelegramStatusDto")
     void getStatus_ValidDataAndStatusFalse_ShouldReturnUserTelegramStatusDto() {
         //Given
-        UserTelegramStatusDto expected = new UserTelegramStatusDto();
-        expected.setEnabled(false);
+        User user = userTelegramTestDataBuilder.getUserSansa();
+        UserTelegramStatusDto expected = userTelegramTestDataBuilder
+                .getUserTelegramStatusDtoSansa();
 
-        when(userTelegramRepository.existsByUserId(SAMPLE_TEST_ID_1)).thenReturn(false);
+        when(userTelegramRepository.existsByUserId(user.getId())).thenReturn(false);
         when(userTelegramMapper.toUserTelegramStatusDto(false)).thenReturn(expected);
 
         //When
-        UserTelegramStatusDto actual = userTelegramService.getStatus(SAMPLE_TEST_ID_1);
+        UserTelegramStatusDto actual = userTelegramService.getStatus(user.getId());
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual,
                 ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(userTelegramRepository).existsByUserId(SAMPLE_TEST_ID_1);
+        verify(userTelegramRepository).existsByUserId(user.getId());
         verify(userTelegramMapper).toUserTelegramStatusDto(false);
         verifyNoMoreInteractions(userTelegramRepository, userTelegramMapper);
     }
@@ -281,10 +272,7 @@ class UserTelegramServiceImplTest {
     @DisplayName("Getting all UserTelegram by role successfully when valid role is provided")
     void getAllUserByRole_ValidRole_ShouldReturnListOfUserTelegram() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegram.setId(SAMPLE_TEST_ID_1);
+        UserTelegram userTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
         List<UserTelegram> expected = List.of(userTelegram);
 
         when(userTelegramRepository.findAllByUserRoles(Role.RoleName.USER)).thenReturn(expected);
@@ -305,11 +293,8 @@ class UserTelegramServiceImplTest {
     @DisplayName("Getting UserTelegram by userId successfully when valid userId is provided")
     void getByUserId_ValidUserId_ShouldReturnUserTelegram() {
         //Given
-        User user = initializeUser(createUserRegisterRequest(),
-                createUserRole(Role.RoleName.USER, SAMPLE_TEST_ID_1), SAMPLE_TEST_ID_1);
-        UserTelegram userTelegram = createTestUserTelegram(user, USER_TELEGRAM_CHAT_ID);
-        userTelegram.setId(SAMPLE_TEST_ID_1);
-
+        User user = userTelegramTestDataBuilder.getUserJohn();
+        UserTelegram userTelegram = userTelegramTestDataBuilder.getUserTelegramJohn();
         Optional<UserTelegram> expected = Optional.of(userTelegram);
 
         when(userTelegramRepository.findByUserId(user.getId())).thenReturn(expected);

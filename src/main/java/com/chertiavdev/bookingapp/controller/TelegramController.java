@@ -2,7 +2,7 @@ package com.chertiavdev.bookingapp.controller;
 
 import com.chertiavdev.bookingapp.annotations.operations.ApiOperationDetails;
 import com.chertiavdev.bookingapp.annotations.responses.groups.BaseAuthApiResponses;
-import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkDto;
 import com.chertiavdev.bookingapp.dto.user.telegram.UserTelegramStatusDto;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.service.TelegramLinkService;
@@ -33,7 +33,7 @@ public class TelegramController {
     @BaseAuthApiResponses
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/link")
-    public TelegramLinkRequestDto getLink(@AuthenticationPrincipal User user) {
+    public TelegramLinkDto getLink(@AuthenticationPrincipal User user) {
         return telegramLinkService.createLink(user);
     }
 

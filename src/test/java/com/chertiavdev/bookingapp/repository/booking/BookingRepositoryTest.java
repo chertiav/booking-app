@@ -51,22 +51,22 @@ import org.springframework.data.domain.Page;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(TestConfig.class)
 class BookingRepositoryTest {
-    static final String[] SETUP_SCRIPTS = {
+    private static final String[] SETUP_SCRIPTS = {
             "database/accommodation/address/add-address-into-address-table.sql",
             "database/accommodation/add-accommodations-into-accommodations-table.sql",
             "database/user/add-users-to-users-table.sql",
             "database/booking/add-bookings-into-bookings-table.sql"
     };
-    static final String[] CLEANUP_SCRIPTS = {
+    private static final String[] CLEANUP_SCRIPTS = {
             "database/booking/remove-all-bookings-from-bookings-table.sql",
             "database/accommodation/remove-all-accommodations-from-accommodation-table.sql",
             "database/accommodation/address/remove-all-address-from-address-table.sql",
             "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
     };
     @Autowired
-    private BookingRepository bookingRepository;
+    private BookingTestDataBuilder bookingsTestDataBuilder;
     @Autowired
-    private BookingTestDataBuilder bookingTestDataBuilder;
+    private BookingRepository bookingRepository;
 
     @BeforeAll
     void setUp(@Autowired DataSource dataSource) {
@@ -120,12 +120,12 @@ class BookingRepositoryTest {
             + "page of bookings")
     void findBookingsByUserId_ValidUserId_ShouldReturnPageOfBookings() {
         //Given
-        Page<Booking> expected = bookingTestDataBuilder.buildExpectedBookingsPage();
+        Page<Booking> expected = bookingsTestDataBuilder.buildExpectedAllBookingsPage();
 
         //When
         Page<Booking> actual = bookingRepository.findBookingsByUserId(
-                bookingTestDataBuilder.getUser().getId(),
-                bookingTestDataBuilder.getPageable()
+                bookingsTestDataBuilder.getUserJohn().getId(),
+                bookingsTestDataBuilder.getPageable()
         );
 
         //Then
@@ -151,12 +151,12 @@ class BookingRepositoryTest {
             + "page of bookings")
     void findBookingsByUserId_InValidUserId_ShouldReturnEmptyPageOfBookings() {
         //Given
-        Page<Booking> expected = bookingTestDataBuilder.buildExpectedEmptyBookingsPage();
+        Page<Booking> expected = bookingsTestDataBuilder.buildExpectedEmptyBookingsPage();
 
         //When
         Page<Booking> actual = bookingRepository.findBookingsByUserId(
                 INVALID_TEST_ID,
-                bookingTestDataBuilder.getPageable()
+                bookingsTestDataBuilder.getPageable()
         );
 
         //Then
@@ -181,8 +181,8 @@ class BookingRepositoryTest {
     @DisplayName("Find booking successfully when valid data is provided should return Booking")
     void findByIdAndUserId_ValidData_ShouldReturnBooking() {
         //Given
-        User user = bookingTestDataBuilder.getUser();
-        Booking expected = bookingTestDataBuilder.getPendingBooking();
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking expected = bookingsTestDataBuilder.getPendingBooking();
 
         //When
         Optional<Booking> actual = bookingRepository
@@ -197,8 +197,8 @@ class BookingRepositoryTest {
     @DisplayName("Find booking when invalid user ID is provided should return optional empty")
     void findByIdAndUserId_InvalidIdOrUserId_ShouldReturnOptionalEmpty() {
         //Given
-        Long bookingId = bookingTestDataBuilder.getPendingBooking().getId();
-        Long userId = bookingTestDataBuilder.getUser().getId();
+        Long bookingId = bookingsTestDataBuilder.getPendingBooking().getId();
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
 
         //When
         Optional<Booking> actualInvalidUserId = bookingRepository
@@ -216,11 +216,11 @@ class BookingRepositoryTest {
             + "list of Booking")
     void findUpcomingBookings_ValidData_ShouldReturnListOfBookings() {
         //Given
-        List<Booking> expected = bookingTestDataBuilder.buildUpcomingBookingsList();
+        List<Booking> expected = bookingsTestDataBuilder.buildUpcomingBookingsList();
 
         //When
         List<Booking> actual = bookingRepository.findUpcomingBookings(
-                bookingTestDataBuilder.getExpiredDate());
+                bookingsTestDataBuilder.getExpiredDate());
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
@@ -242,8 +242,8 @@ class BookingRepositoryTest {
             + "is provided")
     void calculateTotalPriceByBookingIdAndUserId_ValidData_ShouldReturnBigDecimal() {
         //Given
-        User user = bookingTestDataBuilder.getUser();
-        Booking booking = bookingTestDataBuilder.getPendingBooking();
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
         BigDecimal expected = calculateTotalPriceByBooking(booking);
 
         //When
@@ -258,8 +258,8 @@ class BookingRepositoryTest {
     }
 
     private @NotNull Stream<Arguments> overlappingBookingsProvider() {
-        Booking pendingBooking = bookingTestDataBuilder.getPendingBooking();
-        Booking confirmedBooking = bookingTestDataBuilder.getConfirmedBooking();
+        Booking pendingBooking = bookingsTestDataBuilder.getPendingBooking();
+        Booking confirmedBooking = bookingsTestDataBuilder.getConfirmedBooking();
 
         return Stream.of(
                 arguments("Exact date match for booking PENDING",

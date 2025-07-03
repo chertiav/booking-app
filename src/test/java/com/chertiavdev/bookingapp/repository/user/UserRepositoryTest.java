@@ -1,20 +1,17 @@
 package com.chertiavdev.bookingapp.repository.user;
 
-import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_FIRST;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USERNAME_LAST;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_EXAMPLE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL_EXAMPLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.chertiavdev.bookingapp.config.TestConfig;
+import com.chertiavdev.bookingapp.data.builders.UserTestDataBuilder;
 import com.chertiavdev.bookingapp.model.User;
 import java.sql.Connection;
 import java.util.Optional;
@@ -27,13 +24,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 @DisplayName("User Repository Integration Test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(TestConfig.class)
 class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserTestDataBuilder userTestDataBuilder;
 
     @BeforeAll
     static void setUp(@Autowired DataSource dataSource) {
@@ -72,7 +73,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by email when valid email is provided should return true")
     void existsByEmail_ValidEmail_ShouldReturnTrue() {
         //Where
-        boolean actual = userRepository.existsByEmail(USER_EMAIL_EXAMPLE);
+        boolean actual = userRepository.existsByEmail(USER_EMAIL_JOHN);
 
         //Then
         assertTrue(actual, ACTUAL_RESULT_SHOULD_BE_PRESENT);
@@ -92,8 +93,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by email when valid email is provided should return user")
     void findByEmail_ValidEmail_ShouldReturnUser() {
         //Given
-        User expected = createTestUser(
-                SAMPLE_TEST_ID_2, USERNAME_FIRST, USERNAME_LAST, USER_EMAIL_EXAMPLE, USER);
+        User expected = userTestDataBuilder.getUserJohn();
 
         //Where
         Optional<User> actual = userRepository.findByEmail(expected.getEmail());

@@ -1,12 +1,6 @@
 package com.chertiavdev.bookingapp.repository.accommodation;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_AVAILABILITY;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DEFAULT_AMENITIES;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_SIZE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_APARTMENT_NUMBER_25;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_CITY_KYIV;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_HOUSE_NUMBER_15B;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_STREET_KHRESHCHATYK;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AVAILABILITY_THRESHOLD;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
@@ -19,17 +13,15 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.accommodationFromRequestDto;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createSampleAccommodationRequest;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.getAmenitiesById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.chertiavdev.bookingapp.config.TestConfig;
+import com.chertiavdev.bookingapp.data.builders.AccommodationTestDataBuilder;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import lombok.SneakyThrows;
@@ -40,15 +32,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 @DisplayName("Accommodation Repository Integration Test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(TestConfig.class)
 class AccommodationRepositoryTest {
+    private static final String[] SETUP_SCRIPTS = {
+            "database/accommodation/address/add-address-into-address-table.sql",
+            "database/accommodation/add-accommodations-into-accommodations-table.sql",
+            "database/amenities/add-amenities-into-accommodation_amenities-table.sql"
+    };
+    private static final String[] CLEANUP_SCRIPTS = {
+            "database/amenities/remove-all-amenities-from-accommodation_amenities-table.sql",
+            "database/accommodation/remove-all-accommodations-from-accommodation-table.sql",
+            "database/accommodation/address/remove-all-address-from-address-table.sql"
+    };
+    @Autowired
+    private AccommodationTestDataBuilder accommodationTestDataBuilder;
     @Autowired
     private AccommodationRepository accommodationRepository;
 
@@ -66,12 +69,7 @@ class AccommodationRepositoryTest {
     private static void setupDatabase(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/accommodation/address/add-address-into-address-table.sql",
-                    "database/accommodation/add-accommodations-into-accommodations-table.sql",
-                    "database/amenities/"
-                            + "add-amenities-into-accommodation_amenities-table.sql"
-            );
+            executeSqlScripts(connection, SETUP_SCRIPTS);
         }
     }
 
@@ -79,26 +77,24 @@ class AccommodationRepositoryTest {
     private static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/amenities/"
-                           + "remove-all-amenities-from-accommodation_amenities-table.sql",
-                    "database/accommodation/remove-all-accommodations-from-accommodation-table.sql",
-                    "database/accommodation/address/remove-all-address-from-address-table.sql"
-            );
+            executeSqlScripts(connection, CLEANUP_SCRIPTS);
         }
     }
 
     @Test
     @DisplayName("Find accommodation successfully when valid data is provided should return true")
     void existsByLocationAndTypeAndSize_ValidData_ShouldReturnTrue() {
+        //Given
+        Accommodation accommodation = accommodationTestDataBuilder.getPendingAccommodation();
+
         //When
         boolean actual = accommodationRepository.existsByLocationAndTypeAndSize(
-                ADDRESS_CITY_KYIV,
-                ADDRESS_STREET_KHRESHCHATYK,
-                ADDRESS_HOUSE_NUMBER_15B,
-                ADDRESS_APARTMENT_NUMBER_25,
-                Accommodation.Type.HOUSE,
-                ACCOMMODATION_SIZE
+                accommodation.getLocation().getCity(),
+                accommodation.getLocation().getStreet(),
+                accommodation.getLocation().getHouseNumber(),
+                accommodation.getLocation().getApartmentNumber(),
+                accommodation.getType(),
+                accommodation.getSize()
         );
 
         //Then
@@ -106,16 +102,19 @@ class AccommodationRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find accommodation when invalid data is provided should return false")
-    void existsByLocationAndTypeAndSize_InValidData_ShouldReturnFalse() {
+    @DisplayName("Find accommodation when different type a is provided should return false")
+    void existsByLocationAndTypeAndSize_DifferentType_ShouldReturnFalse() {
+        //Given
+        Accommodation accommodation = accommodationTestDataBuilder.getPendingAccommodation();
+
         //When
         boolean actual = accommodationRepository.existsByLocationAndTypeAndSize(
-                ADDRESS_CITY_KYIV,
-                ADDRESS_STREET_KHRESHCHATYK,
-                ADDRESS_HOUSE_NUMBER_15B,
-                ADDRESS_APARTMENT_NUMBER_25,
+                accommodation.getLocation().getCity(),
+                accommodation.getLocation().getStreet(),
+                accommodation.getLocation().getHouseNumber(),
+                accommodation.getLocation().getApartmentNumber(),
                 Accommodation.Type.APARTMENT,
-                ACCOMMODATION_SIZE
+                accommodation.getSize()
         );
 
         //Then
@@ -127,21 +126,13 @@ class AccommodationRepositoryTest {
             + "return accommodation")
     void findAllByAvailabilityGreaterThan_ValidData_ShouldReturnAccommodation() {
         //Given
-        Accommodation accommodation = accommodationFromRequestDto(
-                createSampleAccommodationRequest());
-        accommodation.getLocation().setId(SAMPLE_TEST_ID_1);
-        accommodation.setId(SAMPLE_TEST_ID_1);
-        accommodation.setAmenities(getAmenitiesById(ACCOMMODATION_DEFAULT_AMENITIES));
-
-        List<Accommodation> accommodations = List.of(accommodation);
-
-        Pageable pageable = PageRequest.of(0, 20);
-        Page<Accommodation> expected = new PageImpl<>(accommodations,
-                pageable, accommodations.size());
+        Page<Accommodation> expected = accommodationTestDataBuilder.buildPendingAccommodationPage();
 
         //When
-        Page<Accommodation> actual = accommodationRepository
-                .findAllByAvailabilityGreaterThan(AVAILABILITY_THRESHOLD, pageable);
+        Page<Accommodation> actual = accommodationRepository.findAllByAvailabilityGreaterThan(
+                AVAILABILITY_THRESHOLD,
+                accommodationTestDataBuilder.getPageable()
+        );
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
@@ -167,11 +158,7 @@ class AccommodationRepositoryTest {
             + "Accommodation")
     void findByIdAndAvailabilityGreaterThan_ValidData_ShouldReturnAccommodation() {
         //Given
-        Accommodation expected = accommodationFromRequestDto(
-                createSampleAccommodationRequest());
-        expected.getLocation().setId(SAMPLE_TEST_ID_1);
-        expected.setId(SAMPLE_TEST_ID_1);
-        expected.setAmenities(getAmenitiesById(ACCOMMODATION_DEFAULT_AMENITIES));
+        Accommodation expected = accommodationTestDataBuilder.getPendingAccommodation();
 
         //When
         Optional<Accommodation> actual = accommodationRepository
