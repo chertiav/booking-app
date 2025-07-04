@@ -1,9 +1,9 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_TEST_TOKEN;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NUMBER_OF_MINUTES;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TELEGRAM_LINK_TEMPLATE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_BOT_USERNAME;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_CURRENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculateExpirationInstant;
@@ -109,7 +109,7 @@ class TelegramLinkServiceImplTest {
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(telegramLinkRepository).findByToken(DEFAULT_TEST_TOKEN);
+        verify(telegramLinkRepository).findByToken(TEST_TOKEN_CURRENT);
         verify(telegramLinkRepository).delete(telegramLink);
         verifyNoMoreInteractions(telegramLinkRepository);
     }
@@ -142,16 +142,16 @@ class TelegramLinkServiceImplTest {
             + "if an invalid token is provided.")
     void getUserIdByToken_InvalidToken_ShouldReturnEmptyOptional() {
         //Given
-        when(telegramLinkRepository.findByToken(DEFAULT_TEST_TOKEN)).thenReturn(Optional.empty());
+        when(telegramLinkRepository.findByToken(TEST_TOKEN_CURRENT)).thenReturn(Optional.empty());
 
         //When
-        Optional<Long> actual = telegramLinkService.getUserIdByToken(DEFAULT_TEST_TOKEN);
+        Optional<Long> actual = telegramLinkService.getUserIdByToken(TEST_TOKEN_CURRENT);
 
         //Then
         assertEquals(Optional.empty(), actual,
                 EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(telegramLinkRepository).findByToken(DEFAULT_TEST_TOKEN);
+        verify(telegramLinkRepository).findByToken(TEST_TOKEN_CURRENT);
         verifyNoMoreInteractions(telegramLinkRepository);
     }
 

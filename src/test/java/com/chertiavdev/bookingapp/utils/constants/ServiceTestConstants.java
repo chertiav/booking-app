@@ -119,7 +119,9 @@ public final class ServiceTestConstants {
 
     //===============================telegramLink===================================
 
-    public static final String DEFAULT_TEST_TOKEN = "test-token";
+    public static final String TEST_TOKEN_CURRENT = "current-test-token";
+    public static final String TEST_TOKEN_EXPIRED = "expired-test-token";
+    public static final String TEST_TOKEN_INVALID = "invalid-test-token";
     public static final int NUMBER_OF_MINUTES = 10;
     public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
     public static final String TEST_BOT_USERNAME = "TestBot";

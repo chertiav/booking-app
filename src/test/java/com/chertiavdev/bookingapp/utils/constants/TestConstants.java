@@ -19,4 +19,16 @@ public final class TestConstants {
             "The actual result should be present.";
     public static final String ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT =
             "The actual result shouldn't be present.";
+    public static final String EXPIRATION_TIMESTAMPS_ARE_DIFFERENT =
+            "Expiration timestamps are different";
+    public static final String RECORD_SHOULD_EXIST_BEFORE_DELETION =
+            "Record should exist before deletion";
+    public static final String RECORD_SHOULD_BE_DELETED = "Record should be deleted";
+    public static final String INITIAL_RECORD_COUNT_DOESN_T_MATCH_EXPECTATION =
+            "Initial record count doesn't match expectation.";
+    public static final String NO_RECORDS_SHOULD_HAVE_BEEN_DELETED =
+            "No records should have been deleted.";
+
+    private TestConstants() {
+    }
 }

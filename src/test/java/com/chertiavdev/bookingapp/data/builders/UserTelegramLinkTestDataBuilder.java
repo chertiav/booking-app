@@ -1,9 +1,10 @@
 package com.chertiavdev.bookingapp.data.builders;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_TEST_TOKEN;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NUMBER_OF_MINUTES;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_CURRENT;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_EXPIRED;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculateExpirationInstant;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestTelegramLink;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestTelegramLinkDto;
@@ -16,6 +17,7 @@ import lombok.Getter;
 @Getter
 public class UserTelegramLinkTestDataBuilder {
     private final User userJohn;
+    private final User userSansa;
     private final TelegramLink telegramLinkJohn;
     private final TelegramLink expiredTelegramLinkJohn;
     private final TelegramLink telegramLinkJohnToModel;
@@ -23,6 +25,7 @@ public class UserTelegramLinkTestDataBuilder {
 
     public UserTelegramLinkTestDataBuilder(UserTestDataBuilder userTestDataBuilder) {
         userJohn = userTestDataBuilder.getUserJohn();
+        userSansa = userTestDataBuilder.getUserSansa();
         telegramLinkJohn = createTelegramLinkJohn();
         expiredTelegramLinkJohn = createExpiredTegramLinkJohn();
         telegramLinkJohnToModel = createTelegramLinkJohnToModel();
@@ -33,7 +36,7 @@ public class UserTelegramLinkTestDataBuilder {
         return createTestTelegramLink(
                 SAMPLE_TEST_ID_1,
                 userJohn,
-                DEFAULT_TEST_TOKEN,
+                TEST_TOKEN_CURRENT,
                 calculateExpirationInstant(NUMBER_OF_MINUTES, true),
                 false
         );
@@ -42,8 +45,8 @@ public class UserTelegramLinkTestDataBuilder {
     private TelegramLink createExpiredTegramLinkJohn() {
         return createTestTelegramLink(
                 SAMPLE_TEST_ID_2,
-                userJohn,
-                DEFAULT_TEST_TOKEN,
+                userSansa,
+                TEST_TOKEN_EXPIRED,
                 calculateExpirationInstant(NUMBER_OF_MINUTES, false),
                 false
         );
@@ -53,7 +56,7 @@ public class UserTelegramLinkTestDataBuilder {
         return createTestTelegramLink(
                 null,
                 userJohn,
-                DEFAULT_TEST_TOKEN,
+                TEST_TOKEN_CURRENT,
                 calculateExpirationInstant(NUMBER_OF_MINUTES, true),
                 false
         );
