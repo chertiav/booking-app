@@ -100,16 +100,18 @@ class UserTelegramServiceImplTest {
         UserTelegram existedUserTelegram = userTelegramTestDataBuilder
                 .getDeletedUserTelegramSansa();
 
-        doNothing().when(userTelegramRepository)
-                .restoreUserTelegram(existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
+        doNothing().when(userTelegramRepository).restoreUserTelegramAndUpdateChatId(
+                existedUserTelegram.getId(),
+                USER_TELEGRAM_NEW_CHAT_ID
+        );
 
         //When
         assertDoesNotThrow(() -> userTelegramService
                 .update(existedUserTelegram, USER_TELEGRAM_NEW_CHAT_ID));
 
         //Then
-        verify(userTelegramRepository)
-                .restoreUserTelegram(existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
+        verify(userTelegramRepository).restoreUserTelegramAndUpdateChatId(
+                existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
         verifyNoMoreInteractions(userTelegramRepository);
     }
 
@@ -176,8 +178,8 @@ class UserTelegramServiceImplTest {
         when(userService.findById(user.getId())).thenReturn(user);
         when(userTelegramRepository.findByUserId(user.getId()))
                 .thenReturn(Optional.of(existedUserTelegram));
-        doNothing().when(userTelegramRepository)
-                .restoreUserTelegram(existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
+        doNothing().when(userTelegramRepository).restoreUserTelegramAndUpdateChatId(
+                existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
 
         //When
         assertDoesNotThrow(() -> userTelegramService
@@ -186,8 +188,8 @@ class UserTelegramServiceImplTest {
         //Then
         verify(userService).findById(user.getId());
         verify(userTelegramRepository).findByUserId(user.getId());
-        verify(userTelegramRepository)
-                .restoreUserTelegram(existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
+        verify(userTelegramRepository).restoreUserTelegramAndUpdateChatId(
+                existedUserTelegram.getId(), USER_TELEGRAM_NEW_CHAT_ID);
         verifyNoMoreInteractions(userService, userTelegramRepository);
     }
 

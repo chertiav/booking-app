@@ -17,17 +17,20 @@ public class RepositoriesTestUtils {
         }
     }
 
-    public static boolean recordExistsInDatabase(
+    public static boolean recordExistsBeforeTimestamp(
             JdbcTemplate jdbcTemplate,
             String tableName,
             Instant now
     ) {
-        String query = String.format(
-                "SELECT COUNT(*) FROM %s WHERE expires_at < ? AND is_deleted = false",
-                tableName);
-        Timestamp timestamp = Timestamp.from(now);
-        Integer count = jdbcTemplate.queryForObject(query, Integer.class, timestamp);
-        return count != null && count > 0;
+        return checkRecordExistence(jdbcTemplate, tableName, "expires_at < ?", Timestamp.from(now));
+    }
+
+    public static boolean recordExistsInDatabaseById(
+            JdbcTemplate jdbcTemplate,
+            String tableName,
+            Long id
+    ) {
+        return checkRecordExistence(jdbcTemplate, tableName, "id = ?", id);
     }
 
     public static Integer countRecordsInDatabase(
@@ -40,5 +43,20 @@ public class RepositoriesTestUtils {
                 tableName);
         Timestamp timestamp = Timestamp.from(now);
         return jdbcTemplate.queryForObject(query, Integer.class, timestamp);
+    }
+
+    private static boolean checkRecordExistence(
+            JdbcTemplate jdbcTemplate,
+            String tableName,
+            String condition,
+            Object parameter
+    ) {
+        String query = String.format(
+                "SELECT COUNT(*) FROM %s WHERE %s AND is_deleted = false",
+                tableName,
+                condition
+        );
+        Integer count = jdbcTemplate.queryForObject(query, Integer.class, parameter);
+        return count != null && count > 0;
     }
 }

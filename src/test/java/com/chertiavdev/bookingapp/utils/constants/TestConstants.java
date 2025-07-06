@@ -5,6 +5,8 @@ public final class TestConstants {
             "The actual result should not be null";
     public static final String ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE =
             "The actual result should be equal to the expected one";
+    public static final String ACTUAL_RESULT_SHOULD_NOT_BE_EQUAL_TO_THE_EXPECTED_ONE =
+            "The actual result should not be equal to the expected one";
     public static final String EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE =
             "The exception message should be equal to the expected one";
     public static final String TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE =

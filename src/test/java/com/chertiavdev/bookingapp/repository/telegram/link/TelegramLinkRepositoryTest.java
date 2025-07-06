@@ -12,7 +12,7 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SH
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.countRecordsInDatabase;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
-import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsInDatabase;
+import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsBeforeTimestamp;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -159,7 +159,7 @@ class TelegramLinkRepositoryTest {
         //Given
         TelegramLink telegramLink = userTelegramLinkTestDataBuilder.getExpiredTelegramLinkJohn();
         Instant now = Instant.now();
-        boolean existsBefore = recordExistsInDatabase(
+        boolean existsBefore = recordExistsBeforeTimestamp(
                 jdbcTemplate,
                 TELEGRAM_LINKS_TABLE_NAME,
                 now
