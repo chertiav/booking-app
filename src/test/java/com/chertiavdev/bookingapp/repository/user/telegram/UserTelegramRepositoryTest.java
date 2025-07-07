@@ -40,6 +40,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Import(TestConfig.class)
 class UserTelegramRepositoryTest {
     private static final String USER_TELEGRAM_TABLE_NAME = "user_telegram";
+    private static final String[] SETUP_SCRIPTS = {
+            "database/user/add-users-to-users-table.sql",
+            "database/user/role/add-role-for-into-users_roles_table.sql",
+            "database/user/telegram/add-user_telegram-to-user_telegram-table.sql"
+    };
+    private static final String[] CLEANUP_SCRIPTS = {
+            "database/user/telegram/remove-all-from-user_telegram.sql",
+            "database/user/role/remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
+            "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
+    };
     @Autowired
     private UserTelegramRepository userTelegramRepository;
     @Autowired
@@ -61,11 +71,7 @@ class UserTelegramRepositoryTest {
     private static void setupDatabase(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/user/add-users-to-users-table.sql",
-                    "database/user/role/add-role-for-into-users_roles_table.sql",
-                    "database/user/telegram/add-user_telegram-to-user_telegram-table.sql"
-            );
+            executeSqlScripts(connection, SETUP_SCRIPTS);
         }
     }
 
@@ -73,12 +79,7 @@ class UserTelegramRepositoryTest {
     private static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/user/telegram/remove-all-from-user_telegram.sql",
-                    "database/user/role/"
-                            + "remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
-                    "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
-            );
+            executeSqlScripts(connection, CLEANUP_SCRIPTS);
         }
     }
 

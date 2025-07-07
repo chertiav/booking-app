@@ -45,6 +45,16 @@ class TelegramLinkRepositoryTest {
     private static final String EXPIRATION_DATE_FIELD = "expiresAt";
     private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";
     private static final int EXPIRATION_OFFSET_SECONDS = 600;
+    private static final String[] SETUP_SCRIPTS = {
+            "database/user/add-users-to-users-table.sql",
+            "database/user/role/add-role-for-into-users_roles_table.sql",
+            "database/telegram/add-telegram_link-to-telegram_links-table.sql"
+    };
+    private static final String[] CLEANUP_SCRIPTS = {
+            "database/telegram/remove-all-telegram_links-from-telegram_links-table.sql",
+            "database/user/role/remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
+            "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
+    };
     @Autowired
     private TelegramLinkRepository telegramLinkRepository;
     @Autowired
@@ -66,11 +76,7 @@ class TelegramLinkRepositoryTest {
     private static void setupDatabase(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/user/add-users-to-users-table.sql",
-                    "database/user/role/add-role-for-into-users_roles_table.sql",
-                    "database/telegram/add-telegram_link-to-telegram_links-table.sql"
-            );
+            executeSqlScripts(connection, SETUP_SCRIPTS);
         }
     }
 
@@ -78,12 +84,7 @@ class TelegramLinkRepositoryTest {
     private static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/telegram/remove-all-telegram_links-from-telegram_links-table.sql",
-                    "database/user/role/"
-                            + "remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
-                    "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
-            );
+            executeSqlScripts(connection, CLEANUP_SCRIPTS);
         }
     }
 

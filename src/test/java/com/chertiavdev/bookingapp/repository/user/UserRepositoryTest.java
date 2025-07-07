@@ -31,6 +31,14 @@ import org.springframework.context.annotation.Import;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(TestConfig.class)
 class UserRepositoryTest {
+    private static final String[] SETUP_SCRIPTS = {
+            "database/user/add-users-to-users-table.sql",
+            "database/user/role/add-role-for-into-users_roles_table.sql"
+    };
+    private static final String[] CLEANUP_SCRIPTS = {
+            "database/user/role/remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
+            "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
+    };
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -50,10 +58,7 @@ class UserRepositoryTest {
     private static void setupDatabase(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/user/add-users-to-users-table.sql",
-                    "database/user/role/add-role-for-into-users_roles_table.sql"
-            );
+            executeSqlScripts(connection, SETUP_SCRIPTS);
         }
     }
 
@@ -61,11 +66,7 @@ class UserRepositoryTest {
     private static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            executeSqlScripts(connection,
-                    "database/user/role/"
-                            + "remove-role-where-user_id-more-than-one-from-users_roles_table.sql",
-                    "database/user/remove-users-where-id-more-than-one-from-users-table.sql"
-            );
+            executeSqlScripts(connection, CLEANUP_SCRIPTS);
         }
     }
 
