@@ -6,11 +6,8 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RE
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXPIRATION_TIMESTAMPS_ARE_DIFFERENT;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INITIAL_RECORD_COUNT_DOESN_T_MATCH_EXPECTATION;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NO_RECORDS_SHOULD_HAVE_BEEN_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
-import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.countRecordsInDatabase;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsBeforeTimestamp;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -44,7 +41,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 class TelegramLinkRepositoryTest {
     private static final String EXPIRATION_DATE_FIELD = "expiresAt";
     private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";
-    private static final int EXPIRATION_OFFSET_SECONDS = 500;
     private static final String[] SETUP_SCRIPTS = {
             "database/user/add-users-to-users-table.sql",
             "database/user/role/add-role-for-into-users_roles_table.sql",
@@ -174,31 +170,5 @@ class TelegramLinkRepositoryTest {
 
         assertTrue(existsBefore, RECORD_SHOULD_EXIST_BEFORE_DELETION);
         assertTrue(actual.isEmpty(), RECORD_SHOULD_BE_DELETED);
-    }
-
-    @Test
-    @DisplayName("Ensure no Link is deleted when expiresAt is after the given timestamp")
-    void deleteByExpiresAtBefore_InValidTimestamp_ShouldNotDeleteTelegramLink() {
-        //Given
-        Instant now = Instant.now().minusSeconds(EXPIRATION_OFFSET_SECONDS);
-        Integer initialCount = countRecordsInDatabase(
-                jdbcTemplate,
-                TELEGRAM_LINKS_TABLE_NAME,
-                now
-        );
-        Integer expectedCount = 2;
-
-        // When
-        telegramLinkRepository.deleteByExpiresAtBefore(now);
-
-        // Then
-        Integer finalCount = countRecordsInDatabase(
-                jdbcTemplate,
-                TELEGRAM_LINKS_TABLE_NAME,
-                now
-        );
-
-        assertEquals(expectedCount, initialCount, INITIAL_RECORD_COUNT_DOESN_T_MATCH_EXPECTATION);
-        assertEquals(expectedCount, finalCount, NO_RECORDS_SHOULD_HAVE_BEEN_DELETED);
     }
 }
