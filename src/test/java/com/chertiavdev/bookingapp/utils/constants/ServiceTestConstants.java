@@ -11,6 +11,7 @@ public final class ServiceTestConstants {
     public static final long SAMPLE_TEST_ID_2 = 2L;
     public static final long SAMPLE_TEST_ID_3 = 3L;
     public static final long SAMPLE_TEST_ID_4 = 4L;
+    public static final long SAMPLE_TEST_ID_5 = 5L;
     public static final long INVALID_TEST_ID = 100L;
 
     //================================accommodation======================================
@@ -90,6 +91,7 @@ public final class ServiceTestConstants {
     public static final String PAYMENT_SESSION_EXPIRED_URL = "session_id_3456789012";
     public static final String PAYMENT_SESSION_RENEW_ID = "4567890123";
     public static final String PAYMENT_SESSION_RENEW_URL = "session_id_4567890123";
+    public static final String PAYMENT_SESSION_INVALID_ID = "0000000000";
     public static final String CAN_T_RETRIEVE_SESSION_BY_ID = "Can't retrieve session by id";
     public static final String SESSION_ID_RETRIEVAL_ERROR_TEMPLATE = "%s: %s. Reason: %s: %s";
     public static final String EXPECTED_PAYMENT_STATUS_PAID_MESSAGE = "Payment status should be %s";

@@ -411,7 +411,7 @@ public class ServiceTestUtils {
         payment.setBooking(booking);
         payment.setSessionId(sessionId);
         payment.setSessionUrl(sessionUrl);
-        payment.setAmountToPay(amountToPay);
+        payment.setAmountToPay(amountToPay.setScale(2, RoundingMode.HALF_UP));
         payment.setDeleted(isDeleted);
         return payment;
     }

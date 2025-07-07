@@ -7,6 +7,7 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BO
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_4;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_5;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestBooking;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestBookingRequestDto;
@@ -35,6 +36,7 @@ public class BookingTestDataBuilder {
     private final Accommodation pendingAccommodation;
     private final Accommodation confirmedAccommodation;
     private final Booking pendingBooking;
+    private final Booking pendingBookingUserSansa;
     private final Booking confirmedBooking;
     private final Booking canceledBooking;
     private final Booking updatedPendingBooking;
@@ -63,6 +65,7 @@ public class BookingTestDataBuilder {
         this.pendingAccommodation = accommodationTestDataBuilder.getPendingAccommodation();
 
         this.pendingBooking = createPendingBooking();
+        this.pendingBookingUserSansa = createPendingBookingUserSansa();
         this.confirmedBooking = createConfirmedBooking();
         this.canceledBooking = createCanceledBooking();
         this.updatedPendingBooking = createUpdatedPendingBooking();
@@ -110,7 +113,7 @@ public class BookingTestDataBuilder {
     }
 
     public List<Booking> buildUpcomingBookingsList() {
-        return List.of(pendingBooking);
+        return List.of(pendingBooking, pendingBookingUserSansa);
     }
 
     private Booking createPendingBooking() {
@@ -120,6 +123,17 @@ public class BookingTestDataBuilder {
                 LocalDate.now().plusDays(BOOKING_DAYS_UNTIL_CHECKOUT),
                 pendingAccommodation,
                 userJohn,
+                PENDING
+        );
+    }
+
+    private Booking createPendingBookingUserSansa() {
+        return createTestBooking(
+                SAMPLE_TEST_ID_5,
+                LocalDate.now(),
+                LocalDate.now().plusDays(BOOKING_DAYS_UNTIL_CHECKOUT),
+                confirmedAccommodation,
+                userSansa,
                 PENDING
         );
     }

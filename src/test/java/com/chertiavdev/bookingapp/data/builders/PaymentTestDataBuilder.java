@@ -33,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 @Getter
 public class PaymentTestDataBuilder {
     private final Booking pendingBooking;
+    private final Booking pendingBookingUserSansa;
     private final Booking confirmedBooking;
 
     private final Session sessionPendingBooking;
@@ -60,6 +61,7 @@ public class PaymentTestDataBuilder {
             StripleTestDataBuilder stripleTestDataBuilder
     ) {
         this.pendingBooking = bookingTestDataBuilder.getPendingBooking();
+        this.pendingBookingUserSansa = bookingTestDataBuilder.getPendingBookingUserSansa();
         this.confirmedBooking = bookingTestDataBuilder.getConfirmedBooking();
 
         this.sessionPendingBooking = stripleTestDataBuilder.getSessionPendingBooking();
@@ -85,7 +87,7 @@ public class PaymentTestDataBuilder {
 
     public Page<Payment> buildAllPaymentsUserJhonToPage() {
         return createPage(
-                List.of(pendingPaymentPendingBooking, expiredPaymentPendingBooking),
+                List.of(pendingPaymentPendingBooking),
                 pageable
         );
     }
@@ -109,6 +111,14 @@ public class PaymentTestDataBuilder {
                 List.of(pendingPaymentPendingBookingDto, paidPaymentConfirmedBookingDto),
                 pageable
         );
+    }
+
+    public Page<Payment> buildEmptyPaymentsPage() {
+        return createPage(List.of(), pageable);
+    }
+
+    public List<Payment> buildListAllPaymentsByPendingStatus() {
+        return List.of(pendingPaymentPendingBooking);
     }
 
     private Payment createPendingPaymentPendingBooking() {
@@ -139,7 +149,7 @@ public class PaymentTestDataBuilder {
         return createTestPayment(
                 SAMPLE_TEST_ID_3,
                 Payment.Status.EXPIRED,
-                pendingBooking,
+                pendingBookingUserSansa,
                 PAYMENT_SESSION_EXPIRED_ID,
                 PAYMENT_SESSION_EXPIRED_URL,
                 ACCOMMODATION_DAILY_RATE_7550,
@@ -173,12 +183,12 @@ public class PaymentTestDataBuilder {
 
     private Payment createRenewPaymentPendingBooking() {
         return createTestPayment(
-                SAMPLE_TEST_ID_1,
+                SAMPLE_TEST_ID_3,
                 Payment.Status.PENDING,
-                pendingBooking,
+                pendingBookingUserSansa,
                 PAYMENT_SESSION_RENEW_ID,
                 PAYMENT_SESSION_RENEW_URL,
-                ACCOMMODATION_DAILY_RATE_7550,
+                ACCOMMODATION_DAILY_RATE_10050,
                 false
         );
     }

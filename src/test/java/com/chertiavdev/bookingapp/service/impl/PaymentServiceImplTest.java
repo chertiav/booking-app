@@ -266,7 +266,7 @@ class PaymentServiceImplTest {
         Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
         PaymentDto expected = paymentTestDataBuilder.getPaidPaymentPendingBookingDto();
 
-        when(paymentRepository.findAllBySessionId(payment.getSessionId()))
+        when(paymentRepository.findBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
         when(stripeService.isSessionPaid(payment.getSessionId())).thenReturn(true);
         doAnswer(invocation -> {
@@ -299,7 +299,7 @@ class PaymentServiceImplTest {
         String paymentNotificationMessage = String.format(PAYMENT_NOTIFICATION,
                 payment.getId(), payment.getAmountToPay());
 
-        verify(paymentRepository).findAllBySessionId(payment.getSessionId());
+        verify(paymentRepository).findBySessionId(payment.getSessionId());
         verify(stripeService).isSessionPaid(payment.getSessionId());
         verify(paymentRepository).save(payment);
         verify(bookingRepository).save(paymentTestDataBuilder.getPendingBooking());
@@ -319,7 +319,7 @@ class PaymentServiceImplTest {
         Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
         PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
 
-        when(paymentRepository.findAllBySessionId(payment.getSessionId()))
+        when(paymentRepository.findBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
         when(stripeService.isSessionPaid(payment.getSessionId())).thenReturn(false);
         when(paymentMapper.toDto(payment)).thenReturn(expected);
@@ -339,7 +339,7 @@ class PaymentServiceImplTest {
         String paymentNotificationMessage = String.format(
                 PAYMENT_NOT_COMPLETED_NOTIFICATION, payment.getId());
 
-        verify(paymentRepository).findAllBySessionId(payment.getSessionId());
+        verify(paymentRepository).findBySessionId(payment.getSessionId());
         verify(stripeService).isSessionPaid(payment.getSessionId());
         verify(notificationService)
                 .sendNotificationByUserId(paymentNotificationMessage, user.getId());
@@ -352,7 +352,7 @@ class PaymentServiceImplTest {
     @DisplayName("Handle success should throw an exception when the session ID is invalid")
     void handleSuccess_InvalidSessionId_ShouldReturnException() {
         //Given
-        when(paymentRepository.findAllBySessionId(PAYMENT_SESSION_PENDING_ID))
+        when(paymentRepository.findBySessionId(PAYMENT_SESSION_PENDING_ID))
                 .thenReturn(Optional.empty());
 
         //When
@@ -365,7 +365,7 @@ class PaymentServiceImplTest {
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(paymentRepository).findAllBySessionId(PAYMENT_SESSION_PENDING_ID);
+        verify(paymentRepository).findBySessionId(PAYMENT_SESSION_PENDING_ID);
         verifyNoMoreInteractions(paymentRepository);
     }
 
@@ -376,7 +376,7 @@ class PaymentServiceImplTest {
         Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
         PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
 
-        when(paymentRepository.findAllBySessionId(payment.getSessionId()))
+        when(paymentRepository.findBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
         when(paymentMapper.toDto(payment)).thenReturn(expected);
 
@@ -389,7 +389,7 @@ class PaymentServiceImplTest {
 
         User user = paymentTestDataBuilder.getPendingBooking().getUser();
 
-        verify(paymentRepository).findAllBySessionId(payment.getSessionId());
+        verify(paymentRepository).findBySessionId(payment.getSessionId());
         verify(notificationService)
                 .sendNotificationByUserId(PAYMENT_CANCELLED_NOTIFICATION, user.getId());
         verify(paymentMapper).toDto(payment);
@@ -400,7 +400,7 @@ class PaymentServiceImplTest {
     @DisplayName("Handle cancel should throw an exception when the session ID is invalid")
     void handleCancel_InValidSessionId_ShouldReturnException() {
         //Given
-        when(paymentRepository.findAllBySessionId(PAYMENT_SESSION_PENDING_ID))
+        when(paymentRepository.findBySessionId(PAYMENT_SESSION_PENDING_ID))
                 .thenReturn(Optional.empty());
 
         //When
@@ -413,7 +413,7 @@ class PaymentServiceImplTest {
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(paymentRepository).findAllBySessionId(PAYMENT_SESSION_PENDING_ID);
+        verify(paymentRepository).findBySessionId(PAYMENT_SESSION_PENDING_ID);
         verifyNoMoreInteractions(paymentRepository);
     }
 
@@ -487,10 +487,10 @@ class PaymentServiceImplTest {
     @DisplayName("Renew payment should update the payment status and return the updated PaymentDto")
     void renewPayment_ValidData_ShouldReturnPaymentDto() {
         //Given
-        Booking booking = paymentTestDataBuilder.getPendingBooking();
+        Booking booking = paymentTestDataBuilder.getPendingBookingUserSansa();
         Payment payment = paymentTestDataBuilder.getExpiredPaymentPendingBooking();
         Session session = paymentTestDataBuilder.getRenewSession();
-        PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
+        PaymentDto expected = paymentTestDataBuilder.getPaymentRenewSessionDto();
         User user = booking.getUser();
 
         when(paymentRepository.findById(payment.getId())).thenReturn(Optional.of(payment));

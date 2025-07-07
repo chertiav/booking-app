@@ -259,6 +259,7 @@ class BookingRepositoryTest {
 
     private @NotNull Stream<Arguments> overlappingBookingsProvider() {
         Booking pendingBooking = bookingsTestDataBuilder.getPendingBooking();
+        Booking pendingBookingUserSansa = bookingsTestDataBuilder.getPendingBookingUserSansa();
         Booking confirmedBooking = bookingsTestDataBuilder.getConfirmedBooking();
 
         return Stream.of(
@@ -276,12 +277,12 @@ class BookingRepositoryTest {
                         SAMPLE_TEST_ID_2,
                         pendingBooking.getCheckIn(),
                         pendingBooking.getCheckOut(),
-                        List.of()),
+                        List.of(pendingBookingUserSansa)),
                 arguments("Exact date match for booking EXPIRED",
                         SAMPLE_TEST_ID_2,
                         pendingBooking.getCheckIn(),
                         pendingBooking.getCheckOut(),
-                        List.of()),
+                        List.of(pendingBookingUserSansa)),
                 arguments("Non-overlapping dates after",
                         SAMPLE_TEST_ID_1,
                         pendingBooking.getCheckOut().plusDays(10),
