@@ -38,16 +38,17 @@ public class PaymentTestDataBuilder {
     private final Session sessionPendingBooking;
     private final Session renewSession;
 
-    private final Payment paymentPendingBooking;
-    private final Payment paymentPaidBooking;
-    private final Payment paymentExpiredBooking;
-    private final Payment paymentPendingBookingToModel;
-    private final Payment paymentConfirmedBooking;
+    private final Payment pendingPaymentPendingBooking;
+    private final Payment paidPaymentPendingBooking;
+    private final Payment expiredPaymentPendingBooking;
+    private final Payment pendingPaymentPendingBookingToModel;
+    private final Payment paidPaymentConfirmedBooking;
     private final Payment renewPaymentPendingBooking;
 
-    private final PaymentDto paymentPendingBookingDto;
-    private final PaymentDto paymentConfirmedBookingDto;
-    private final PaymentDto paymentPaidBookingDto;
+    private final PaymentDto pendingPaymentPendingBookingDto;
+    private final PaymentDto paidPaymentConfirmedBookingDto;
+    private final PaymentDto expiredPaymentPendingBookingDto;
+    private final PaymentDto paidPaymentPendingBookingDto;
     private final PaymentDto paymentRenewSessionDto;
 
     private final CreatePaymentRequestDto paymentRequestPendingBookingDto;
@@ -64,16 +65,17 @@ public class PaymentTestDataBuilder {
         this.sessionPendingBooking = stripleTestDataBuilder.getSessionPendingBooking();
         this.renewSession = stripleTestDataBuilder.getRenewSession();
 
-        this.paymentPendingBooking = createPaymentPendingBooking();
-        this.paymentPaidBooking = createPaymentPaidBooking();
-        this.paymentExpiredBooking = createPaymentExpiredBooking();
-        this.paymentPendingBookingToModel = createPaymentPendingBookingToModel();
-        this.paymentConfirmedBooking = createPaymentConfirmedBooking();
+        this.pendingPaymentPendingBooking = createPendingPaymentPendingBooking();
+        this.paidPaymentPendingBooking = createPaidPaymentPendingBooking();
+        this.expiredPaymentPendingBooking = createExpiredPaymentPendingBooking();
+        this.pendingPaymentPendingBookingToModel = createPendingPaymentPendingBookingToModel();
+        this.paidPaymentConfirmedBooking = createPaidPaymentConfirmedBooking();
         this.renewPaymentPendingBooking = createRenewPaymentPendingBooking();
 
-        this.paymentPendingBookingDto = createPaymentPendingBookingDto();
-        this.paymentConfirmedBookingDto = createPaymentConfirmedBookingDto();
-        this.paymentPaidBookingDto = createPaymentPaidBookingDto();
+        this.pendingPaymentPendingBookingDto = createPendingPaymentPendingBookingDto();
+        this.paidPaymentConfirmedBookingDto = createPaidPaymentConfirmedBookingDto();
+        this.expiredPaymentPendingBookingDto = createExpiredPaymentPendingBookingDto();
+        this.paidPaymentPendingBookingDto = createPaidPaymentPendingBookingDto();
         this.paymentRenewSessionDto = createPaymentRenewSessionDto();
 
         this.paymentRequestPendingBookingDto = createPaymentRequestPendingBookingDto();
@@ -81,23 +83,35 @@ public class PaymentTestDataBuilder {
         this.pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
     }
 
-    public Page<Payment> buildPaymentPendingBookingsPage() {
-        return createPage(List.of(paymentPendingBooking), pageable);
+    public Page<Payment> buildAllPaymentsUserJhonToPage() {
+        return createPage(
+                List.of(pendingPaymentPendingBooking, expiredPaymentPendingBooking),
+                pageable
+        );
     }
 
-    public Page<PaymentDto> buildPaymentPendingBookingDtosPage() {
-        return createPage(List.of(paymentPendingBookingDto), pageable);
+    public Page<PaymentDto> buildAllPaymentDtosUserJhonToPage() {
+        return createPage(
+                List.of(pendingPaymentPendingBookingDto),
+                pageable
+        );
     }
 
     public Page<Payment> buildAllPaymentBookingsPage() {
-        return createPage(List.of(paymentPendingBooking, paymentConfirmedBooking), pageable);
+        return createPage(
+                List.of(pendingPaymentPendingBooking, paidPaymentConfirmedBooking),
+                pageable
+        );
     }
 
     public Page<PaymentDto> buildAllPaymentDtosPage() {
-        return createPage(List.of(paymentPendingBookingDto, paymentConfirmedBookingDto), pageable);
+        return createPage(
+                List.of(pendingPaymentPendingBookingDto, paidPaymentConfirmedBookingDto),
+                pageable
+        );
     }
 
-    private Payment createPaymentPendingBooking() {
+    private Payment createPendingPaymentPendingBooking() {
         return createTestPayment(
                 SAMPLE_TEST_ID_1,
                 Payment.Status.PENDING,
@@ -109,7 +123,7 @@ public class PaymentTestDataBuilder {
         );
     }
 
-    private Payment createPaymentPaidBooking() {
+    private Payment createPaidPaymentPendingBooking() {
         return createTestPayment(
                 SAMPLE_TEST_ID_1,
                 Payment.Status.PAID,
@@ -121,7 +135,7 @@ public class PaymentTestDataBuilder {
         );
     }
 
-    private Payment createPaymentExpiredBooking() {
+    private Payment createExpiredPaymentPendingBooking() {
         return createTestPayment(
                 SAMPLE_TEST_ID_3,
                 Payment.Status.EXPIRED,
@@ -133,7 +147,7 @@ public class PaymentTestDataBuilder {
         );
     }
 
-    private Payment createPaymentPendingBookingToModel() {
+    private Payment createPendingPaymentPendingBookingToModel() {
         return createTestPayment(
                 null,
                 Payment.Status.PENDING,
@@ -145,7 +159,7 @@ public class PaymentTestDataBuilder {
         );
     }
 
-    private Payment createPaymentConfirmedBooking() {
+    private Payment createPaidPaymentConfirmedBooking() {
         return createTestPayment(
                 SAMPLE_TEST_ID_2,
                 Payment.Status.PAID,
@@ -169,16 +183,20 @@ public class PaymentTestDataBuilder {
         );
     }
 
-    private PaymentDto createPaymentPendingBookingDto() {
-        return mapPaymentToDto(paymentPendingBooking);
+    private PaymentDto createPendingPaymentPendingBookingDto() {
+        return mapPaymentToDto(pendingPaymentPendingBooking);
     }
 
-    private PaymentDto createPaymentConfirmedBookingDto() {
-        return mapPaymentToDto(paymentConfirmedBooking);
+    private PaymentDto createPaidPaymentConfirmedBookingDto() {
+        return mapPaymentToDto(paidPaymentConfirmedBooking);
     }
 
-    private PaymentDto createPaymentPaidBookingDto() {
-        return mapPaymentToDto(paymentPaidBooking);
+    private PaymentDto createExpiredPaymentPendingBookingDto() {
+        return mapPaymentToDto(expiredPaymentPendingBooking);
+    }
+
+    private PaymentDto createPaidPaymentPendingBookingDto() {
+        return mapPaymentToDto(paidPaymentPendingBooking);
     }
 
     private PaymentDto createPaymentRenewSessionDto() {

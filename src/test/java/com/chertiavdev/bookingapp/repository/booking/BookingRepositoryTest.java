@@ -87,7 +87,7 @@ class BookingRepositoryTest {
     }
 
     @SneakyThrows
-    private void teardown(DataSource dataSource) {
+    private static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             executeSqlScripts(connection, CLEANUP_SCRIPTS);

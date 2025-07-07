@@ -106,10 +106,10 @@ class PaymentServiceImplTest {
             + "is provided")
     void getPayments_ValidUserId_ShouldReturnPagePaymentDto() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
-        PaymentDto paymentDto = paymentTestDataBuilder.getPaymentPendingBookingDto();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        PaymentDto paymentDto = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
         Pageable pageable = paymentTestDataBuilder.getPageable();
-        Page<Payment> paymentPage = paymentTestDataBuilder.buildPaymentPendingBookingsPage();
+        Page<Payment> paymentPage = paymentTestDataBuilder.buildAllPaymentsUserJhonToPage();
 
         when(paymentRepository.findAllByUserId(SAMPLE_TEST_ID_1, pageable)).thenReturn(paymentPage);
         when(paymentMapper.toDto(payment)).thenReturn(paymentDto);
@@ -118,7 +118,7 @@ class PaymentServiceImplTest {
         Page<PaymentDto> actual = paymentService.getPayments(SAMPLE_TEST_ID_1, pageable);
 
         //Then
-        Page<PaymentDto> expected = paymentTestDataBuilder.buildPaymentPendingBookingDtosPage();
+        Page<PaymentDto> expected = paymentTestDataBuilder.buildAllPaymentDtosUserJhonToPage();
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected.getNumberOfElements(),
@@ -145,10 +145,10 @@ class PaymentServiceImplTest {
             + "if the user ID is not provided.")
     void getPayments_UserIdIsNull_ShouldReturnPagePaymentDto() {
         //Given
-        Payment paymentPending = paymentTestDataBuilder.getPaymentPendingBooking();
-        Payment paymentConfirmed = paymentTestDataBuilder.getPaymentConfirmedBooking();
-        PaymentDto paymentPendingDto = paymentTestDataBuilder.getPaymentPendingBookingDto();
-        PaymentDto paymentConfirmedDto = paymentTestDataBuilder.getPaymentConfirmedBookingDto();
+        Payment paymentPending = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        Payment paymentConfirmed = paymentTestDataBuilder.getPaidPaymentConfirmedBooking();
+        PaymentDto paymentPendingDto = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
+        PaymentDto paymentConfirmedDto = paymentTestDataBuilder.getPaidPaymentConfirmedBookingDto();
         Pageable pageable = paymentTestDataBuilder.getPageable();
         Page<Payment> paymentPage = paymentTestDataBuilder.buildAllPaymentBookingsPage();
 
@@ -192,9 +192,9 @@ class PaymentServiceImplTest {
                 .getPaymentRequestPendingBookingDto();
         Session session = paymentTestDataBuilder.getSessionPendingBooking();
         BigDecimal amountToPay = BigDecimal.TEN;
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
-        Payment paymentModel = paymentTestDataBuilder.getPaymentPendingBookingToModel();
-        PaymentDto expected = paymentTestDataBuilder.getPaymentPendingBookingDto();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        Payment paymentModel = paymentTestDataBuilder.getPendingPaymentPendingBookingToModel();
+        PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
 
         when(bookingRepository
                 .calculateTotalPriceByBookingIdAndUserId(requestDto.getBookingId(), user.getId()))
@@ -263,8 +263,8 @@ class PaymentServiceImplTest {
             + "when session is paid")
     void handleSuccess_SessionIsPaid_ShouldReturnPaymentDto() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
-        PaymentDto expected = paymentTestDataBuilder.getPaymentPaidBookingDto();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        PaymentDto expected = paymentTestDataBuilder.getPaidPaymentPendingBookingDto();
 
         when(paymentRepository.findAllBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
@@ -316,8 +316,8 @@ class PaymentServiceImplTest {
             + "send notifications without updating payment status when session isn't paid")
     void handleSuccess_SessionIsNotPaid_ShouldReturnPaymentDto() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
-        PaymentDto expected = paymentTestDataBuilder.getPaymentPendingBookingDto();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
 
         when(paymentRepository.findAllBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
@@ -373,8 +373,8 @@ class PaymentServiceImplTest {
     @DisplayName("Handle cancel should return PaymentDto and send notifications")
     void handleCancel_ValidSessionId_ShouldReturnPaymentDtoAndSendNotifications() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
-        PaymentDto expected = paymentTestDataBuilder.getPaymentPendingBookingDto();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
 
         when(paymentRepository.findAllBySessionId(payment.getSessionId()))
                 .thenReturn(Optional.of(payment));
@@ -421,8 +421,8 @@ class PaymentServiceImplTest {
     @DisplayName("Expire payment when at least one session is expired")
     void expirePendingPayments_OneSessionExpired_ShouldUpdateStatusToExpiredAndSave() {
         //Given
-        Payment nonExpiredpayment = paymentTestDataBuilder.getPaymentPendingBooking();
-        Payment expiredPayment = paymentTestDataBuilder.getPaymentExpiredBooking();
+        Payment nonExpiredpayment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        Payment expiredPayment = paymentTestDataBuilder.getExpiredPaymentPendingBooking();
 
         when(paymentRepository.findAllByStatus(Payment.Status.PENDING))
                 .thenReturn(List.of(nonExpiredpayment, expiredPayment));
@@ -488,9 +488,9 @@ class PaymentServiceImplTest {
     void renewPayment_ValidData_ShouldReturnPaymentDto() {
         //Given
         Booking booking = paymentTestDataBuilder.getPendingBooking();
-        Payment payment = paymentTestDataBuilder.getPaymentExpiredBooking();
+        Payment payment = paymentTestDataBuilder.getExpiredPaymentPendingBooking();
         Session session = paymentTestDataBuilder.getRenewSession();
-        PaymentDto expected = paymentTestDataBuilder.getPaymentPendingBookingDto();
+        PaymentDto expected = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
         User user = booking.getUser();
 
         when(paymentRepository.findById(payment.getId())).thenReturn(Optional.of(payment));
@@ -537,7 +537,7 @@ class PaymentServiceImplTest {
     @DisplayName("RenewPayment should throw an exception if the payment doesn't belong to the user")
     void renewPayment_PaymentDoesNotBelongUser_ShouldReturnPaymentDto() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
 
         when(paymentRepository.findById(payment.getId())).thenReturn(Optional.of(payment));
 
@@ -562,10 +562,10 @@ class PaymentServiceImplTest {
         User user = paymentTestDataBuilder.getPendingBooking().getUser();
 
         // Case 1: Payment is not EXPIRED, but booking status is PENDING
-        Payment pendingPayment = paymentTestDataBuilder.getPaymentPendingBooking();
+        Payment pendingPayment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
 
         // Case 2: Payment is EXPIRED, but booking is not PENDING
-        Payment expiredPayment = paymentTestDataBuilder.getPaymentConfirmedBooking();
+        Payment expiredPayment = paymentTestDataBuilder.getPaidPaymentConfirmedBooking();
 
         when(paymentRepository.findById(pendingPayment.getId()))
                 .thenReturn(Optional.of(pendingPayment));
@@ -624,7 +624,7 @@ class PaymentServiceImplTest {
     void updateStatusByBookingId_ValidId_ShouldUpdateStatusAndSave() {
         //Given
         Booking booking = paymentTestDataBuilder.getPendingBooking();
-        Payment payment = paymentTestDataBuilder.getPaymentPendingBooking();
+        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
 
         when(paymentRepository.findByBookingId(booking.getId())).thenReturn(Optional.of(payment));
         doAnswer(invocation -> {
