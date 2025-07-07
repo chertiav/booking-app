@@ -17,7 +17,7 @@ databaseChangeLog:
             tableName: amenities
             columns:
               - column: { name: name, value: "Television" }
-              - column:  {name: category_id, value: 1}
+              - column:  {name: category_id, value: 2}
         - insert:
             tableName: amenities
             columns:

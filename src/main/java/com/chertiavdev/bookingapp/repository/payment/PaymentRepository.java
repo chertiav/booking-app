@@ -23,7 +23,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                   + "JOIN FETCH b.user u "
                   + "WHERE p.sessionId = :sessionId "
                   + "AND b.isDeleted = false")
-    Optional<Payment> findAllBySessionId(@Param("sessionId") String sessionId);
+    Optional<Payment> findBySessionId(@Param("sessionId") String sessionId);
 
     List<Payment> findAllByStatus(Status status);
 

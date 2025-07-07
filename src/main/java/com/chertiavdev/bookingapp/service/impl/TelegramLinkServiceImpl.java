@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkDto;
 import com.chertiavdev.bookingapp.mapper.TelegramLinkMapper;
 import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
@@ -26,7 +26,7 @@ public class TelegramLinkServiceImpl implements TelegramLinkService {
 
     @Transactional
     @Override
-    public TelegramLinkRequestDto createLink(User user) {
+    public TelegramLinkDto createLink(User user) {
         telegramLinkRepository.findByUserId(user.getId())
                 .ifPresent(telegramLinkRepository::delete);
 

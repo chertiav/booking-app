@@ -4,6 +4,10 @@ import static com.chertiavdev.bookingapp.model.Role.RoleName.ADMIN;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationForAdmins;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.bookingNotificationToUser;
 import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.buildBookingExpiredAlert;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_APARTMENT_NUMBER_25;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_CITY_KYIV;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_HOUSE_NUMBER_15B;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADDRESS_STREET_KHRESHCHATYK;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_ACTION_CANCELED;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_ACTION_CREATED;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_ALREADY_CANCELLED_MESSAGE;
@@ -16,8 +20,8 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BO
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_UPDATE_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_UPDATE_STATUS_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_USER_HAS_PAYMENT_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SEARCH_STATUS_KEY;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SEARCH_USER_ID_KEY;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
@@ -27,14 +31,10 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.bookingFromRequestDto;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createAddressString;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createBookingExpiredNotificationDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createBookingSearchParameters;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createSampleBookingRequest;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUser;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.getBookingSpecification;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapBookingToDto;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +44,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.chertiavdev.bookingapp.data.builders.AccommodationTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.AmenityCategoryTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.AmenityTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.BookingTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.UserTestDataBuilder;
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
@@ -64,6 +69,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,13 +77,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Booking Service Implementation Test")
 class BookingServiceImplTest {
+    private BookingTestDataBuilder bookingsTestDataBuilder;
     @InjectMocks
     private BookingServiceImpl bookingService;
     @Mock
@@ -91,32 +97,38 @@ class BookingServiceImplTest {
     @Mock
     private PaymentService paymentService;
 
+    @BeforeEach
+    void setUp() {
+        bookingsTestDataBuilder = new BookingTestDataBuilder(
+                new AccommodationTestDataBuilder(
+                        new AmenityTestDataBuilder(
+                                new AmenityCategoryTestDataBuilder()
+                        )
+                ),
+                new UserTestDataBuilder()
+        );
+    }
+
     @Test
     @DisplayName("Save a booking successfully when valid data is provided")
     void save_ValidData_ShouldReturnSavedBookingDto() {
         //Given
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
-        Booking bookingModel = bookingFromRequestDto(requestDto);
-        bookingModel.setUser(user);
-
-        Booking booking = bookingFromRequestDto(requestDto);
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-
-        BookingDto expected = mapBookingToDto(booking);
+        User user = bookingsTestDataBuilder.getUserJohn();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder.getPendingBookingRequestDto();
+        Booking bookingModel = bookingsTestDataBuilder.getPendingBookingToModel();
+        Booking savedBooking = bookingsTestDataBuilder.getPendingBooking();
+        BookingDto expected = bookingsTestDataBuilder.getPendingBookingDto();
 
         when(paymentService.getPendingPaymentsCountByUserId(user.getId()))
                 .thenReturn(BOOKING_PENDING_PAYMENTS_COUNT);
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(Collections.emptyList());
         when(bookingMapper.toModel(requestDto, user)).thenReturn(bookingModel);
-        when(bookingRepository.save(bookingModel)).thenReturn(booking);
-        when(bookingMapper.toDto(booking)).thenReturn(expected);
+        when(bookingRepository.save(bookingModel)).thenReturn(savedBooking);
+        when(bookingMapper.toDto(savedBooking)).thenReturn(expected);
 
         //When
         BookingDto actual = bookingService.save(requestDto, user);
@@ -129,17 +141,19 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verify(bookingMapper).toModel(requestDto, user);
         verify(bookingRepository).save(bookingModel);
         verify(notificationService).sendNotification(
-                bookingNotificationForAdmins(booking, user, BOOKING_ACTION_CREATED), ADMIN
+                bookingNotificationForAdmins(savedBooking, user, BOOKING_ACTION_CREATED), ADMIN
         );
-        verify(notificationService).sendNotificationByUserId(
-                bookingNotificationToUser(booking, BOOKING_PENDING_PAYMENT_MESSAGE), user.getId());
-        verify(bookingMapper).toDto(booking);
+        verify(notificationService)
+                .sendNotificationByUserId(
+                        bookingNotificationToUser(savedBooking, BOOKING_PENDING_PAYMENT_MESSAGE),
+                        user.getId()
+                );
+        verify(bookingMapper).toDto(savedBooking);
         verifyNoMoreInteractions(
                 paymentService, bookingRepository, bookingMapper, notificationService);
     }
@@ -148,8 +162,8 @@ class BookingServiceImplTest {
     @DisplayName("Save a booking should throw an exception when user has pending payments")
     void save_UserHasPending_ShouldReturnException() {
         //Given
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder.getPendingBookingRequestDto();
+        User user = bookingsTestDataBuilder.getUserJohn();
 
         when(paymentService.getPendingPaymentsCountByUserId(user.getId()))
                 .thenReturn(BOOKING_HAS_PENDING_PAYMENTS_COUNT);
@@ -170,20 +184,16 @@ class BookingServiceImplTest {
     @DisplayName("Save a booking should throw an exception when an accommodation is unavailable.")
     void save_UnavailableAccommodation_ShouldReturnException() {
         //Given
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
-
-        Booking booking = bookingFromRequestDto(requestDto);
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder.getPendingBookingRequestDto();
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking booking = bookingsTestDataBuilder.getPendingBookingToModel();
 
         when(paymentService.getPendingPaymentsCountByUserId(user.getId()))
                 .thenReturn(BOOKING_PENDING_PAYMENTS_COUNT);
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(List.of(booking));
 
         //When
@@ -201,9 +211,7 @@ class BookingServiceImplTest {
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
-        );
+                requestDto.getCheckOut());
         verifyNoMoreInteractions(paymentService, bookingRepository);
     }
 
@@ -211,14 +219,9 @@ class BookingServiceImplTest {
     @DisplayName("Search bookings with given parameters and pagination")
     void search_ValidParameters_ShouldReturnPageOfBookingDto() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-
-        BookingDto bookingDto = mapBookingToDto(booking);
-        Pageable pageable = PageRequest.of(0, 20);
-
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
+        BookingDto bookingDto = bookingsTestDataBuilder.getPendingBookingDto();
+        Pageable pageable = bookingsTestDataBuilder.getPageable();
         BookingSearchParameters searchParameters = createBookingSearchParameters(
                 String.valueOf(SAMPLE_TEST_ID_1),
                 Booking.Status.PENDING.name()
@@ -229,8 +232,7 @@ class BookingServiceImplTest {
                 SEARCH_STATUS_KEY,
                 Booking.Status.PENDING.name()
         );
-
-        Page<Booking> bookingPage = createPage(List.of(booking), pageable);
+        Page<Booking> bookingPage = bookingsTestDataBuilder.buildExpectedPendingBookingsPage();
 
         when(bookingSpecificationBuilder.build(searchParameters)).thenReturn(specification);
         when(bookingRepository.findAll(specification, pageable)).thenReturn(bookingPage);
@@ -240,7 +242,7 @@ class BookingServiceImplTest {
         Page<BookingDto> actual = bookingService.search(searchParameters, pageable);
 
         //Then
-        Page<BookingDto> expected = createPage(List.of(bookingDto), pageable);
+        Page<BookingDto> expected = bookingsTestDataBuilder.buildExpectedPendingBookingDtosPage();
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(
@@ -268,24 +270,24 @@ class BookingServiceImplTest {
     @DisplayName("Find all bookings by userId should return BookingDto when a valid ID is provided")
     void findByUserId_ValidUserId_ShouldReturnPageOfBookingDto() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-        Pageable pageable = PageRequest.of(0, 20);
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        Booking pendingBooking = bookingsTestDataBuilder.getPendingBooking();
+        Booking confirmedBooking = bookingsTestDataBuilder.getConfirmedBooking();
+        BookingDto pendingBookingDto = bookingsTestDataBuilder.getPendingBookingDto();
+        BookingDto confirmedBookingDto = bookingsTestDataBuilder.getConfirmedBookingDto();
+        Pageable pageable = bookingsTestDataBuilder.getPageable();
+        Page<Booking> bookingPage = bookingsTestDataBuilder.buildExpectedAllBookingsPage();
 
-        Page<Booking> bookingPage = createPage(List.of(booking), pageable);
-        BookingDto bookingDto = mapBookingToDto(booking);
-
-        when(bookingRepository.findBookingsByUserId(user.getId(), pageable))
+        when(bookingRepository.findBookingsByUserId(userId, pageable))
                 .thenReturn(bookingPage);
-        when(bookingMapper.toDto(booking)).thenReturn(bookingDto);
+        when(bookingMapper.toDto(pendingBooking)).thenReturn(pendingBookingDto);
+        when(bookingMapper.toDto(confirmedBooking)).thenReturn(confirmedBookingDto);
 
         //When
-        Page<BookingDto> actual = bookingService.findByUserId(user.getId(), pageable);
+        Page<BookingDto> actual = bookingService.findByUserId(userId, pageable);
 
         //Then
-        Page<BookingDto> expected = createPage(List.of(bookingDto), pageable);
+        Page<BookingDto> expected = bookingsTestDataBuilder.buildExpectedAllBookingDtosPage();
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(
@@ -303,8 +305,9 @@ class BookingServiceImplTest {
         assertEquals(expected.getContent(), actual.getContent(),
                 CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE);
 
-        verify(bookingRepository).findBookingsByUserId(user.getId(), pageable);
-        verify(bookingMapper).toDto(booking);
+        verify(bookingRepository).findBookingsByUserId(userId, pageable);
+        verify(bookingMapper).toDto(pendingBooking);
+        verify(bookingMapper).toDto(confirmedBooking);
         verifyNoMoreInteractions(bookingRepository, bookingMapper);
     }
 
@@ -312,16 +315,16 @@ class BookingServiceImplTest {
     @DisplayName("Find all bookings by userId when repository returns empty page")
     void findAll_WhenRepositoryReturnsEmptyPage_ShouldReturnEmptyPage() {
         //Given
-        User user = createTestUser();
-        Pageable pageable = PageRequest.of(0, 20);
-        Page<Booking> bookingPage = createPage(List.of(), pageable);
-        Page<BookingDto> expected = createPage(List.of(), pageable);
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        Pageable pageable = bookingsTestDataBuilder.getPageable();
+        Page<Booking> bookingPage = bookingsTestDataBuilder.buildExpectedEmptyBookingsPage();
+        Page<BookingDto> expected = bookingsTestDataBuilder.buildExpectedEmptyBookingDtosPage();
 
-        when(bookingRepository.findBookingsByUserId(user.getId(), pageable))
+        when(bookingRepository.findBookingsByUserId(userId, pageable))
                 .thenReturn(bookingPage);
 
         //When
-        Page<BookingDto> actual = bookingService.findByUserId(user.getId(), pageable);
+        Page<BookingDto> actual = bookingService.findByUserId(userId, pageable);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(
@@ -339,7 +342,7 @@ class BookingServiceImplTest {
         assertEquals(expected.getContent(), actual.getContent(),
                 CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE);
 
-        verify(bookingRepository).findBookingsByUserId(user.getId(), pageable);
+        verify(bookingRepository).findBookingsByUserId(userId, pageable);
         verifyNoMoreInteractions(bookingRepository);
     }
 
@@ -348,25 +351,22 @@ class BookingServiceImplTest {
             + "BookingDto when valid data is provided")
     void findByIdAndUserId_ValidData_ShouldReturnBookingDto() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
+        BookingDto expected = bookingsTestDataBuilder.getPendingBookingDto();
 
-        BookingDto expected = mapBookingToDto(booking);
-
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(booking.getId(), userId))
                 .thenReturn(Optional.of(booking));
         when(bookingMapper.toDto(booking)).thenReturn(expected);
 
         //When
-        BookingDto actual = bookingService.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        BookingDto actual = bookingService.findByIdAndUserId(booking.getId(), userId);
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(booking.getId(), userId);
         verify(bookingMapper).toDto(booking);
         verifyNoMoreInteractions(bookingRepository, bookingMapper);
     }
@@ -376,22 +376,22 @@ class BookingServiceImplTest {
             + "the ID is invalid")
     void findByIdAndUserId_InvalidId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
 
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(INVALID_TEST_ID, userId))
                 .thenReturn(Optional.empty());
 
         //When
         Exception exception = assertThrows(EntityNotFoundException.class,
-                () -> bookingService.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()));
+                () -> bookingService.findByIdAndUserId(INVALID_TEST_ID, userId));
 
         //Then
-        String expected = BOOKING_NOT_FOUND_MESSAGE + SAMPLE_TEST_ID_1;
+        String expected = BOOKING_NOT_FOUND_MESSAGE + INVALID_TEST_ID;
         String actual = exception.getMessage();
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(INVALID_TEST_ID, userId);
         verifyNoMoreInteractions(bookingRepository);
     }
 
@@ -400,24 +400,18 @@ class BookingServiceImplTest {
             + "BookingDto when valid data is provided")
     void updatedByIdAndUserId_ValidData_ShouldReturnBookingDto() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder
+                .getUpdatedPendingBookingRequestDto();
+        BookingDto expected = bookingsTestDataBuilder.getUpdatedPendingBookingDto();
 
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        requestDto.setCheckOut(requestDto.getCheckOut().minusDays(1));
-
-        BookingDto expected = mapBookingToDto(booking);
-        expected.setCheckOut(requestDto.getCheckOut().minusDays(1));
-
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(booking.getId(), userId))
                 .thenReturn(Optional.of(booking));
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(Collections.emptyList());
         doAnswer(invocation -> {
             Booking updatedBooking = invocation.getArgument(1);
@@ -429,21 +423,17 @@ class BookingServiceImplTest {
 
         //When
         BookingDto actual = bookingService.updatedByIdAndUserId(
-                booking.getId(),
-                user.getId(),
-                requestDto
-        );
+                booking.getId(), userId, requestDto);
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(booking.getId(), userId);
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verify(bookingMapper).updateBookingFromDto(requestDto, booking);
         verify(bookingRepository).save(booking);
@@ -456,25 +446,25 @@ class BookingServiceImplTest {
             + "when the ID is invalid")
     void updatedByIdAndUserId_InvalidId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder.getPendingBookingRequestDto();
 
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(INVALID_TEST_ID, userId))
                 .thenReturn(Optional.empty());
 
         //When
         Exception exception = assertThrows(EntityNotFoundException.class,
                 () -> bookingService
-                        .updatedByIdAndUserId(SAMPLE_TEST_ID_1, user.getId(), requestDto)
+                        .updatedByIdAndUserId(INVALID_TEST_ID, userId, requestDto)
         );
 
         //Then
-        String expected = BOOKING_UPDATE_ERROR_MESSAGE + SAMPLE_TEST_ID_1;
+        String expected = BOOKING_UPDATE_ERROR_MESSAGE + INVALID_TEST_ID;
         String actual = exception.getMessage();
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(INVALID_TEST_ID, userId);
         verifyNoMoreInteractions(bookingRepository);
     }
 
@@ -483,21 +473,18 @@ class BookingServiceImplTest {
             + "when the booking's status is CANCELED.")
     void updatedByIdAndUserId_InvalidBookingStatus_ShouldReturnException() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-        booking.setStatus(Booking.Status.CANCELED);
+        Long userId = bookingsTestDataBuilder.getUserSansa().getId();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder
+                .getUpdatedPendingBookingRequestDto();
+        Booking booking = bookingsTestDataBuilder.getCanceledBooking();
 
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(booking.getId(), userId))
                 .thenReturn(Optional.of(booking));
 
         //When
         Exception exception = assertThrows(BookingAlreadyCancelledException.class,
                 () -> bookingService
-                        .updatedByIdAndUserId(SAMPLE_TEST_ID_1, user.getId(), requestDto)
+                        .updatedByIdAndUserId(booking.getId(), userId, requestDto)
         );
 
         //Then
@@ -506,7 +493,7 @@ class BookingServiceImplTest {
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(booking.getId(), userId);
         verifyNoMoreInteractions(bookingRepository);
     }
 
@@ -515,29 +502,24 @@ class BookingServiceImplTest {
             + "an exception when an accommodation is unavailable.")
     void updatedByIdAndUserId_UnavailableAccommodation_ShouldReturnException() {
         //Given
-        CreateBookingRequestDto requestDto = createSampleBookingRequest();
-        User user = createTestUser();
+        CreateBookingRequestDto requestDto = bookingsTestDataBuilder
+                .getOverlappingBookingRequestDto();
+        Long userId = bookingsTestDataBuilder.getUserJohn().getId();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
+        Booking overlappingBooking = bookingsTestDataBuilder.getConfirmedBooking();
 
-        Booking booking = bookingFromRequestDto(requestDto);
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-
-        Booking overlappingBooking = bookingFromRequestDto(requestDto);
-        overlappingBooking.setId(SAMPLE_TEST_ID_2);
-
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(booking.getId(), userId))
                 .thenReturn(Optional.of(booking));
         when(bookingRepository.findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         )).thenReturn(List.of(overlappingBooking));
 
         //When
         Exception exception = assertThrows(AccommodationAvailabilityException.class,
                 () -> bookingService
-                        .updatedByIdAndUserId(SAMPLE_TEST_ID_1, user.getId(), requestDto)
+                        .updatedByIdAndUserId(booking.getId(), userId, requestDto)
         );
 
         //Then
@@ -547,12 +529,11 @@ class BookingServiceImplTest {
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, userId);
         verify(bookingRepository).findOverlappingBookings(
                 requestDto.getAccommodationId(),
                 requestDto.getCheckIn(),
-                requestDto.getCheckOut(),
-                Booking.Status.CANCELED
+                requestDto.getCheckOut()
         );
         verifyNoMoreInteractions(bookingRepository);
     }
@@ -561,12 +542,10 @@ class BookingServiceImplTest {
     @DisplayName("Canceling a booking by ID and user ID successfully when valid data is provided")
     void cancelById_ValidData_ShouldCancelBooking() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
 
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(booking.getId(), user.getId()))
                 .thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -578,7 +557,7 @@ class BookingServiceImplTest {
         assertEquals(Booking.Status.CANCELED, booking.getStatus(),
                 String.format(BOOKING_UPDATE_STATUS_MESSAGE, Booking.Status.CANCELED));
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(booking.getId(), user.getId());
         verify(bookingRepository).save(booking);
         verify(paymentService).updateStatusByBookingId(booking.getId(), Payment.Status.CANCELED);
         verify(notificationService).sendNotification(
@@ -594,22 +573,22 @@ class BookingServiceImplTest {
             + "should throw exception when the booking ID is invalid")
     void cancelById_InvalidBookingId_ShouldReturnException() {
         //Given
-        User user = createTestUser();
+        User user = bookingsTestDataBuilder.getUserJohn();
 
-        when(bookingRepository.findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId()))
+        when(bookingRepository.findByIdAndUserId(INVALID_TEST_ID, user.getId()))
                 .thenReturn(Optional.empty());
 
         //When
         Exception exception = assertThrows(EntityNotFoundException.class,
-                () -> bookingService.cancelById(SAMPLE_TEST_ID_1, user));
+                () -> bookingService.cancelById(INVALID_TEST_ID, user));
 
         //Then
-        String expected = BOOKING_NOT_FOUND_MESSAGE + SAMPLE_TEST_ID_1;
+        String expected = BOOKING_NOT_FOUND_MESSAGE + INVALID_TEST_ID;
         String actual = exception.getMessage();
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
-        verify(bookingRepository).findByIdAndUserId(SAMPLE_TEST_ID_1, user.getId());
+        verify(bookingRepository).findByIdAndUserId(INVALID_TEST_ID, user.getId());
         verifyNoMoreInteractions(bookingRepository);
     }
 
@@ -618,11 +597,8 @@ class BookingServiceImplTest {
             + "when the booking's status is CANCELED.")
     void cancelById_InvalidBookingStatus_ShouldReturnException() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
-        booking.setStatus(Booking.Status.CANCELED);
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking booking = bookingsTestDataBuilder.getCanceledBooking();
 
         when(bookingRepository.findByIdAndUserId(booking.getId(), user.getId()))
                 .thenReturn(Optional.of(booking));
@@ -646,13 +622,19 @@ class BookingServiceImplTest {
     @DisplayName("Checking and updating a booking when the check-out date of booking has expired")
     void checkAndNotifyExpiredBookings_ExpiredBookingCheckOut_ShouldSetExpiredForBooking() {
         //Given
-        User user = createTestUser();
-        Booking booking = bookingFromRequestDto(createSampleBookingRequest());
-        booking.setId(SAMPLE_TEST_ID_1);
-        booking.setUser(user);
+        User user = bookingsTestDataBuilder.getUserJohn();
+        Booking booking = bookingsTestDataBuilder.getPendingBooking();
 
-        BookingExpiredNotificationDto notificationDto =
-                createBookingExpiredNotificationDto(booking, user);
+        BookingExpiredNotificationDto notificationDto = createBookingExpiredNotificationDto(
+                booking,
+                user,
+                createAddressString(
+                        ADDRESS_STREET_KHRESHCHATYK,
+                        ADDRESS_HOUSE_NUMBER_15B,
+                        ADDRESS_APARTMENT_NUMBER_25,
+                        ADDRESS_CITY_KYIV
+                )
+        );
 
         when(bookingRepository.findUpcomingBookings(booking.getCheckOut()))
                 .thenReturn(List.of(booking));

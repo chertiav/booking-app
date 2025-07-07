@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@Schema(description = "DTO for creating an new amenities category")
+@Schema(description = "DTO for creating a new amenities category")
 public class CreateAmenityCategoryRequestDto {
     @NotBlank(message = "Category is mandatory")
     @Schema(description = "Name of the category", example = "New category")

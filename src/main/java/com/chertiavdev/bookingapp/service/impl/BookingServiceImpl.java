@@ -161,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED)
+                .findOverlappingBookings(accommodationId, startDate, endDate)
                 .isEmpty();
     }
 
@@ -179,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
             LocalDate endDate
     ) {
         return bookingRepository
-                .findOverlappingBookings(accommodationId, startDate, endDate, CANCELED).stream()
+                .findOverlappingBookings(accommodationId, startDate, endDate).stream()
                 .filter(booking -> !bookingId.equals(booking.getId()))
                 .findAny()
                 .isEmpty();

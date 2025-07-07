@@ -141,7 +141,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Payment getPaymentBySessionId(String sessionId) {
-        return paymentRepository.findAllBySessionId(sessionId)
+        return paymentRepository.findBySessionId(sessionId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find payment by session id: "
                         + sessionId));
     }

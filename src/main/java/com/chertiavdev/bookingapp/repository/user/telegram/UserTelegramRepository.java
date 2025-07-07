@@ -15,8 +15,11 @@ public interface UserTelegramRepository extends JpaRepository<UserTelegram, Long
     Optional<UserTelegram> findByUserId(Long userId);
 
     @Modifying
-    @Query("UPDATE UserTelegram ut SET ut.isDeleted = false, ut.chatId = :chatId WHERE ut.id = :id")
-    void restoreUserTelegram(@Param("id") Long id, @Param("chatId") Long chatId);
+    @Query(value = "UPDATE user_telegram "
+            + "SET is_deleted = false, chat_id = :chatId "
+            + "WHERE id = :id",
+            nativeQuery = true)
+    void restoreUserTelegramAndUpdateChatId(@Param("id") Long id, @Param("chatId") Long chatId);
 
     boolean existsByUserId(Long userId);
 

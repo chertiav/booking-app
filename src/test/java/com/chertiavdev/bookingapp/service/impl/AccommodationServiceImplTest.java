@@ -6,7 +6,6 @@ import static com.chertiavdev.bookingapp.util.helpers.NotificationUtils.accommod
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_NOT_FOUND_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_UPDATE_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_AVAILABILITY_THRESHOLD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
@@ -15,11 +14,6 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.accommodationFromRequestDto;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createSampleAccommodationRequest;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.generateAccommodationExistsMessage;
-import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapAccommodationToDto;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +25,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.chertiavdev.bookingapp.data.builders.AccommodationTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.AmenityCategoryTestDataBuilder;
+import com.chertiavdev.bookingapp.data.builders.AmenityTestDataBuilder;
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.exception.AccommodationAlreadyExistsException;
@@ -40,9 +37,9 @@ import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Accommodation.Type;
 import com.chertiavdev.bookingapp.repository.accommodation.AccommodationRepository;
 import com.chertiavdev.bookingapp.service.NotificationService;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,13 +50,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Accommodation Service Implementation Test")
 class AccommodationServiceImplTest {
-    private static final String CITY_BERLIN = "Berlin";
+    private static AccommodationTestDataBuilder accommodationTestDataBuilder;
     @InjectMocks
     private AccommodationServiceImpl accommodationService;
     @Mock
@@ -69,12 +65,21 @@ class AccommodationServiceImplTest {
     @Mock
     private NotificationService notificationService;
 
+    @BeforeEach
+    void setUp() {
+        accommodationTestDataBuilder = new AccommodationTestDataBuilder(
+                new AmenityTestDataBuilder(
+                        new AmenityCategoryTestDataBuilder()
+                )
+        );
+    }
+
     @ParameterizedTest(name = "Case {index}: {1}")
     @MethodSource("validAccommodationProvider")
     @DisplayName("Save accommodation successfully when valid data is provided")
     void save_ValidData_ShouldReturnSavedAccommodation(
-            CreateAccommodationRequestDto requestDto,
             String caseName,
+            CreateAccommodationRequestDto requestDto,
             Accommodation accommodationToModel,
             Accommodation savedAccommodation,
             AccommodationDto expected
@@ -115,16 +120,16 @@ class AccommodationServiceImplTest {
     @DisplayName("Throw exception when duplicate accommodation is saved")
     void save_DuplicateLocation_ShouldReturnException() {
         //Given
-        CreateAccommodationRequestDto requestDto = createSampleAccommodationRequest();
-        String city = requestDto.getLocation().getCity();
-        String street = requestDto.getLocation().getStreet();
-        String houseNumber = requestDto.getLocation().getHouseNumber();
-        String apartmentNumber = requestDto.getLocation().getApartmentNumber();
-        Type type = requestDto.getType();
-        String size = requestDto.getSize();
+        CreateAccommodationRequestDto requestDto = accommodationTestDataBuilder
+                .getPendingAccommodationRequestDto();
 
         when(accommodationRepository.existsByLocationAndTypeAndSize(
-                city, street, houseNumber, apartmentNumber, type, size
+                requestDto.getLocation().getCity(),
+                requestDto.getLocation().getStreet(),
+                requestDto.getLocation().getHouseNumber(),
+                requestDto.getLocation().getApartmentNumber(),
+                requestDto.getType(),
+                requestDto.getSize()
         )).thenReturn(true);
 
         //When
@@ -132,13 +137,18 @@ class AccommodationServiceImplTest {
                 () -> accommodationService.save(requestDto));
 
         //Then
-        String expected = generateAccommodationExistsMessage(requestDto);
+        String expected = accommodationTestDataBuilder.buildEExistsMessage(requestDto);
         String actual = exception.getMessage();
 
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
         verify(accommodationRepository).existsByLocationAndTypeAndSize(
-                city, street, houseNumber, apartmentNumber, type, size);
+                requestDto.getLocation().getCity(),
+                requestDto.getLocation().getStreet(),
+                requestDto.getLocation().getHouseNumber(),
+                requestDto.getLocation().getApartmentNumber(),
+                requestDto.getType(),
+                requestDto.getSize());
         verifyNoMoreInteractions(accommodationRepository);
     }
 
@@ -146,23 +156,24 @@ class AccommodationServiceImplTest {
     @DisplayName("Find all accommodations")
     void findAllAvailable_ValidPageable_ShouldReturnPageOfAccommodationDto() {
         //Given
-        Accommodation accommodation = accommodationFromRequestDto(
-                createSampleAccommodationRequest());
-        accommodation.setId(SAMPLE_TEST_ID_1);
-        AccommodationDto accommodationDto = mapAccommodationToDto(accommodation);
-        Pageable pageable = PageRequest.of(0, 20);
+        Accommodation accommodation = accommodationTestDataBuilder.getPendingAccommodation();
+        AccommodationDto accommodationDto = accommodationTestDataBuilder
+                .getPendingAccommodationDto();
+        Pageable pageable = accommodationTestDataBuilder.getPageable();
+        Page<Accommodation> accommodationPage = accommodationTestDataBuilder
+                .buildPendingAccommodationPage();
 
-        Page<Accommodation> accommodationPage = createPage(List.of(accommodation), pageable);
-
-        when(accommodationRepository.findAllByAvailabilityGreaterThan(
-                TEST_AVAILABILITY_THRESHOLD, pageable)).thenReturn(accommodationPage);
+        when(accommodationRepository
+                .findAllByAvailabilityGreaterThan(TEST_AVAILABILITY_THRESHOLD, pageable))
+                .thenReturn(accommodationPage);
         when(accommodationMapper.toDto(accommodation)).thenReturn(accommodationDto);
 
         //When
         Page<AccommodationDto> actual = accommodationService.findAllAvailable(pageable);
 
         //Then
-        Page<AccommodationDto> expected = createPage(List.of(accommodationDto), pageable);
+        Page<AccommodationDto> expected = accommodationTestDataBuilder
+                .buildPendingAccommodationDtoPage();
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected.getNumberOfElements(),
@@ -189,12 +200,13 @@ class AccommodationServiceImplTest {
     @DisplayName("Find all accommodations when repository returns empty page")
     void findAllAvailable_WhenRepositoryReturnsEmptyPage_ShouldReturnEmptyPage() {
         //Given
-        Pageable pageable = PageRequest.of(0, 20);
-        Page<Accommodation> accommodationPage = createPage(List.of(), pageable);
-        Page<AccommodationDto> expected = createPage(List.of(), pageable);
+        Pageable pageable = accommodationTestDataBuilder.getPageable();
+        Page<Accommodation> emptyPage = accommodationTestDataBuilder.buildEmptyAccommodationPage();
+        Page<AccommodationDto> expected = accommodationTestDataBuilder
+                .buildEmptyAccommodationDtoPage();
 
         when(accommodationRepository.findAllByAvailabilityGreaterThan(
-                TEST_AVAILABILITY_THRESHOLD, pageable)).thenReturn(accommodationPage);
+                TEST_AVAILABILITY_THRESHOLD, pageable)).thenReturn(emptyPage);
 
         //When
         Page<AccommodationDto> actual = accommodationService.findAllAvailable(pageable);
@@ -225,25 +237,23 @@ class AccommodationServiceImplTest {
     @DisplayName("Find by Id should return AccommodationDto when a valid ID is provided")
     void findAvailableById_ValidId_ShouldReturnCategoryDto() {
         //Given
-        Accommodation accommodation = accommodationFromRequestDto(
-                createSampleAccommodationRequest());
-        accommodation.setId(SAMPLE_TEST_ID_1);
-        AccommodationDto expected = mapAccommodationToDto(accommodation);
+        Accommodation accommodation = accommodationTestDataBuilder.getPendingAccommodation();
+        AccommodationDto expected = accommodationTestDataBuilder.getPendingAccommodationDto();
 
         when(accommodationRepository.findByIdAndAvailabilityGreaterThan(
-                SAMPLE_TEST_ID_1,
-                TEST_AVAILABILITY_THRESHOLD)).thenReturn(Optional.of(accommodation));
+                accommodation.getId(), TEST_AVAILABILITY_THRESHOLD)
+        ).thenReturn(Optional.of(accommodation));
         when(accommodationMapper.toDto(accommodation)).thenReturn(expected);
 
         //When
-        AccommodationDto actual = accommodationService.findAvailableById(SAMPLE_TEST_ID_1);
+        AccommodationDto actual = accommodationService.findAvailableById(accommodation.getId());
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
         verify(accommodationRepository).findByIdAndAvailabilityGreaterThan(
-                SAMPLE_TEST_ID_1,
+                accommodation.getId(),
                 TEST_AVAILABILITY_THRESHOLD);
         verify(accommodationMapper).toDto(accommodation);
         verifyNoMoreInteractions(accommodationRepository, accommodationMapper);
@@ -276,15 +286,11 @@ class AccommodationServiceImplTest {
     @DisplayName("Update accommodation successfully when valid data is provided")
     void updateById_ValidId_ShouldReturnCategoryDto() {
         //Given
-        Accommodation accommodation = accommodationFromRequestDto(
-                createSampleAccommodationRequest());
-        accommodation.setId(SAMPLE_TEST_ID_1);
-
-        CreateAccommodationRequestDto requestDto = createSampleAccommodationRequest();
-        requestDto.setType(APARTMENT);
-
-        AccommodationDto expected = mapAccommodationToDto(accommodation);
-        expected.setType(APARTMENT);
+        Accommodation accommodation = accommodationTestDataBuilder.getPendingAccommodation();
+        CreateAccommodationRequestDto requestDto = accommodationTestDataBuilder
+                .getUpdatedPendingAccommodationRequestDto();
+        AccommodationDto expected = accommodationTestDataBuilder
+                .getUpdatedPendingAccommodationDto();
 
         when(accommodationRepository.existsByLocationAndTypeAndSize(
                 requestDto.getLocation().getCity(),
@@ -294,7 +300,7 @@ class AccommodationServiceImplTest {
                 requestDto.getType(),
                 requestDto.getSize()
         )).thenReturn(false);
-        when(accommodationRepository.findById(SAMPLE_TEST_ID_1))
+        when(accommodationRepository.findById(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         doAnswer(invocation -> {
             Accommodation updatedAccommodation = invocation.getArgument(1);
@@ -305,7 +311,8 @@ class AccommodationServiceImplTest {
         when(accommodationMapper.toDto(accommodation)).thenReturn(expected);
 
         //When
-        AccommodationDto actual = accommodationService.updateById(SAMPLE_TEST_ID_1, requestDto);
+        AccommodationDto actual = accommodationService
+                .updateById(accommodation.getId(), requestDto);
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
@@ -330,7 +337,8 @@ class AccommodationServiceImplTest {
     @DisplayName("Update accommodation should throw exception when the ID is invalid")
     void updateById_InvalidId_ShouldReturnException() {
         //Given
-        CreateAccommodationRequestDto requestDto = createSampleAccommodationRequest();
+        CreateAccommodationRequestDto requestDto = accommodationTestDataBuilder
+                .getPendingAccommodationRequestDto();
 
         when(accommodationRepository.existsByLocationAndTypeAndSize(
                 requestDto.getLocation().getCity(),
@@ -381,22 +389,19 @@ class AccommodationServiceImplTest {
     }
 
     private static Stream<Arguments> validAccommodationProvider() {
-        CreateAccommodationRequestDto request1 = createSampleAccommodationRequest();
-        Accommodation saved1 = accommodationFromRequestDto(request1);
-        saved1.setId(SAMPLE_TEST_ID_1);
-        AccommodationDto dto1 = mapAccommodationToDto(saved1);
-        Accommodation model1 = accommodationFromRequestDto(request1);
-
-        CreateAccommodationRequestDto request2 = createSampleAccommodationRequest();
-        request2.getLocation().setCity(CITY_BERLIN);
-        Accommodation saved2 = accommodationFromRequestDto(request2);
-        saved2.setId(SAMPLE_TEST_ID_2);
-        AccommodationDto dto2 = mapAccommodationToDto(saved2);
-        Accommodation model2 = accommodationFromRequestDto(request2);
-
         return Stream.of(
-                arguments(request1, "Default Sample", model1, saved1, dto1),
-                arguments(request2, "Different City", model2, saved2, dto2)
+                arguments(
+                        "Accommodation Type HOUSE",
+                        accommodationTestDataBuilder.getPendingAccommodationRequestDto(),
+                        accommodationTestDataBuilder.getPendingAccommodationToModel(),
+                        accommodationTestDataBuilder.getPendingAccommodation(),
+                        accommodationTestDataBuilder.getPendingAccommodationDto()),
+                arguments(
+                        "Accommodation Type APARTMENT",
+                        accommodationTestDataBuilder.getConfirmedAccommodationRequestDto(),
+                        accommodationTestDataBuilder.getConfirmedAccommodationToModel(),
+                        accommodationTestDataBuilder.getConfirmedAccommodation(),
+                        accommodationTestDataBuilder.getConfirmedAccommodationDto())
         );
     }
 }
