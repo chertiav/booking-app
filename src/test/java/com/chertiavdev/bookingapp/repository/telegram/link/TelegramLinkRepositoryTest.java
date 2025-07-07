@@ -44,7 +44,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 class TelegramLinkRepositoryTest {
     private static final String EXPIRATION_DATE_FIELD = "expiresAt";
     private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";
-    private static final int EXPIRATION_OFFSET_SECONDS = 600;
+    private static final int EXPIRATION_OFFSET_SECONDS = 1000;
     private static final String[] SETUP_SCRIPTS = {
             "database/user/add-users-to-users-table.sql",
             "database/user/role/add-role-for-into-users_roles_table.sql",
