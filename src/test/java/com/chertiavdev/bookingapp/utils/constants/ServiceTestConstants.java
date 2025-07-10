@@ -132,7 +132,7 @@ public final class ServiceTestConstants {
 
     public static final String USER_EMAIL_JOHN = "jhon@example.com";
     public static final String USER_EMAIL_SANSA = "sansa@example.com";
-    public static final String USER_INVALID_EMAIL_EXAMPLE = "one@example.com";
+    public static final String USER_INVALID_EMAIL = "one@example.com";
     public static final String VALID_USER_PASSWORD = "strongPassword123*";
     public static final String USERNAME_FIRST_JOHN = "John";
     public static final String USERNAME_LAST_DOE = "Doe";
@@ -145,6 +145,7 @@ public final class ServiceTestConstants {
     public static final String USER_ID_PREFIX = "id:";
     public static final String USER_FIRST_USERNAME_UPDATED = "Jaime";
     public static final String USER_LAST_USERNAME_UPDATED = "Lannister";
+    public static final String INVALID_ROLE = "INVALID";
 
     //===============================userTelegram===================================
 

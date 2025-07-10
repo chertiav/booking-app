@@ -1,6 +1,8 @@
 package com.chertiavdev.bookingapp.utils.constants;
 
 public final class TestConstants {
+
+    // ======================== General Test Messages ========================
     public static final String ACTUAL_RESULT_SHOULD_NOT_BE_NULL =
             "The actual result should not be null";
     public static final String ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE =
@@ -26,10 +28,26 @@ public final class TestConstants {
     public static final String RECORD_SHOULD_EXIST_BEFORE_DELETION =
             "Record should exist before deletion";
     public static final String RECORD_SHOULD_BE_DELETED = "Record should be deleted";
-    public static final String INITIAL_RECORD_COUNT_DOESN_T_MATCH_EXPECTATION =
-            "Initial record count doesn't match expectation.";
-    public static final String NO_RECORDS_SHOULD_HAVE_BEEN_DELETED =
-            "No records should have been deleted.";
+    public static final String DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH =
+            "The date part of the timestamp does not match between expected and actual objects";
+
+    // ======================== Error Messages ========================
+    public static final String ERROR_MESSAGE_ACCESS_DENIED = "Access Denied";
+    public static final String ERROR_MESSAGE_USER_NOT_FOUND_EMAIL = "User not found with email:";
+    public static final String ERROR_MESSAGE_USER_NOT_FOUND_ID = "User not found with id:";
+    public static final String ERROR_FIRST_NAME_REQUIRED = "First name is required";
+    public static final String ERROR_ROLE_MUST_NOT_BE_NULL = "Role must not be null";
+
+    // ======================== API Endpoints ========================
+    public static final String USERS_ME_ENDPOINT = "/users/me";
+    public static final String USERS_UPDATE_ROLE_ENDPOINT = "/users/%s/role";
+
+    // ======================== Error Field Keys ========================
+    public static final String TIMESTAMP_FIELD = "timestamp";
+    public static final String ERROR_FIELD_TITLE = "field";
+    public static final String ERROR_MESSAGE_TITLE = "message";
+    public static final String FIELD_FIRST_NAME = "firstName";
+    public static final String FIELD_ROLE_NAME = "roleName";
 
     private TestConstants() {
     }

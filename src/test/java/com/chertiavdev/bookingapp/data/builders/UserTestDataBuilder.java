@@ -41,7 +41,9 @@ public class UserTestDataBuilder {
 
     private final UserRegisterRequestDto userJohnRegisterRequestDto;
     private final UserUpdateRequestDto updatedUserJohnRequestDto;
+    private final UserUpdateRequestDto updatedUserJohnBadRequestDto;
     private final UserUpdateRoleRequestDto userJohnUpdateRoleRequestDto;
+    private final UserUpdateRoleRequestDto userJohnUpdateRoleBadRequestDto;
 
     private final User userJohnToModel;
 
@@ -60,7 +62,9 @@ public class UserTestDataBuilder {
 
         userJohnRegisterRequestDto = createUserJohnRegisterRequestDto();
         updatedUserJohnRequestDto = createUpdatedUserJohnRequestDto();
+        updatedUserJohnBadRequestDto = createUpdatedUserJohnBadRequestDto();
         userJohnUpdateRoleRequestDto = createUserJohnUpdateRoleRequestDto();
+        userJohnUpdateRoleBadRequestDto = createUserJohnUpdateRoleBadRequestDto();
 
         userJohnToModel = createUserJohnToModel();
 
@@ -138,8 +142,19 @@ public class UserTestDataBuilder {
         );
     }
 
+    private UserUpdateRequestDto createUpdatedUserJohnBadRequestDto() {
+        return createTestUserUpdateRequestDto(
+                "",
+                USER_LAST_USERNAME_UPDATED
+        );
+    }
+
     private UserUpdateRoleRequestDto createUserJohnUpdateRoleRequestDto() {
         return createTestUserUpdateRoleRequestDto(Role.RoleName.ADMIN);
+    }
+
+    private UserUpdateRoleRequestDto createUserJohnUpdateRoleBadRequestDto() {
+        return createTestUserUpdateRoleRequestDto(null);
     }
 
     private User createUserJohnToModel() {
