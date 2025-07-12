@@ -1,6 +1,8 @@
 package com.chertiavdev.bookingapp.utils.helpers;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_USER_AUTH_PASSWORD;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL_FORMAT;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
@@ -16,6 +18,7 @@ import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
+import com.chertiavdev.bookingapp.dto.user.UserLoginRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
@@ -36,6 +39,7 @@ import com.chertiavdev.bookingapp.model.UserTelegram;
 import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -361,6 +365,25 @@ public class ServiceTestUtils {
         return requestDto;
     }
 
+    public static UserLoginRequestDto createTestUserLoginRequestDto(
+            UserRegisterRequestDto userRegisterRequestDto,
+            boolean isValidEmailFormat,
+            boolean isRightPassword
+    ) {
+        UserLoginRequestDto requestDto = new UserLoginRequestDto();
+        requestDto.setEmail(
+                isValidEmailFormat
+                        ? userRegisterRequestDto.getEmail()
+                        : USER_INVALID_EMAIL_FORMAT
+        );
+        requestDto.setPassword(
+                isRightPassword
+                        ? userRegisterRequestDto.getPassword()
+                        : INVALID_USER_AUTH_PASSWORD
+        );
+        return requestDto;
+    }
+
     public static UserWithRoleDto mapToUserWithRoleDto(User user) {
         UserWithRoleDto userWithRoleDto = new UserWithRoleDto();
         userWithRoleDto.setId(user.getId());
@@ -476,5 +499,9 @@ public class ServiceTestUtils {
     //========================methods for all services======================================
     public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
         return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
+    }
+
+    public static boolean isValidExpirationTime(Instant expected, Instant actual) {
+        return Math.abs(Duration.between(expected, actual).toMinutes()) <= 1;
     }
 }
