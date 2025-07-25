@@ -58,6 +58,7 @@ public final class ServiceTestConstants {
             "Security Features"
     );
     public static final String AMENITY_CATEGORY_TABLE_NAME = "amenity_categories";
+    public static final String AMENITY_TABLE_NAME = "amenities";
 
     //================================amenity===============================================
     public static final String AMENITY_FREE_WIFI = "Free Wi-Fi";

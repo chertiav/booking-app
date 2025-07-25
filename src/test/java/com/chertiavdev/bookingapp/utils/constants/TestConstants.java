@@ -53,10 +53,16 @@ public final class TestConstants {
     public static final String ERROR_BAD_CREDENTIALS = "Bad credentials";
     public static final String ERROR_INVALID_EMAIL_FORMAT = "Invalid email format";
     public static final String ERROR_CATEGORY_IS_MANDATORY = "Category is mandatory";
+    public static final String ERROR_MESSAGE_AMENITY_NAME_MANDATORY =
+            "Name of the amenity is mandatory";
     public static final String ERROR_MESSAGE_AMENITY_CATEGORY_NOT_FOUND_ID =
             "Can't find amenity category by id: ";
+    public static final String ERROR_MESSAGE_AMENITY_NOT_FOUND_ID =
+            "Can't find amenity by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CATEGORY_CAN_NOT_UPDATE =
             "Can't update category by id: ";
+    public static final String ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE =
+            "Can't update amenity by id: ";
     public static final String ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL = "Method "
             + "parameter 'id': Failed to convert value of type 'java.lang.String' "
             + "to required type 'java.lang.Long'; For input string: \"null\"";
@@ -67,6 +73,7 @@ public final class TestConstants {
     public static final String AUTH_REGISTER_ENDPOINT = "/register";
     public static final String AUTH_LOGIN_ENDPOINT = "/login";
     public static final String AMENITY_CATEGORY_ENDPOINT = "/amenity-category";
+    public static final String AMENITIES_ENDPOINT = "/amenities";
     public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================

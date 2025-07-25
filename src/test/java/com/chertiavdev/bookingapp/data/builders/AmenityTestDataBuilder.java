@@ -15,6 +15,7 @@ import com.chertiavdev.bookingapp.dto.amenity.AmenityDto;
 import com.chertiavdev.bookingapp.dto.amenity.CreateAmenityRequestDto;
 import com.chertiavdev.bookingapp.model.Amenity;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 
@@ -62,6 +63,17 @@ public class AmenityTestDataBuilder {
 
     public Set<Amenity> generateAmenityCollection() {
         return Set.of(amenityFreeWiFi, amenityAirConditioning, amenityTelevision);
+    }
+
+    public CreateAmenityRequestDto createAmenityFreeWiFiBadRequestDto() {
+        return createTestAmenityRequestDto(
+                "",
+                amenityCategoryBasicAmenities.getId()
+        );
+    }
+
+    public List<AmenityDto> buildAllAmenityDtosList() {
+        return List.of(amenityFreeWiFiDto, amenityAirConditioningDto, amenityTelevisionDto);
     }
 
     private Amenity createAmenityFreeWiFi() {
