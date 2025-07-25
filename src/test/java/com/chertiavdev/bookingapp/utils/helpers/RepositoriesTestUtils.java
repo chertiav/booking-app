@@ -33,18 +33,6 @@ public class RepositoriesTestUtils {
         return checkRecordExistence(jdbcTemplate, tableName, "id = ?", id);
     }
 
-    public static Integer countRecordsInDatabase(
-            JdbcTemplate jdbcTemplate,
-            String tableName,
-            Instant now
-    ) {
-        String query = String.format(
-                "SELECT COUNT(*) FROM %s WHERE expires_at < ? AND is_deleted = false",
-                tableName);
-        Timestamp timestamp = Timestamp.from(now);
-        return jdbcTemplate.queryForObject(query, Integer.class, timestamp);
-    }
-
     private static boolean checkRecordExistence(
             JdbcTemplate jdbcTemplate,
             String tableName,

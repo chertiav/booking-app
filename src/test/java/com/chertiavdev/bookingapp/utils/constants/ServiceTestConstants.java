@@ -12,6 +12,7 @@ public final class ServiceTestConstants {
     public static final long SAMPLE_TEST_ID_3 = 3L;
     public static final long SAMPLE_TEST_ID_4 = 4L;
     public static final long SAMPLE_TEST_ID_5 = 5L;
+    public static final long SAMPLE_TEST_ID_11 = 11L;
     public static final long INVALID_TEST_ID = 100L;
 
     //================================accommodation======================================
@@ -37,13 +38,26 @@ public final class ServiceTestConstants {
 
     //================================amenityCategory===========================================
 
-    public static final String AMENITY_CATEGORY_BASIC_AMENITIES = "Basic Amenities";
+    public static final String AMENITY_CATEGORY_NEW_AMENITIES = "New Amenities";
     public static final String AMENITY_CATEGORY_COMFORT_CONVENIENCE = "Comfort & Convenience";
     public static final String AMENITY_CATEGORY_NOT_FOUND_MESSAGE =
             "Can't find amenity category by id: ";
     public static final String AMENITY_CATEGORY_UPDATED_NAME = "Updated category name";
     public static final String AMENITY_CATEGORY_UPDATE_ERROR_MESSAGE =
             "Can't update category by id: ";
+    public static final List<String> AMENITY_CATEGORIES_DEFAULT_NAMES = List.of(
+            "Basic Amenities",
+            "Comfort & Convenience",
+            "Food & Drink",
+            "Leisure & Entertainment",
+            "Family-Friendly Amenities",
+            "Accessibility Features",
+            "Eco-Friendly & Sustainable Amenities",
+            "Technology & Connectivity",
+            "Special Touches",
+            "Security Features"
+    );
+    public static final String AMENITY_CATEGORY_TABLE_NAME = "amenity_categories";
 
     //================================amenity===============================================
     public static final String AMENITY_FREE_WIFI = "Free Wi-Fi";

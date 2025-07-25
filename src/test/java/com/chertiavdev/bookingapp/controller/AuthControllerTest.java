@@ -20,6 +20,7 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOKEN_SHO
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERNAME_IN_THE_TOKEN_SHOULD_MATCH_THE_LOGIN_EMAIL;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
+import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.parseErrorResponseFromMvcResult;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -94,7 +95,7 @@ class AuthControllerTest {
     }
 
     @AfterAll
-    static void tearDown(@Autowired DataSource dataSource) {
+    static void afterAll(@Autowired DataSource dataSource) {
         teardown(dataSource);
     }
 
@@ -140,9 +141,7 @@ class AuthControllerTest {
                 .andReturn();
 
         //Then
-        UserDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                UserDto.class);
+        UserDto actual = mapMvcResultToObjectDto(result, objectMapper, UserDto.class);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
@@ -236,9 +235,8 @@ class AuthControllerTest {
                 .andReturn();
 
         //Then
-        UserLoginResponseDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                UserLoginResponseDto.class);
+        UserLoginResponseDto actual = mapMvcResultToObjectDto(
+                result, objectMapper, UserLoginResponseDto.class);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertNotNull(actual.token(), TOKEN_SHOULD_NOT_BE_NULL);

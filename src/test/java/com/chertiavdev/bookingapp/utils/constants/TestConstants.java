@@ -41,6 +41,8 @@ public final class TestConstants {
 
     // ======================== Error Messages ========================
     public static final String ERROR_MESSAGE_ACCESS_DENIED = "Access Denied";
+    public static final String ERROR_MESSAGE_ACCESS_DENIED_FULL_AUTHENTICATION_IS_REQUIRED =
+            "Access Denied: Full authentication is required to access this resource";
     public static final String ERROR_MESSAGE_USER_NOT_FOUND_EMAIL = "User not found with email:";
     public static final String ERROR_MESSAGE_USER_NOT_FOUND_ID = "User not found with id:";
     public static final String ERROR_FIRST_NAME_REQUIRED = "First name is required";
@@ -50,12 +52,22 @@ public final class TestConstants {
     public static final String ERROR_PASSWORD_DO_NOT_MATCH = "Passwords do not match";
     public static final String ERROR_BAD_CREDENTIALS = "Bad credentials";
     public static final String ERROR_INVALID_EMAIL_FORMAT = "Invalid email format";
+    public static final String ERROR_CATEGORY_IS_MANDATORY = "Category is mandatory";
+    public static final String ERROR_MESSAGE_AMENITY_CATEGORY_NOT_FOUND_ID =
+            "Can't find amenity category by id: ";
+    public static final String ERROR_MESSAGE_AMENITY_CATEGORY_CAN_NOT_UPDATE =
+            "Can't update category by id: ";
+    public static final String ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL = "Method "
+            + "parameter 'id': Failed to convert value of type 'java.lang.String' "
+            + "to required type 'java.lang.Long'; For input string: \"null\"";
 
     // ======================== API Endpoints ========================
     public static final String USERS_ME_ENDPOINT = "/users/me";
     public static final String USERS_UPDATE_ROLE_ENDPOINT = "/users/%s/role";
     public static final String AUTH_REGISTER_ENDPOINT = "/register";
     public static final String AUTH_LOGIN_ENDPOINT = "/login";
+    public static final String AMENITY_CATEGORY_ENDPOINT = "/amenity-category";
+    public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================
     public static final String TIMESTAMP_FIELD = "timestamp";
@@ -65,6 +77,7 @@ public final class TestConstants {
     public static final String FIELD_ROLE_NAME = "roleName";
     public static final String FIELD_REGISTER_DTO = "userRegisterRequestDto";
     public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_NANE = "name";
 
     private TestConstants() {
     }

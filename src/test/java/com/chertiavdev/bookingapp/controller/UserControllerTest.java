@@ -19,6 +19,7 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERS_ME_
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERS_UPDATE_ROLE_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
+import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.parseErrorResponseFromMvcResult;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -90,7 +91,7 @@ class UserControllerTest {
     }
 
     @AfterEach
-    void tearDown(@Autowired DataSource dataSource) {
+    void afterEach(@Autowired DataSource dataSource) {
         teardown(dataSource);
     }
 
@@ -124,9 +125,7 @@ class UserControllerTest {
                 .andReturn();
 
         //Then
-        UserDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                UserDto.class);
+        UserDto actual = mapMvcResultToObjectDto(result, objectMapper, UserDto.class);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
@@ -211,9 +210,7 @@ class UserControllerTest {
                 .andReturn();
 
         //Then
-        UserDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                UserDto.class);
+        UserDto actual = mapMvcResultToObjectDto(result, objectMapper, UserDto.class);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
@@ -341,9 +338,8 @@ class UserControllerTest {
                 .andReturn();
 
         //Then
-        UserWithRoleDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                UserWithRoleDto.class);
+        UserWithRoleDto actual = mapMvcResultToObjectDto(
+                result, objectMapper, UserWithRoleDto.class);
 
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);

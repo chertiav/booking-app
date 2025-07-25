@@ -5,11 +5,14 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MES
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
@@ -45,5 +48,25 @@ public final class ControllersTestUtils {
         errorDetailDto.put(ERROR_FIELD_TITLE, errorFieldTitle);
         errorDetailDto.put(ERROR_MESSAGE_TITLE, errorMessageTitle);
         return errorDetailDto;
+    }
+
+    public static <T> T mapMvcResultToObjectDto(
+            MvcResult result,
+            ObjectMapper objectMapper,
+            Class<T> clazz
+    ) throws JsonProcessingException, UnsupportedEncodingException {
+        return objectMapper.readValue(result.getResponse().getContentAsString(), clazz);
+    }
+
+    public static <T> List<T> parseObjectDtoToList(
+            MvcResult result,
+            ObjectMapper objectMapper,
+            Class<T> clazz
+    ) throws IOException {
+        JavaType type = objectMapper
+                .getTypeFactory()
+                .constructParametricType(List.class, clazz);
+        return objectMapper.readValue(result.getResponse().getContentAsByteArray(), type);
+
     }
 }

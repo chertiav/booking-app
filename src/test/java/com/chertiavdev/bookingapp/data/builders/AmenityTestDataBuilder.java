@@ -40,7 +40,7 @@ public class AmenityTestDataBuilder {
 
     public AmenityTestDataBuilder(AmenityCategoryTestDataBuilder amenityCategoryTestDataBuilder) {
         this.amenityCategoryBasicAmenities = amenityCategoryTestDataBuilder
-                .getAmenityCategoryBasicAmenities();
+                .getAmenityCategoryNewAmenities();
         this.amenityCategoryComfortAndConvenience = amenityCategoryTestDataBuilder
                 .getAmenityCategoryComfortAndConvenience();
 

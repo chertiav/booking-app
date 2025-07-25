@@ -17,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -178,6 +179,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.FORBIDDEN,
                 LocalDateTime.now(),
                 getErrorMessage(ex, "Access denied")
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleHttpMessageConversionException(
+            MethodArgumentTypeMismatchException ex,
+            WebRequest request) {
+        log.error("HttpMessageConversionException occurred: {}", ex.getMessage(), ex);
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Invalid input. Failed to convert provided value.")
         );
     }
 
