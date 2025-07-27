@@ -72,13 +72,10 @@ class AmenityControllerTest {
     protected static MockMvc mockMvc;
     private static final String[] SETUP_SCRIPTS = {
             "database/amenity/remove-all-from-amenities-table.sql",
-            "database/amenity/category/add-amenity_categories-into-amenity_categories-table.sql",
             "database/amenity/add-three-amenity-into-amenity-table.sql"
     };
     private static final String[] CLEANUP_SCRIPTS = {
             "database/amenity/remove-all-from-amenities-table.sql",
-            "database/amenity/category/"
-                    + "remove-amenity_categories-id_11-from-amenity_categories-table.sql",
             "database/amenity/add-all-amenities-into-amenities-table.sql",
     };
     @Autowired

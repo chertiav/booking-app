@@ -1,10 +1,9 @@
 package com.chertiavdev.bookingapp.data.builders;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORIES_DEFAULT_NAMES;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_BASIC_AMENITIES;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_COMFORT_CONVENIENCE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_NEW_AMENITIES;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_UPDATED_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_11;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAmenityCategory;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAmenityCategoryDto;
@@ -14,95 +13,86 @@ import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.model.AmenityCategory;
 import java.util.List;
-import java.util.stream.IntStream;
 import lombok.Getter;
 
 @Getter
 public class AmenityCategoryTestDataBuilder {
     private static final String NAME_BAD_REQUEST = "";
 
-    private final AmenityCategory amenityCategoryNewAmenities;
+    private final AmenityCategory amenityCategoryBasicAmenities;
     private final AmenityCategory amenityCategoryComfortAndConvenience;
-    private final AmenityCategory updatedAmenityCategoryNewAmenities;
+    private final AmenityCategory updatedAmenityCategoryBasicAmenities;
 
-    private final CreateAmenityCategoryRequestDto amenityCategoryNewAmenitiesRequestDto;
+    private final CreateAmenityCategoryRequestDto amenityCategoryBasicAmenitiesRequestDto;
     private final CreateAmenityCategoryRequestDto amenityCategoryComfortAndConvenienceRequestDto;
-    private final CreateAmenityCategoryRequestDto updatedAmenityCategoryNewAmenitiesRequestDto;
+    private final CreateAmenityCategoryRequestDto updatedAmenityCategoryBasicAmenitiesRequestDto;
 
     private final AmenityCategory amenityCategoryBasicToModel;
     private final AmenityCategory amenityCategoryComfortToModel;
 
-    private final AmenityCategoryDto amenityCategoryNewAmenitiesDto;
+    private final AmenityCategoryDto amenityCategoryBasicAmenitiesDto;
     private final AmenityCategoryDto amenityCategoryComfortAndConvenienceDto;
-    private final AmenityCategoryDto updatedAmenityCategoryNewAmenitiesDto;
+    private final AmenityCategoryDto updatedAmenityCategoryBasicAmenitiesDto;
 
     public AmenityCategoryTestDataBuilder() {
-        this.amenityCategoryNewAmenities = createAmenityCategoryNewAmenities();
+        this.amenityCategoryBasicAmenities = createAmenityCategoryBasicAmenities();
         this.amenityCategoryComfortAndConvenience = createAmenityCategoryComfortAndConvenience();
-        this.updatedAmenityCategoryNewAmenities = createUpdatedAmenityCategoryNewAmenities();
+        this.updatedAmenityCategoryBasicAmenities = createUpdatedAmenityCategoryBasicAmenities();
 
-        this.amenityCategoryNewAmenitiesRequestDto =
-                createAmenityCategoryNewAmenitiesRequestDto();
+        this.amenityCategoryBasicAmenitiesRequestDto =
+                createAmenityCategoryBasicAmenitiesRequestDto();
         this.amenityCategoryComfortAndConvenienceRequestDto =
                 createAmenityCategoryComfortAndConvenienceRequestDto();
-        this.updatedAmenityCategoryNewAmenitiesRequestDto =
-                createUpdatedAmenityCategoryNewAmenitiesRequestDto();
+        this.updatedAmenityCategoryBasicAmenitiesRequestDto =
+                createUpdatedAmenityCategoryBasicAmenitiesRequestDto();
 
-        this.amenityCategoryBasicToModel = createAmenityCategoryNewAmenitiesToModel();
+        this.amenityCategoryBasicToModel = createAmenityCategoryBasicAmenitiesToModel();
         this.amenityCategoryComfortToModel = createAmenityCategoryComfortAndConvenienceToModel();
 
-        this.amenityCategoryNewAmenitiesDto = createAmenityCategoryNewAmenitiesDto();
+        this.amenityCategoryBasicAmenitiesDto = createAmenityCategoryBasicAmenitiesDto();
         this.amenityCategoryComfortAndConvenienceDto =
                 createAmenityCategoryComfortAndConvenienceDto();
-        this.updatedAmenityCategoryNewAmenitiesDto =
-                createUpdatedAmenityCategoryNewAmenitiesDto();
+        this.updatedAmenityCategoryBasicAmenitiesDto =
+                createUpdatedAmenityCategoryBasicAmenitiesDto();
     }
 
     public List<AmenityCategory> buildAllAmenityCategoryList() {
-        return List.of(amenityCategoryNewAmenities, amenityCategoryComfortAndConvenience);
+        return List.of(amenityCategoryBasicAmenities, amenityCategoryComfortAndConvenience);
     }
 
     public List<AmenityCategoryDto> buildAllAmenityCategoryDtosList() {
-        return List.of(amenityCategoryNewAmenitiesDto, amenityCategoryComfortAndConvenienceDto);
+        return List.of(amenityCategoryBasicAmenitiesDto, amenityCategoryComfortAndConvenienceDto);
     }
 
-    public CreateAmenityCategoryRequestDto createAmenityCategoryNewAmenitiesBatRequestDto() {
+    public CreateAmenityCategoryRequestDto createAmenityCategoryBasicAmenitiesBatRequestDto() {
         return createTestAmenityCategoryRequest(NAME_BAD_REQUEST);
     }
 
-    public List<AmenityCategoryDto> buildAmenityCategoryDtosAllList() {
-        return IntStream.range(0, AMENITY_CATEGORIES_DEFAULT_NAMES.size())
-                .mapToObj(index -> createTestAmenityCategoryDto(
-                        (long) index + 1L,
-                        AMENITY_CATEGORIES_DEFAULT_NAMES.get(index)))
-                .toList();
-    }
-
-    private AmenityCategory createAmenityCategoryNewAmenities() {
-        return createTestAmenityCategory(SAMPLE_TEST_ID_11, AMENITY_CATEGORY_NEW_AMENITIES);
+    private AmenityCategory createAmenityCategoryBasicAmenities() {
+        return createTestAmenityCategory(SAMPLE_TEST_ID_1, AMENITY_CATEGORY_BASIC_AMENITIES);
     }
 
     private AmenityCategory createAmenityCategoryComfortAndConvenience() {
         return createTestAmenityCategory(SAMPLE_TEST_ID_2, AMENITY_CATEGORY_COMFORT_CONVENIENCE);
     }
 
-    private AmenityCategory createUpdatedAmenityCategoryNewAmenities() {
-        return createTestAmenityCategory(SAMPLE_TEST_ID_11, AMENITY_CATEGORY_UPDATED_NAME);
+    private AmenityCategory createUpdatedAmenityCategoryBasicAmenities() {
+        return createTestAmenityCategory(SAMPLE_TEST_ID_1, AMENITY_CATEGORY_UPDATED_NAME);
     }
 
-    private AmenityCategory createAmenityCategoryNewAmenitiesToModel() {
-        return createTestAmenityCategory(null, AMENITY_CATEGORY_NEW_AMENITIES);
+    private AmenityCategory createAmenityCategoryBasicAmenitiesToModel() {
+        return createTestAmenityCategory(null, AMENITY_CATEGORY_BASIC_AMENITIES);
     }
 
     private AmenityCategory createAmenityCategoryComfortAndConvenienceToModel() {
         return createTestAmenityCategory(null, AMENITY_CATEGORY_COMFORT_CONVENIENCE);
     }
 
-    private CreateAmenityCategoryRequestDto createAmenityCategoryNewAmenitiesRequestDto() {
-        return createTestAmenityCategoryRequest(AMENITY_CATEGORY_NEW_AMENITIES);
+    private CreateAmenityCategoryRequestDto createAmenityCategoryBasicAmenitiesRequestDto() {
+        return createTestAmenityCategoryRequest(AMENITY_CATEGORY_BASIC_AMENITIES);
     }
 
-    private CreateAmenityCategoryRequestDto createUpdatedAmenityCategoryNewAmenitiesRequestDto() {
+    private CreateAmenityCategoryRequestDto createUpdatedAmenityCategoryBasicAmenitiesRequestDto() {
         return createTestAmenityCategoryRequest(AMENITY_CATEGORY_UPDATED_NAME);
     }
 
@@ -110,15 +100,15 @@ public class AmenityCategoryTestDataBuilder {
         return createTestAmenityCategoryRequest(AMENITY_CATEGORY_COMFORT_CONVENIENCE);
     }
 
-    private AmenityCategoryDto createAmenityCategoryNewAmenitiesDto() {
-        return createTestAmenityCategoryDto(SAMPLE_TEST_ID_11, AMENITY_CATEGORY_NEW_AMENITIES);
+    private AmenityCategoryDto createAmenityCategoryBasicAmenitiesDto() {
+        return createTestAmenityCategoryDto(SAMPLE_TEST_ID_1, AMENITY_CATEGORY_BASIC_AMENITIES);
     }
 
     private AmenityCategoryDto createAmenityCategoryComfortAndConvenienceDto() {
         return createTestAmenityCategoryDto(SAMPLE_TEST_ID_2, AMENITY_CATEGORY_COMFORT_CONVENIENCE);
     }
 
-    private AmenityCategoryDto createUpdatedAmenityCategoryNewAmenitiesDto() {
-        return createTestAmenityCategoryDto(SAMPLE_TEST_ID_11, AMENITY_CATEGORY_UPDATED_NAME);
+    private AmenityCategoryDto createUpdatedAmenityCategoryBasicAmenitiesDto() {
+        return createTestAmenityCategoryDto(SAMPLE_TEST_ID_1, AMENITY_CATEGORY_UPDATED_NAME);
     }
 }

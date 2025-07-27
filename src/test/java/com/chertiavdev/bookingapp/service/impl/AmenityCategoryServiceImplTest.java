@@ -5,7 +5,6 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AM
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_UPDATE_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_11;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
@@ -57,13 +56,13 @@ class AmenityCategoryServiceImplTest {
     void save_ValidData_ShouldReturnSavedAmenityCategoryDto() {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesRequestDto();
+                .getAmenityCategoryBasicAmenitiesRequestDto();
         AmenityCategory amenityCategoryModel = amenityCategoryTestDataBuilder
                 .getAmenityCategoryBasicToModel();
         AmenityCategory amenityCategory = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities();
+                .getAmenityCategoryBasicAmenities();
         AmenityCategoryDto expected = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesDto();
+                .getAmenityCategoryBasicAmenitiesDto();
 
         when(amenityCategoryMapper.toModel(requestDto)).thenReturn(amenityCategoryModel);
         when(amenityCategoryRepository.save(amenityCategoryModel)).thenReturn(amenityCategory);
@@ -87,11 +86,11 @@ class AmenityCategoryServiceImplTest {
     void findAll_Valid_ShouldReturnListOfAmenityCategoryDto() {
         //Given
         AmenityCategory basicCategory = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities();
+                .getAmenityCategoryBasicAmenities();
         AmenityCategory comfortAndConvenienceCategory = amenityCategoryTestDataBuilder
                 .getAmenityCategoryComfortAndConvenience();
         AmenityCategoryDto basicCategoryDto = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesDto();
+                .getAmenityCategoryBasicAmenitiesDto();
         AmenityCategoryDto comfortAndConvenienceCategoryDto = amenityCategoryTestDataBuilder
                 .getAmenityCategoryComfortAndConvenienceDto();
         List<AmenityCategory> amenityCategoryList = amenityCategoryTestDataBuilder
@@ -122,16 +121,16 @@ class AmenityCategoryServiceImplTest {
     void findById_ValidId_ShouldReturnAmenityCategoryDto() {
         //Given
         AmenityCategory amenityCategory = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities();
+                .getAmenityCategoryBasicAmenities();
         AmenityCategoryDto expected = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesDto();
+                .getAmenityCategoryBasicAmenitiesDto();
 
         when(amenityCategoryRepository.findById(amenityCategory.getId()))
                 .thenReturn(Optional.of(amenityCategory));
         when(amenityCategoryMapper.toDto(amenityCategory)).thenReturn(expected);
 
         //When
-        AmenityCategoryDto actual = amenityCategoryService.findById(SAMPLE_TEST_ID_11);
+        AmenityCategoryDto actual = amenityCategoryService.findById(SAMPLE_TEST_ID_1);
 
         //Then
         assertNotNull(actual, ACTUAL_RESULT_SHOULD_NOT_BE_NULL);
@@ -168,11 +167,11 @@ class AmenityCategoryServiceImplTest {
     void updateById_ValidId_ShouldReturnAmenityCategoryDto() {
         //Given
         AmenityCategory amenityCategory = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities();
+                .getAmenityCategoryBasicAmenities();
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
         AmenityCategoryDto expected = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesDto();
 
         when(amenityCategoryRepository.findById(SAMPLE_TEST_ID_1))
                 .thenReturn(Optional.of(amenityCategory));
@@ -203,7 +202,7 @@ class AmenityCategoryServiceImplTest {
     void updateById_InvalidId_ShouldReturnException() {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
 
         when(amenityCategoryRepository.findById(INVALID_TEST_ID))
                 .thenReturn(Optional.empty());

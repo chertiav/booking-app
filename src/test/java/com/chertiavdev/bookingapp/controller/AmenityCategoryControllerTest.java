@@ -2,7 +2,7 @@ package com.chertiavdev.bookingapp.controller;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_11;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_CATEGORY_ENDPOINT;
@@ -23,6 +23,7 @@ import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.crea
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.parseErrorResponseFromMvcResult;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.parseObjectDtoToList;
+import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsInDatabaseById;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,9 +43,13 @@ import com.chertiavdev.bookingapp.dto.amenity.category.AmenityCategoryDto;
 import com.chertiavdev.bookingapp.dto.amenity.category.CreateAmenityCategoryRequestDto;
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
+import javax.sql.DataSource;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +70,17 @@ import org.springframework.web.context.WebApplicationContext;
 @Import(TestConfig.class)
 class AmenityCategoryControllerTest {
     protected static MockMvc mockMvc;
+    private static final String[] SETUP_SCRIPTS = {
+            "database/amenity/remove-all-from-amenities-table.sql",
+            "database/amenity/category/remove-all-from-amenity_categories-table.sql",
+            "database/amenity/category/add-two-categories-into-amenity_categories-table.sql",
+    };
+    private static final String[] CLEANUP_SCRIPTS = {
+            "database/amenity/category/remove-all-from-amenity_categories-table.sql",
+            "database/amenity/category/add-all-into-amenity_categories-table.sql",
+            "database/amenity/add-all-amenities-into-amenities-table.sql",
+
+    };
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -72,20 +88,54 @@ class AmenityCategoryControllerTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    void beforeEach(
+    @BeforeAll
+    static void setUp(
+            @Autowired DataSource dataSource,
             @Autowired WebApplicationContext applicationContext
     ) {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
+        setupDatabase(dataSource);
+    }
+
+    @AfterAll
+    static void afterEach(@Autowired DataSource dataSource) {
+        teardown(dataSource);
+    }
+
+    @SneakyThrows
+    private static void setupDatabase(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            executeSqlScripts(connection, SETUP_SCRIPTS);
+        }
+    }
+
+    @SneakyThrows
+    private static void teardown(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            executeSqlScripts(connection, CLEANUP_SCRIPTS);
+        }
     }
 
     @Test
     @Sql(
-            scripts = {"classpath:database/amenity/category/"
-                    + "remove-amenity_categories-id_11-from-amenity_categories-table.sql",
+            scripts = {
+                    "classpath:database/amenity/remove-all-from-amenities-table.sql",
+                    "classpath:database/amenity/category/"
+                            + "remove-all-from-amenity_categories-table.sql",
+            },
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+    )
+    @Sql(
+            scripts = {
+                    "classpath:database/amenity/category/"
+                            + "remove-all-from-amenity_categories-table.sql",
+                    "classpath:database/amenity/category/"
+                            + "add-two-categories-into-amenity_categories-table.sql",
             },
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
@@ -95,10 +145,10 @@ class AmenityCategoryControllerTest {
     void create_ValidData_ShouldReturnAmenityCategoryDto() throws Exception {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesRequestDto();
+                .getAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         AmenityCategoryDto expected = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesDto();
+                .getAmenityCategoryBasicAmenitiesDto();
 
         //When
         MvcResult result = mockMvc
@@ -123,7 +173,7 @@ class AmenityCategoryControllerTest {
     void create_InValidData_ShouldThrowBadRequest() throws Exception {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .createAmenityCategoryNewAmenitiesBatRequestDto();
+                .createAmenityCategoryBasicAmenitiesBatRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         Map<String, String> errorDetailDto = createErrorDetailMap(
                 FIELD_NANE,
@@ -162,7 +212,7 @@ class AmenityCategoryControllerTest {
     void create_InValidUsersRole_ShouldThrowForbidden() throws Exception {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenitiesRequestDto();
+                .getAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.FORBIDDEN,
@@ -195,7 +245,7 @@ class AmenityCategoryControllerTest {
     void getAll_Valid_ShouldReturnListOfAmenityCategoryDto() throws Exception {
         //Given
         List<AmenityCategoryDto> expected = amenityCategoryTestDataBuilder
-                .buildAmenityCategoryDtosAllList();
+                .buildAllAmenityCategoryDtosList();
 
         //When
         MvcResult result = mockMvc
@@ -300,14 +350,11 @@ class AmenityCategoryControllerTest {
     }
 
     @Sql(
-            scripts = {"classpath:database/amenity/category/"
-                    + "add-amenity_categories-into-amenity_categories-table.sql",
-            },
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-    )
-    @Sql(
-            scripts = {"classpath:database/amenity/category/"
-                    + "remove-amenity_categories-id_11-from-amenity_categories-table.sql",
+            scripts = {
+                    "classpath:database/amenity/category/"
+                            + "remove-all-from-amenity_categories-table.sql",
+                    "classpath:database/amenity/category/"
+                            + "add-two-categories-into-amenity_categories-table.sql",
             },
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
@@ -316,12 +363,12 @@ class AmenityCategoryControllerTest {
     @Test
     void update_ValidData_ShouldReturnAmenityCategoryDto() throws Exception {
         //Given
-        Long id = amenityCategoryTestDataBuilder.getAmenityCategoryNewAmenities().getId();
+        Long id = amenityCategoryTestDataBuilder.getAmenityCategoryBasicAmenities().getId();
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         AmenityCategoryDto expected = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesDto();
 
         //When
         MvcResult result = mockMvc
@@ -346,9 +393,9 @@ class AmenityCategoryControllerTest {
     @Test
     void update_InValidData_ShouldThrowBadRequest() throws Exception {
         //Given
-        Long id = amenityCategoryTestDataBuilder.getAmenityCategoryNewAmenities().getId();
+        Long id = amenityCategoryTestDataBuilder.getAmenityCategoryBasicAmenities().getId();
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .createAmenityCategoryNewAmenitiesBatRequestDto();
+                .createAmenityCategoryBasicAmenitiesBatRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         Map<String, String> errorDetailDto = createErrorDetailMap(
                 FIELD_NANE,
@@ -388,7 +435,7 @@ class AmenityCategoryControllerTest {
     void update_InValidId_ShouldThrowNotFound() throws Exception {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
@@ -424,9 +471,9 @@ class AmenityCategoryControllerTest {
     void update_InValidUsersRole_ShouldThrowForbidden() throws Exception {
         //Given
         Long amenityCategoryId = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities().getId();
+                .getAmenityCategoryBasicAmenities().getId();
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.FORBIDDEN,
@@ -461,9 +508,9 @@ class AmenityCategoryControllerTest {
     void update_Unauthorized_ShouldThrowUnauthorized() throws Exception {
         //Given
         Long amenityCategoryId = amenityCategoryTestDataBuilder
-                .getAmenityCategoryNewAmenities().getId();
+                .getAmenityCategoryBasicAmenities().getId();
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
-                .getUpdatedAmenityCategoryNewAmenitiesRequestDto();
+                .getUpdatedAmenityCategoryBasicAmenitiesRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.UNAUTHORIZED,
@@ -493,14 +540,11 @@ class AmenityCategoryControllerTest {
     }
 
     @Sql(
-            scripts = {"classpath:database/amenity/category/"
-                    + "add-amenity_categories-into-amenity_categories-table.sql",
-            },
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-    )
-    @Sql(
-            scripts = {"classpath:database/amenity/category/"
-                    + "remove-amenity_categories-id_11-from-amenity_categories-table.sql",
+            scripts = {
+                    "classpath:database/amenity/category/"
+                            + "remove-all-from-amenity_categories-table.sql",
+                    "classpath:database/amenity/category/"
+                            + "add-two-categories-into-amenity_categories-table.sql",
             },
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
@@ -513,11 +557,11 @@ class AmenityCategoryControllerTest {
         boolean amenityCategoryExistsBefore = recordExistsInDatabaseById(
                 jdbcTemplate,
                 AMENITY_CATEGORY_TABLE_NAME,
-                SAMPLE_TEST_ID_11);
+                SAMPLE_TEST_ID_1);
 
         //When
         mockMvc.perform(delete(AMENITY_CATEGORY_ENDPOINT + String
-                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_11))
+                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
@@ -526,7 +570,7 @@ class AmenityCategoryControllerTest {
         boolean amenityCategoryExistsAfter = recordExistsInDatabaseById(
                 jdbcTemplate,
                 AMENITY_CATEGORY_TABLE_NAME,
-                SAMPLE_TEST_ID_11);
+                SAMPLE_TEST_ID_1);
 
         assertTrue(amenityCategoryExistsBefore, RECORD_SHOULD_EXIST_BEFORE_DELETION);
         assertFalse(amenityCategoryExistsAfter, RECORD_SHOULD_BE_DELETED);
@@ -546,7 +590,7 @@ class AmenityCategoryControllerTest {
         //When
         MvcResult result = mockMvc
                 .perform(delete(AMENITY_CATEGORY_ENDPOINT + String
-                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_11))
+                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -577,7 +621,7 @@ class AmenityCategoryControllerTest {
         //When
         MvcResult result = mockMvc
                 .perform(delete(AMENITY_CATEGORY_ENDPOINT + String
-                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_11))
+                        .format(URL_PARAMETERIZED_TEMPLATE, SAMPLE_TEST_ID_1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andReturn();
