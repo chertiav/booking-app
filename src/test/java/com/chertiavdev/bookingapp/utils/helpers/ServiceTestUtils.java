@@ -15,6 +15,7 @@ import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingExpiredNotificationDto;
 import com.chertiavdev.bookingapp.dto.booking.BookingSearchParameters;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
+import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
 import com.chertiavdev.bookingapp.dto.user.UserDto;
@@ -496,12 +497,16 @@ public class ServiceTestUtils {
                 : now.minusMinutes(minutes).toInstant();
     }
 
-    //========================methods for all services======================================
+    //========================methods for all======================================
     public static <T> Page<T> createPage(List<T> listOfObjects, Pageable pageable) {
         return new PageImpl<>(listOfObjects, pageable, listOfObjects.size());
     }
 
     public static boolean isValidExpirationTime(Instant expected, Instant actual) {
         return Math.abs(Duration.between(expected, actual).toMinutes()) <= 1;
+    }
+
+    public static <T> PageResponse<T> createPageResponse(List<T> objectDtos, Pageable pageable) {
+        return PageResponse.of(new PageImpl<>(objectDtos, pageable, objectDtos.size()));
     }
 }

@@ -4,6 +4,7 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_FIE
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_TITLE;
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
+import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,6 +67,18 @@ public final class ControllersTestUtils {
         JavaType type = objectMapper
                 .getTypeFactory()
                 .constructParametricType(List.class, clazz);
+        return objectMapper.readValue(result.getResponse().getContentAsByteArray(), type);
+
+    }
+
+    public static <T> PageResponse<T> parseObjectDtoPageResponse(
+            MvcResult result,
+            ObjectMapper objectMapper,
+            Class<T> clazz
+    ) throws IOException {
+        JavaType type = objectMapper
+                .getTypeFactory()
+                .constructParametricType(PageResponse.class, clazz);
         return objectMapper.readValue(result.getResponse().getContentAsByteArray(), type);
 
     }

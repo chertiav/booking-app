@@ -46,6 +46,7 @@ public final class ServiceTestConstants {
             "Can't update category by id: ";
     public static final String AMENITY_CATEGORY_TABLE_NAME = "amenity_categories";
     public static final String AMENITY_TABLE_NAME = "amenities";
+    public static final String ACCOMMODATION_TABLE_NAME = "accommodations";
 
     //================================amenity===============================================
     public static final String AMENITY_FREE_WIFI = "Free Wi-Fi";

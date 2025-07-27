@@ -16,6 +16,7 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AV
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPageResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAccommodation;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAccommodationRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAddress;
@@ -26,12 +27,12 @@ import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapAccom
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAddressRequestDto;
+import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Accommodation.Type;
 import com.chertiavdev.bookingapp.model.Address;
 import com.chertiavdev.bookingapp.model.Amenity;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
@@ -42,6 +43,9 @@ import org.springframework.data.domain.Pageable;
 @Getter
 public class AccommodationTestDataBuilder {
     private static final int DEFAULT_PAGE_SIZE = 20;
+
+    private final Set<Amenity> amenitySet;
+
     private final Accommodation pendingAccommodation;
     private final Accommodation confirmedAccommodation;
     private final Accommodation updatedPendingAccommodation;
@@ -62,9 +66,9 @@ public class AccommodationTestDataBuilder {
 
     private final Pageable pageable;
 
-    private Set<Amenity> amenitySet = new HashSet<>();
-
     public AccommodationTestDataBuilder(AmenityTestDataBuilder amenityTestDataBuilder) {
+        this.amenitySet = amenityTestDataBuilder.generateAmenityCollection();
+
         this.pendingAccommodation = createPendingAccommodation();
         this.confirmedAccommodation = createConfirmedAccommodation();
         this.updatedPendingAccommodation = createUpdatedPendingAccommodation();
@@ -85,8 +89,6 @@ public class AccommodationTestDataBuilder {
         this.updatedPendingAccommodationDto = createUpdatedPendingAccommodationDto();
 
         this.pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
-
-        this.amenitySet = amenityTestDataBuilder.generateAmenityCollection();
     }
 
     public Page<Accommodation> buildPendingAccommodationPage() {
@@ -95,6 +97,10 @@ public class AccommodationTestDataBuilder {
 
     public Page<AccommodationDto> buildPendingAccommodationDtoPage() {
         return createPage(List.of(pendingAccommodationDto), pageable);
+    }
+
+    public PageResponse<AccommodationDto> buildAvailableAccommodationDtoPageResponse() {
+        return createPageResponse(List.of(pendingAccommodationDto), pageable);
     }
 
     public Page<Accommodation> buildEmptyAccommodationPage() {
@@ -107,6 +113,17 @@ public class AccommodationTestDataBuilder {
 
     public String buildEExistsMessage(CreateAccommodationRequestDto requestDto) {
         return generateAccommodationExistsMessage(requestDto);
+    }
+
+    public CreateAccommodationRequestDto createPendingAccommodationBadRequestDto() {
+        return createTestAccommodationRequestDto(
+                null,
+                addressPendingAccommodationRequestDto,
+                ACCOMMODATION_SIZE_STUDIO,
+                ACCOMMODATION_DEFAULT_AMENITIES,
+                ACCOMMODATION_DAILY_RATE_7550,
+                ACCOMMODATION_AVAILABILITY
+        );
     }
 
     private Accommodation createPendingAccommodation() {
@@ -150,8 +167,8 @@ public class AccommodationTestDataBuilder {
 
     private CreateAddressRequestDto createAddressPendingAccommodationRequestDto() {
         return createTestAddressRequestDto(
-                ADDRESS_STREET_KHRESHCHATYK,
                 ADDRESS_CITY_KYIV,
+                ADDRESS_STREET_KHRESHCHATYK,
                 ADDRESS_HOUSE_NUMBER_15B,
                 ADDRESS_APARTMENT_NUMBER_25
         );

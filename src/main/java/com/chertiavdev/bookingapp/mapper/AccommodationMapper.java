@@ -42,6 +42,7 @@ public interface AccommodationMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "location", source = "location")
     @Mapping(target = "amenities", source = "amenities", qualifiedBy = AmenityMapping.class)
     void updateAccommodationFromDto(
             CreateAccommodationRequestDto requestDto,

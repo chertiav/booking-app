@@ -101,7 +101,7 @@ class AmenityCategoryControllerTest {
     }
 
     @AfterAll
-    static void afterEach(@Autowired DataSource dataSource) {
+    static void afterAll(@Autowired DataSource dataSource) {
         teardown(dataSource);
     }
 
@@ -206,7 +206,7 @@ class AmenityCategoryControllerTest {
     }
 
     @Test
-    @DisplayName("Creating an amenity category when an invalid users role is provided"
+    @DisplayName("Creating an amenity category when an invalid users role is provided "
             + "should throw a Forbidden")
     @WithMockUser(username = "user", roles = {"USER"})
     void create_InValidUsersRole_ShouldThrowForbidden() throws Exception {

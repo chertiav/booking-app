@@ -15,6 +15,8 @@ public final class TestConstants {
             "The total elements in the page do not match the expected value.";
     public static final String TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE =
             "The total number of pages does not match the expected value.";
+    public static final String CURRENT_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE =
+            "The current page does not match the expected value.";
     public static final String PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE =
             "The page size does not match the expected value.";
     public static final String CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE =
@@ -59,13 +61,22 @@ public final class TestConstants {
             "Can't find amenity category by id: ";
     public static final String ERROR_MESSAGE_AMENITY_NOT_FOUND_ID =
             "Can't find amenity by id: ";
+    public static final String ERROR_MESSAGE_ACCOMMODATION_NOT_FOUND_ID =
+            "Can't find accommodation by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CATEGORY_CAN_NOT_UPDATE =
             "Can't update category by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE =
             "Can't update amenity by id: ";
+    public static final String ERROR_MESSAGE_ACCOMMODATION_CAN_NOT_UPDATE =
+            "Can't update accommodation by id: ";
     public static final String ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL = "Method "
             + "parameter 'id': Failed to convert value of type 'java.lang.String' "
             + "to required type 'java.lang.Long'; For input string: \"null\"";
+    public static final String ERROR_MESSAGE_VALUE_MUST_BE_ANY_OF_HOUSE_APARTMENT_ETC =
+            "Value must be any of HOUSE|APARTMENT|CONDO|VACATION_HOME";
+    public static final String ERROR_MESSAGE_ACCOMMODATION_ALREADY_EXISTS =
+            "Accommodation with the same city: Kyiv, street: Khreshchatyk, house number: 15B, "
+                    + "apartment number: 25, type: HOUSE, and size: Studio already exists.";
 
     // ======================== API Endpoints ========================
     public static final String USERS_ME_ENDPOINT = "/users/me";
@@ -74,10 +85,12 @@ public final class TestConstants {
     public static final String AUTH_LOGIN_ENDPOINT = "/login";
     public static final String AMENITY_CATEGORY_ENDPOINT = "/amenity-category";
     public static final String AMENITIES_ENDPOINT = "/amenities";
+    public static final String ACCOMMODATION_ENDPOINT = "/accommodations";
     public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================
     public static final String TIMESTAMP_FIELD = "timestamp";
+    public static final String DAILY_RATE_FIELD = "dailyRate";
     public static final String ERROR_FIELD_TITLE = "field";
     public static final String ERROR_MESSAGE_TITLE = "message";
     public static final String FIELD_FIRST_NAME = "firstName";
@@ -85,6 +98,7 @@ public final class TestConstants {
     public static final String FIELD_REGISTER_DTO = "userRegisterRequestDto";
     public static final String FIELD_EMAIL = "email";
     public static final String FIELD_NANE = "name";
+    public static final String FIELD_TYPE = "type";
 
     private TestConstants() {
     }
