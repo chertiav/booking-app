@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.model;
 
-import com.chertiavdev.bookingapp.validation.json.TypeDeserializer;
+import com.chertiavdev.bookingapp.validation.json.BookingStatusDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,7 +61,7 @@ public class Booking {
         this.id = id;
     }
 
-    @JsonDeserialize(using = TypeDeserializer.class)
+    @JsonDeserialize(using = BookingStatusDeserializer.class)
     public enum Status {
         PENDING,
         CONFIRMED,
