@@ -111,7 +111,7 @@ class UserControllerTest {
         }
     }
 
-    @WithMockUser(username = USER_EMAIL_JOHN, roles = {"USER"})
+    @WithMockUser(username = USER_EMAIL_JOHN)
     @DisplayName("Finding a user by email should return UserDto when a valid email is provided")
     @Test
     void findByEmail_ValidEmail_ShouldReturnUserDto() throws Exception {
@@ -161,7 +161,7 @@ class UserControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @WithMockUser(username = USER_INVALID_EMAIL, roles = {"USER"})
+    @WithMockUser(username = USER_INVALID_EMAIL)
     @DisplayName("Finding a user by email when an invalid email is provided "
             + "should return NotFound")
     @Test
@@ -192,7 +192,7 @@ class UserControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @WithMockUser(username = USER_EMAIL_JOHN, roles = {"USER"})
+    @WithMockUser(username = USER_EMAIL_JOHN)
     @DisplayName("Updating a user by email successfully valid data is provided")
     @Test
     void updateByEmail_ValidData_ShouldReturnUserDto() throws Exception {
@@ -216,7 +216,7 @@ class UserControllerTest {
         assertEquals(expected, actual, ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
     }
 
-    @WithMockUser(username = USER_EMAIL_JOHN, roles = {"USER"})
+    @WithMockUser(username = USER_EMAIL_JOHN)
     @DisplayName("Updating a user by email when invalid data is provided")
     @Test
     void updateByEmail_InvalidData_ShouldReturnBadRequest() throws Exception {
@@ -286,7 +286,7 @@ class UserControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @WithMockUser(username = USER_INVALID_EMAIL, roles = {"USER"})
+    @WithMockUser(username = USER_INVALID_EMAIL)
     @DisplayName("Updating a user by email when invalid users role data is provided")
     @Test
     void updateByEmail_InvalidEmail_ShouldReturnNotFound() throws Exception {
@@ -384,7 +384,7 @@ class UserControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Updating a users role when denied acces")
     @Test
     void updateRole_DeniedAccess_ShouldReturnForbidden() throws Exception {

@@ -230,7 +230,7 @@ class AccommodationControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Creating an accommodation when an invalid users role is provided "
             + "should throw a Forbidden")
     void create_InValidUsersRole_ShouldThrowForbidden() throws Exception {
@@ -585,7 +585,7 @@ class AccommodationControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Updating an accommodation when an invalid users role is provided "
             + "should throw a Forbidden")
     void update_InValidUsersRole_ShouldThrowForbidden() throws Exception {
@@ -701,7 +701,7 @@ class AccommodationControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Deleting an accommodation when an invalid users role is provided "
             + "should throw Forbidden")
     void deleteById_ValidData_ShouldThrowForbidden() throws Exception {

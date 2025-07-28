@@ -195,7 +195,7 @@ class AmenityControllerTest {
     @Test
     @DisplayName("Creating an amenity when an invalid users role is provided"
             + "should throw a Forbidden")
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     void create_InValidUsersRole_ShouldThrowForbidden() throws Exception {
         //Given
         CreateAmenityRequestDto requestDto = amenityTestDataBuilder
@@ -474,7 +474,7 @@ class AmenityControllerTest {
 
     @Test
     @DisplayName("Updating an amenity an invalid users role is provided should throw Forbidden")
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     void update_InValidUsersRole_ShouldThrowForbidden() throws Exception {
         //Given
         Long amenityId = amenityTestDataBuilder.getAmenityFreeWiFi().getId();
@@ -578,7 +578,7 @@ class AmenityControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Deleting an amenity when an invalid users role is provided "
             + "should throw Forbidden")
     void deleteById_AccessDenied_ShouldThrowForbidden() throws Exception {

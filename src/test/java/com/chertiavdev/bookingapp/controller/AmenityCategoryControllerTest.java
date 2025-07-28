@@ -208,7 +208,7 @@ class AmenityCategoryControllerTest {
     @Test
     @DisplayName("Creating an amenity category when an invalid users role is provided "
             + "should throw a Forbidden")
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     void create_InValidUsersRole_ShouldThrowForbidden() throws Exception {
         //Given
         CreateAmenityCategoryRequestDto requestDto = amenityCategoryTestDataBuilder
@@ -464,7 +464,7 @@ class AmenityCategoryControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @DisplayName("Updating an amenity category when an invalid users role is provided"
             + "should throw Forbidden")
     @Test
@@ -578,7 +578,7 @@ class AmenityCategoryControllerTest {
 
     @DisplayName("Deleting an amenity category when an invalid users role is provided"
             + "should throw Forbidden")
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user")
     @Test
     void deleteById_AccessDenied_ShouldThrowForbidden() throws Exception {
         //Given
