@@ -2,6 +2,7 @@ package com.chertiavdev.bookingapp.controller;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NULL_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
@@ -345,7 +346,7 @@ class AmenityControllerTest {
         //When
         MvcResult result = mockMvc
                 .perform(get(AMENITIES_ENDPOINT + String
-                        .format(URL_PARAMETERIZED_TEMPLATE, null))
+                        .format(URL_PARAMETERIZED_TEMPLATE, NULL_ID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
@@ -652,7 +653,7 @@ class AmenityControllerTest {
         //When
         MvcResult result = mockMvc
                 .perform(delete(AMENITIES_ENDPOINT + String
-                        .format(URL_PARAMETERIZED_TEMPLATE, null))
+                        .format(URL_PARAMETERIZED_TEMPLATE, NULL_ID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();

@@ -13,6 +13,7 @@ public final class ServiceTestConstants {
     public static final long SAMPLE_TEST_ID_4 = 4L;
     public static final long SAMPLE_TEST_ID_5 = 5L;
     public static final long INVALID_TEST_ID = 100L;
+    public static final String NULL_ID = "null";
 
     //================================accommodation======================================
 
