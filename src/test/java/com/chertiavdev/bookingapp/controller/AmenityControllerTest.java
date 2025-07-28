@@ -65,7 +65,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@DisplayName("AmenityControllerTest Integration Test")
+@DisplayName("Amenity Controller Integration Test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
 class AmenityControllerTest {
