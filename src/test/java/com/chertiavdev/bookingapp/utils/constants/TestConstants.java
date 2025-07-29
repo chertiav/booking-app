@@ -29,7 +29,10 @@ public final class TestConstants {
             "Expiration timestamps are different";
     public static final String RECORD_SHOULD_EXIST_BEFORE_DELETION =
             "Record should exist before deletion";
+    public static final String BOOKING_SHOULD_NOT_BE_CANCELED =
+            "Booking should not be canceled";
     public static final String RECORD_SHOULD_BE_DELETED = "Record should be deleted";
+    public static final String BOOKING_SHOULD_BE_DELETED = "Booking should be canceled";
     public static final String DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH =
             "The date part of the timestamp does not match between expected and actual objects";
     public static final String USERNAME_IN_THE_TOKEN_SHOULD_MATCH_THE_LOGIN_EMAIL =
@@ -63,12 +66,16 @@ public final class TestConstants {
             "Can't find amenity by id: ";
     public static final String ERROR_MESSAGE_ACCOMMODATION_NOT_FOUND_ID =
             "Can't find accommodation by id: ";
+    public static final String ERROR_MESSAGE_BOOKING_NOT_FOUND_ID =
+            "Can't find booking by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CATEGORY_CAN_NOT_UPDATE =
             "Can't update category by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE =
             "Can't update amenity by id: ";
     public static final String ERROR_MESSAGE_ACCOMMODATION_CAN_NOT_UPDATE =
             "Can't update accommodation by id: ";
+    public static final String ERROR_MESSAGE_BOOKING_CAN_NOT_UPDATE =
+            "Can't update booking by id: ";
     public static final String ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL = "Method "
             + "parameter 'id': Failed to convert value of type 'java.lang.String' "
             + "to required type 'java.lang.Long'; For input string: \"null\"";
@@ -77,6 +84,12 @@ public final class TestConstants {
     public static final String ERROR_MESSAGE_ACCOMMODATION_ALREADY_EXISTS =
             "Accommodation with the same city: Kyiv, street: Khreshchatyk, house number: 15B, "
                     + "apartment number: 25, type: HOUSE, and size: Studio already exists.";
+    public static final String ERROR_MESSAGE_BOOKING_ALREADY_CANCELED =
+            "Booking with ID %s has already been cancelled.";
+    public static final String ERROR_MESSAGE_OUT_DATE_AND_MUST_BE_TODAY_OR_A_FUTURE_DATE =
+            "The check-in date must precede the check-out date and must be today or a future date.";
+    public static final String ERROR_MESSAGE_ACCOMMODATION_ISNOT_AVAILABLE =
+            "Accommodation is not available for the requested dates: %s - %s";
 
     // ======================== API Endpoints ========================
     public static final String USERS_ME_ENDPOINT = "/users/me";
@@ -86,6 +99,8 @@ public final class TestConstants {
     public static final String AMENITY_CATEGORY_ENDPOINT = "/amenity-category";
     public static final String AMENITIES_ENDPOINT = "/amenities";
     public static final String ACCOMMODATION_ENDPOINT = "/accommodations";
+    public static final String BOOKINGS_ENDPOINT = "/bookings";
+    public static final String ALL_USERS_BOOKINGS_ENDPOINT = "/my";
     public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================
@@ -99,6 +114,11 @@ public final class TestConstants {
     public static final String FIELD_EMAIL = "email";
     public static final String FIELD_NANE = "name";
     public static final String FIELD_TYPE = "type";
+    public static final String FIELD_CREATE_BOOKING = "createBookingRequestDto";
+
+    // ======================== Search Parameters ========================
+    public static final String USER_ID_SEARCH_PARAMETER = "userId";
+    public static final String STATUS_SEARCH_PARAMETER = "status";
 
     private TestConstants() {
     }

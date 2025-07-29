@@ -510,7 +510,8 @@ class AccommodationControllerTest {
     }
 
     @Test
-    @DisplayName("Updating an accommodation by an invalid id is provided should throw NotFound ")
+    @DisplayName("Updating an accommodation by id when an invalid id is provided "
+            + "should throw NotFound")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void update_InValidId_ShouldThrowNotFound() throws Exception {
         //Given
@@ -705,7 +706,7 @@ class AccommodationControllerTest {
     @WithMockUser(username = "user")
     @DisplayName("Deleting an accommodation when an invalid users role is provided "
             + "should throw Forbidden")
-    void deleteById_ValidData_ShouldThrowForbidden() throws Exception {
+    void deleteById_InValidRole_ShouldThrowForbidden() throws Exception {
         //Given
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.FORBIDDEN,

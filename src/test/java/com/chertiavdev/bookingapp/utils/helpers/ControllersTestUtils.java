@@ -2,6 +2,8 @@ package com.chertiavdev.bookingapp.utils.helpers;
 
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_FIELD_TITLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_TITLE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.STATUS_SEARCH_PARAMETER;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_ID_SEARCH_PARAMETER;
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.chertiavdev.bookingapp.dto.page.PageResponse;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 public final class ControllersTestUtils {
 
@@ -81,5 +85,15 @@ public final class ControllersTestUtils {
                 .constructParametricType(PageResponse.class, clazz);
         return objectMapper.readValue(result.getResponse().getContentAsByteArray(), type);
 
+    }
+
+    public static MultiValueMap<String, String> createSearchParams(
+            String userId,
+            String status
+    ) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(USER_ID_SEARCH_PARAMETER, userId);
+        params.add(STATUS_SEARCH_PARAMETER, status);
+        return params;
     }
 }

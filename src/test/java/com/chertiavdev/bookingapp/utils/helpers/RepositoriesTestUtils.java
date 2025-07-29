@@ -33,6 +33,19 @@ public class RepositoriesTestUtils {
         return checkRecordExistence(jdbcTemplate, tableName, "id = ?", id);
     }
 
+    public static boolean isBookingCanceledById(
+            JdbcTemplate jdbcTemplate,
+            String tableName,
+            Long id
+    ) {
+        return checkRecordExistence(
+                jdbcTemplate,
+                tableName,
+                "id = ? AND status = 'CANCELED'",
+                id
+        );
+    }
+
     private static boolean checkRecordExistence(
             JdbcTemplate jdbcTemplate,
             String tableName,
