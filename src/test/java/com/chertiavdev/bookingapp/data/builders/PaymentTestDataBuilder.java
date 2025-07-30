@@ -17,7 +17,6 @@ import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPa
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestPayment;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestPaymentRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapPaymentToDto;
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
@@ -32,6 +31,8 @@ import org.springframework.data.domain.Pageable;
 
 @Getter
 public class PaymentTestDataBuilder {
+    private static final int DEFAULT_PAGE_SIZE = 20;
+
     private final Booking pendingBooking;
     private final Booking pendingBookingUserSansa;
     private final Booking confirmedBooking;
@@ -87,28 +88,34 @@ public class PaymentTestDataBuilder {
 
     public Page<Payment> buildAllPaymentsUserJhonToPage() {
         return createPage(
-                List.of(pendingPaymentPendingBooking),
+                List.of(pendingPaymentPendingBooking, paidPaymentConfirmedBooking),
                 pageable
         );
     }
 
     public Page<PaymentDto> buildAllPaymentDtosUserJhonToPage() {
         return createPage(
-                List.of(pendingPaymentPendingBookingDto),
+                List.of(pendingPaymentPendingBookingDto, paidPaymentConfirmedBookingDto),
                 pageable
         );
     }
 
     public Page<Payment> buildAllPaymentBookingsPage() {
         return createPage(
-                List.of(pendingPaymentPendingBooking, paidPaymentConfirmedBooking),
+                List.of(
+                        pendingPaymentPendingBooking,
+                        paidPaymentConfirmedBooking,
+                        expiredPaymentPendingBooking),
                 pageable
         );
     }
 
     public Page<PaymentDto> buildAllPaymentDtosPage() {
         return createPage(
-                List.of(pendingPaymentPendingBookingDto, paidPaymentConfirmedBookingDto),
+                List.of(
+                        pendingPaymentPendingBookingDto,
+                        paidPaymentConfirmedBookingDto,
+                        expiredPaymentPendingBookingDto),
                 pageable
         );
     }
@@ -152,7 +159,7 @@ public class PaymentTestDataBuilder {
                 pendingBookingUserSansa,
                 PAYMENT_SESSION_EXPIRED_ID,
                 PAYMENT_SESSION_EXPIRED_URL,
-                ACCOMMODATION_DAILY_RATE_7550,
+                ACCOMMODATION_DAILY_RATE_10050,
                 false
         );
     }
