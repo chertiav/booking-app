@@ -96,4 +96,13 @@ public final class ControllersTestUtils {
         params.add(STATUS_SEARCH_PARAMETER, status);
         return params;
     }
+
+    public static MultiValueMap<String, String> buildSingleRequestParams(
+            String paramName,
+            String userId
+    ) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(paramName, userId);
+        return params;
+    }
 }

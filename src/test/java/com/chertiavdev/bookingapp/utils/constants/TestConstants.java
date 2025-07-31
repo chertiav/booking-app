@@ -68,6 +68,10 @@ public final class TestConstants {
             "Can't find accommodation by id: ";
     public static final String ERROR_MESSAGE_BOOKING_NOT_FOUND_ID =
             "Can't find booking by id: ";
+    public static final String ERROR_MESSAGE_PAYMENT_NOT_FOUND_SESSION =
+            "Can't find payment by session id: ";
+    public static final String ERROR_MESSAGE_PAYMENT_NOT_FOUND_ID =
+            "Can't find payment by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CATEGORY_CAN_NOT_UPDATE =
             "Can't update category by id: ";
     public static final String ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE =
@@ -88,8 +92,19 @@ public final class TestConstants {
             "Booking with ID %s has already been cancelled.";
     public static final String ERROR_MESSAGE_OUT_DATE_AND_MUST_BE_TODAY_OR_A_FUTURE_DATE =
             "The check-in date must precede the check-out date and must be today or a future date.";
+    public static final String ERROR_MESSAGE_BOOKING_ID_NULL = "Booking ID must not be null";
     public static final String ERROR_MESSAGE_ACCOMMODATION_ISNOT_AVAILABLE =
             "Accommodation is not available for the requested dates: %s - %s";
+    public static final String ERROR_MESSAGE_CAN_T_RETRIEVE_PAYMENTS_FOR_USER =
+            "Can't retrieve payments for user ";
+    public static final String ERROR_MESSAGE_CAN_T_RENEW_SESSION_BY_PAYMENT_ID =
+            "Can't renew session by payment id: ";
+    public static final String ERROR_MESSAGE_USER_ID_INVALID_FORMAT_MESSAGE =
+            "Method parameter '%s': Failed to convert value of type 'java.lang.String' "
+            + "to required type 'java.lang.Long'; For input string: \"%s\"";
+    public static final String ERROR_MESSAGE_RENEWAL_PAYMENT_STATUS_ERROR =
+            "Can't renew payment by id: %s payment status must be: EXPIRED and"
+            + " booking status must be: PENDING";
 
     // ======================== API Endpoints ========================
     public static final String USERS_ME_ENDPOINT = "/users/me";
@@ -101,6 +116,10 @@ public final class TestConstants {
     public static final String ACCOMMODATION_ENDPOINT = "/accommodations";
     public static final String BOOKINGS_ENDPOINT = "/bookings";
     public static final String ALL_USERS_BOOKINGS_ENDPOINT = "/my";
+    public static final String PAYMENTS_ENDPOINT = "/payments";
+    public static final String PAYMENTS_SUCCESS_ENDPOINT = "/success";
+    public static final String PAYMENTS_CANCEL_ENDPOINT = "/cancel";
+    public static final String PAYMENTS_RENEW_ENDPOINT = "/renew";
     public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================
@@ -115,10 +134,14 @@ public final class TestConstants {
     public static final String FIELD_NANE = "name";
     public static final String FIELD_TYPE = "type";
     public static final String FIELD_CREATE_BOOKING = "createBookingRequestDto";
+    public static final String FIELD_BOOKING_ID = "bookingId";
 
     // ======================== Search Parameters ========================
     public static final String USER_ID_SEARCH_PARAMETER = "userId";
     public static final String STATUS_SEARCH_PARAMETER = "status";
+    public static final String USER_ID_PARAMETER = "user_id";
+    public static final String SESSION_ID_PARAMETER = "session_id";
+    public static final String PAYMENT_ID_PARAMETER = "payment_id";
 
     private TestConstants() {
     }

@@ -251,8 +251,8 @@ class BookingControllerTest {
                 DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH);
     }
 
-    @DisplayName("Creating a booking when an invalid users role is provided "
-            + "should throw a Forbidden")
+    @DisplayName("Creating a booking when a user is unauthorized "
+            + "should throw a Unauthorized")
     @Test
     void create_Unauthorized_ShouldThrowUnauthorized() throws Exception {
         //Given

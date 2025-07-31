@@ -19,6 +19,7 @@ public final class ServiceTestConstants {
 
     public static final String ACCOMMODATION_SIZE_STUDIO = "Studio";
     public static final BigDecimal ACCOMMODATION_DAILY_RATE_7550 = BigDecimal.valueOf(75.50);
+    public static final BigDecimal ACCOMMODATION_DAILY_RATE_37750 = BigDecimal.valueOf(377.50);
     public static final BigDecimal ACCOMMODATION_DAILY_RATE_10050 = BigDecimal.valueOf(100.50);
     public static final int ACCOMMODATION_AVAILABILITY = 1;
     public static final int AVAILABILITY_THRESHOLD = 0;
@@ -106,7 +107,7 @@ public final class ServiceTestConstants {
     public static final String PAYMENT_SESSION_NOT_FOUND_BY_ID_MESSAGE =
             "Can't find payment by id: ";
     public static final String PAYMENT_RENEWAL_INVALID_USER_MESSAGE =
-            "Can't renew session by payment id";
+            "Can't renew session by payment id: ";
     public static final String PAYMENT_RENEWAL_INVALID_STATUS_MESSAGE = "Can't renew payment by "
             + "id: %s payment status must be: %s and booking status must be: %s";
     public static final String STRIPE_APP_BASE_URL_NAME = "appBaseUrl";
@@ -135,6 +136,7 @@ public final class ServiceTestConstants {
 
     //===============================user============================================
 
+    public static final String ADMIN_EMAIL = "admin@example.com";
     public static final String USER_EMAIL_JOHN = "jhon@example.com";
     public static final String USER_EMAIL_SANSA = "sansa@example.com";
     public static final String USER_INVALID_EMAIL = "one@example.com";

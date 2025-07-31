@@ -1,6 +1,7 @@
 package com.chertiavdev.bookingapp.data.builders;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE_10050;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE_37750;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE_7550;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_EXPIRED_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_EXPIRED_URL;
@@ -8,16 +9,16 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PA
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PAID_URL;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_ID;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_URL;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_RENEW_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_RENEW_URL;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_3;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPageResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestPayment;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestPaymentRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapPaymentToDto;
 
+import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.dto.payment.CreatePaymentRequestDto;
 import com.chertiavdev.bookingapp.dto.payment.PaymentDto;
 import com.chertiavdev.bookingapp.model.Booking;
@@ -100,6 +101,24 @@ public class PaymentTestDataBuilder {
         );
     }
 
+    public PageResponse<PaymentDto> buildAllPaymentDtosUserJhonToPageResponse() {
+        return createPageResponse(
+                List.of(pendingPaymentPendingBookingDto, paidPaymentConfirmedBookingDto),
+                pageable
+        );
+    }
+
+    public PageResponse<PaymentDto> buildAllPaymentDtosForAdminToPageResponse() {
+        return createPageResponse(
+                List.of(
+                        pendingPaymentPendingBookingDto,
+                        paidPaymentConfirmedBookingDto,
+                        expiredPaymentPendingBookingDto
+                ),
+                pageable
+        );
+    }
+
     public Page<Payment> buildAllPaymentBookingsPage() {
         return createPage(
                 List.of(
@@ -128,6 +147,10 @@ public class PaymentTestDataBuilder {
         return List.of(pendingPaymentPendingBooking);
     }
 
+    public CreatePaymentRequestDto createPaymentBadRequestPendingBookingDto() {
+        return createTestPaymentRequestDto(null);
+    }
+
     private Payment createPendingPaymentPendingBooking() {
         return createTestPayment(
                 SAMPLE_TEST_ID_1,
@@ -135,7 +158,7 @@ public class PaymentTestDataBuilder {
                 pendingBooking,
                 PAYMENT_SESSION_PENDING_ID,
                 PAYMENT_SESSION_PENDING_URL,
-                ACCOMMODATION_DAILY_RATE_7550,
+                ACCOMMODATION_DAILY_RATE_37750,
                 false
         );
     }
@@ -147,7 +170,7 @@ public class PaymentTestDataBuilder {
                 pendingBooking,
                 PAYMENT_SESSION_PENDING_ID,
                 PAYMENT_SESSION_PENDING_URL,
-                ACCOMMODATION_DAILY_RATE_7550,
+                ACCOMMODATION_DAILY_RATE_37750,
                 false
         );
     }
@@ -193,8 +216,8 @@ public class PaymentTestDataBuilder {
                 SAMPLE_TEST_ID_3,
                 Payment.Status.PENDING,
                 pendingBookingUserSansa,
-                PAYMENT_SESSION_RENEW_ID,
-                PAYMENT_SESSION_RENEW_URL,
+                PAYMENT_SESSION_PENDING_ID,
+                PAYMENT_SESSION_PENDING_URL,
                 ACCOMMODATION_DAILY_RATE_10050,
                 false
         );
