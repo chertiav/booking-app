@@ -1,7 +1,7 @@
 package com.chertiavdev.bookingapp.config;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_URL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_PENDING_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_PENDING_URL;
 
 import com.chertiavdev.bookingapp.service.StripeService;
 import com.stripe.model.checkout.Session;

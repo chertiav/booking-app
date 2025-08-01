@@ -1,9 +1,5 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_ROLE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
@@ -14,9 +10,13 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MES
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_ROLE_MUST_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_FIRST_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_ROLE_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_ROLE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERS_ME_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERS_UPDATE_ROLE_ENDPOINT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_INVALID_EMAIL;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;

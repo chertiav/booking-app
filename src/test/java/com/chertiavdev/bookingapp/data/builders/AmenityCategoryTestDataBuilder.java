@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.data.builders;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_BASIC_AMENITIES;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_COMFORT_CONVENIENCE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_CATEGORY_UPDATED_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_CATEGORY_BASIC_AMENITIES;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_CATEGORY_COMFORT_CONVENIENCE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_CATEGORY_UPDATED_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAmenityCategory;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAmenityCategoryDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestAmenityCategoryRequest;

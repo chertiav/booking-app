@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_CHAT_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_NEW_CHAT_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_TELEGRAM_CHAT_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_TELEGRAM_NEW_CHAT_ID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

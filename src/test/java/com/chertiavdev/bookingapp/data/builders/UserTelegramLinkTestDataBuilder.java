@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.data.builders;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NUMBER_OF_MINUTES;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_CURRENT;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_EXPIRED;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NUMBER_OF_MINUTES;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_2;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_TOKEN_CURRENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_TOKEN_EXPIRED;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculateExpirationInstant;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestTelegramLink;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestTelegramLinkDto;

@@ -1,13 +1,13 @@
 package com.chertiavdev.bookingapp.repository.user.telegram;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_NEW_CHAT_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_TELEGRAM_NEW_CHAT_ID;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsInDatabaseById;
 import static org.junit.jupiter.api.Assertions.assertEquals;

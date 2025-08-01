@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.repository.user;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_INVALID_EMAIL;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

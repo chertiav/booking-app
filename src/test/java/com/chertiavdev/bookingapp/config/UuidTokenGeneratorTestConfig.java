@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.config;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_CURRENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_TOKEN_CURRENT;
 
 import com.chertiavdev.bookingapp.util.helpers.token.generator.UuidTokenGenerator;
 import org.springframework.boot.test.context.TestConfiguration;

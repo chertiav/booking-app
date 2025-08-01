@@ -1,33 +1,33 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_TABLE_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NULL_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ALL_USERS_BOOKINGS_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKINGS_ENDPOINT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_ALREADY_CANCELLED_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_NOT_FOUND_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_SHOULD_NOT_BE_CANCELED;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CURRENT_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED_FULL_AUTHENTICATION_IS_REQUIRED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCOMMODATION_ISNOT_AVAILABLE;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_BOOKING_ALREADY_CANCELED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_BOOKING_CAN_NOT_UPDATE;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_BOOKING_NOT_FOUND_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_OUT_DATE_AND_MUST_BE_TODAY_OR_A_FUTURE_DATE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_CREATE_BOOKING;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NULL_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.URL_PARAMETERIZED_TEMPLATE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createSearchParams;
@@ -632,7 +632,7 @@ class BookingControllerTest {
         //Given
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_BOOKING_NOT_FOUND_ID + INVALID_TEST_ID
+                BOOKING_NOT_FOUND_MESSAGE + INVALID_TEST_ID
         );
 
         //When
@@ -1083,7 +1083,7 @@ class BookingControllerTest {
         //Given
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.CONFLICT,
-                String.format(ERROR_MESSAGE_BOOKING_ALREADY_CANCELED, SAMPLE_TEST_ID_1)
+                String.format(BOOKING_ALREADY_CANCELLED_MESSAGE, SAMPLE_TEST_ID_1)
         );
 
         //When

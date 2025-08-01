@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.utils.helpers;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_USER_AUTH_PASSWORD;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TELEGRAM_LINK_TEMPLATE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_BOT_USERNAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL_FORMAT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_USER_AUTH_PASSWORD;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_LINK_TEMPLATE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_BOT_USERNAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_INVALID_EMAIL_FORMAT;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
 import com.chertiavdev.bookingapp.dto.accommodation.CreateAccommodationRequestDto;

@@ -1,9 +1,9 @@
 package com.chertiavdev.bookingapp.service.impl;
 
 import static com.chertiavdev.bookingapp.model.Role.RoleName.USER;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.DEFAULT_NOTIFICATION_MESSAGE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NOTIFICATION_SEND_ERROR_PREFIX;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DEFAULT_NOTIFICATION_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NOTIFICATION_SEND_ERROR_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;

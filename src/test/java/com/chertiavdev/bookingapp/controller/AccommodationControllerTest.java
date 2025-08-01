@@ -1,10 +1,7 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_TABLE_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NULL_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACCOMMODATION_ENDPOINT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACCOMMODATION_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
@@ -19,9 +16,12 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MES
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_VALUE_MUST_BE_ANY_OF_HOUSE_APARTMENT_ETC;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_TYPE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NULL_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
