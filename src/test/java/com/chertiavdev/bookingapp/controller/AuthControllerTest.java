@@ -7,7 +7,6 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AUTH_REGI
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_BAD_CREDENTIALS;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_INVALID_EMAIL_FORMAT;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_USER_ALREADY_EXISTS;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_PASSWORD_DO_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXPIRATION_SHOULD_BE_IN_THE_FUTURE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXPIRATION_SHOULD_NOT_BE_NULL;
@@ -18,6 +17,7 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ISSUED_AT
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOKEN_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USERNAME_IN_THE_TOKEN_SHOULD_MATCH_THE_LOGIN_EMAIL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_ALREADY_EXISTS_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;
@@ -156,7 +156,7 @@ class AuthControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                String.format(ERROR_MESSAGE_USER_ALREADY_EXISTS, requestDto.getEmail())
+                String.format(USER_ALREADY_EXISTS_MESSAGE, requestDto.getEmail())
         );
 
         //When

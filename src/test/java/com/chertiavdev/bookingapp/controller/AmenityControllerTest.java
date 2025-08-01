@@ -1,22 +1,22 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.AMENITY_TABLE_NAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NULL_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITIES_ENDPOINT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_NOT_FOUND_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_TABLE_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.AMENITY_UPDATE_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED_FULL_AUTHENTICATION_IS_REQUIRED;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_AMENITY_NAME_MANDATORY;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_AMENITY_NOT_FOUND_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_TYPE_JAVA_LANG_LONG_FOR_INPUT_STRING_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_NANE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NULL_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.URL_PARAMETERIZED_TEMPLATE;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
@@ -310,7 +310,7 @@ class AmenityControllerTest {
         //Given
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_AMENITY_NOT_FOUND_ID + INVALID_TEST_ID
+                AMENITY_NOT_FOUND_MESSAGE + INVALID_TEST_ID
         );
 
         //When
@@ -448,7 +448,7 @@ class AmenityControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_AMENITY_CAN_NOT_UPDATE + INVALID_TEST_ID
+                AMENITY_UPDATE_ERROR_MESSAGE + INVALID_TEST_ID
         );
 
         //When

@@ -1,22 +1,22 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_ROLE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_SANSA;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_TELEGRAM_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED_FULL_AUTHENTICATION_IS_REQUIRED;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_ROLE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_LINK_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_LINK_STATUS_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_SANSA;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_INVALID_EMAIL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_TELEGRAM_TABLE_NAME;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.mapMvcResultToObjectDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.parseErrorResponseFromMvcResult;

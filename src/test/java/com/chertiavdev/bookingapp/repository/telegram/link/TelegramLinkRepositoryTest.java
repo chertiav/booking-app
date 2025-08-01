@@ -1,13 +1,15 @@
 package com.chertiavdev.bookingapp.repository.telegram.link;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_INVALID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXPIRATION_DATE_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXPIRATION_TIMESTAMPS_ARE_DIFFERENT;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_BE_DELETED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_LINKS_TABLE_NAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_TOKEN_INVALID;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsBeforeTimestamp;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.isValidExpirationTime;
@@ -39,8 +41,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({TestConfig.class})
 class TelegramLinkRepositoryTest {
-    private static final String EXPIRATION_DATE_FIELD = "expiresAt";
-    private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";
     private static final String[] SETUP_SCRIPTS = {
             "database/user/add-users-to-users-table.sql",
             "database/user/role/add-role-for-into-users_roles_table.sql",

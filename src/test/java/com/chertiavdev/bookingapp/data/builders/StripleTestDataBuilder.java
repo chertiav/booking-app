@@ -1,10 +1,10 @@
 package com.chertiavdev.bookingapp.data.builders;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ACCOMMODATION_DAILY_RATE_7550;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_URL;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_RENEW_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_RENEW_URL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACCOMMODATION_DAILY_RATE_7550;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_PENDING_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_PENDING_URL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_RENEW_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_RENEW_URL;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestSession;
 
 import com.stripe.model.checkout.Session;

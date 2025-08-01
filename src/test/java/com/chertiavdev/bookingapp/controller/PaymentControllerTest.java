@@ -1,38 +1,38 @@
 package com.chertiavdev.bookingapp.controller;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ADMIN_EMAIL;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NULL_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_INVALID_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.PAYMENT_SESSION_PENDING_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_SANSA;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ADMIN_EMAIL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.CURRENT_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.DATE_PART_OF_THE_TIMESTAMP_DOES_NOT_MATCH;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_ACCESS_DENIED_FULL_AUTHENTICATION_IS_REQUIRED;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_BOOKING_ID_NULL;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_CAN_T_RENEW_SESSION_BY_PAYMENT_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_CAN_T_RETRIEVE_PAYMENTS_FOR_USER;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_PAYMENT_NOT_FOUND_ID;
-import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_PAYMENT_NOT_FOUND_SESSION;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_RENEWAL_PAYMENT_STATUS_ERROR;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ERROR_MESSAGE_USER_ID_INVALID_FORMAT_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.FIELD_BOOKING_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NULL_ID;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAGE_SIZE_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENTS_CANCEL_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENTS_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENTS_RENEW_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENTS_SUCCESS_ENDPOINT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_ID_PARAMETER;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_RENEWAL_INVALID_USER_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_INVALID_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_NOT_FOUND_BY_ID_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_NOT_FOUND_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.PAYMENT_SESSION_PENDING_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.SESSION_ID_PARAMETER;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TIMESTAMP_FIELD;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_ELEMENTS_IN_THE_PAGE_DO_NOT_MATCH_THE_EXPECTED_VALUE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TOTAL_NUMBER_OF_PAGES_DOES_NOT_MATCH_THE_EXPECTED_VALUE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_SANSA;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_ID_PARAMETER;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.buildSingleRequestParams;
 import static com.chertiavdev.bookingapp.utils.helpers.ControllersTestUtils.createErrorDetailMap;
@@ -244,7 +244,7 @@ class PaymentControllerTest {
     void getPayments_ValidDataAndAdminRequest_ShouldReturnPageResponseOfPayments(
     ) throws Exception {
         //Given
-        MultiValueMap<String, String> params = buildSingleRequestParams(USER_ID_PARAMETER,"");
+        MultiValueMap<String, String> params = buildSingleRequestParams(USER_ID_PARAMETER, "");
         PageResponse<PaymentDto> expected = paymentTestDataBuilder
                 .buildAllPaymentDtosForAdminToPageResponse();
 
@@ -577,7 +577,7 @@ class PaymentControllerTest {
                 PAYMENT_SESSION_INVALID_ID);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_PAYMENT_NOT_FOUND_SESSION + PAYMENT_SESSION_INVALID_ID
+                PAYMENT_SESSION_NOT_FOUND_MESSAGE + PAYMENT_SESSION_INVALID_ID
         );
 
         //When
@@ -706,7 +706,7 @@ class PaymentControllerTest {
                 PAYMENT_SESSION_INVALID_ID);
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_PAYMENT_NOT_FOUND_SESSION + PAYMENT_SESSION_INVALID_ID
+                PAYMENT_SESSION_NOT_FOUND_MESSAGE + PAYMENT_SESSION_INVALID_ID
         );
 
         //When
@@ -844,7 +844,7 @@ class PaymentControllerTest {
                 String.valueOf(INVALID_TEST_ID));
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.NOT_FOUND,
-                ERROR_MESSAGE_PAYMENT_NOT_FOUND_ID + INVALID_TEST_ID
+                PAYMENT_SESSION_NOT_FOUND_BY_ID_MESSAGE + INVALID_TEST_ID
         );
 
         //When
@@ -918,7 +918,7 @@ class PaymentControllerTest {
                 payment.getId().toString());
         CommonApiErrorResponseDto expected = createErrorResponse(
                 HttpStatus.FORBIDDEN,
-                ERROR_MESSAGE_CAN_T_RENEW_SESSION_BY_PAYMENT_ID + payment.getId().toString()
+                PAYMENT_RENEWAL_INVALID_USER_MESSAGE + payment.getId().toString()
         );
 
         //When

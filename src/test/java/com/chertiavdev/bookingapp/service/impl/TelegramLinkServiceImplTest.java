@@ -1,11 +1,11 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.NUMBER_OF_MINUTES;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TELEGRAM_LINK_TEMPLATE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_BOT_USERNAME;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_TOKEN_CURRENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.NUMBER_OF_MINUTES;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TELEGRAM_LINK_TEMPLATE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_BOT_USERNAME;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.TEST_TOKEN_CURRENT;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculateExpirationInstant;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,16 +1,16 @@
 package com.chertiavdev.bookingapp.service.impl;
 
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.EMAIL_PREFIX;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_TEST_ID;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.ROLE_NOT_FOUND_ERROR_MESSAGE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_ALREADY_EXISTS_MESSAGE;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_FIRST_USERNAME_UPDATED;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_ID_PREFIX;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_LAST_USERNAME_UPDATED;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_NOT_FOUND_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_NULL;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.EMAIL_PREFIX;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.INVALID_TEST_ID;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ROLE_NOT_FOUND_ERROR_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_ALREADY_EXISTS_MESSAGE;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_EMAIL_JOHN;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_FIRST_USERNAME_UPDATED;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_ID_PREFIX;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_LAST_USERNAME_UPDATED;
+import static com.chertiavdev.bookingapp.utils.constants.TestConstants.USER_NOT_FOUND_ERROR_MESSAGE;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.updateNamesUser;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
