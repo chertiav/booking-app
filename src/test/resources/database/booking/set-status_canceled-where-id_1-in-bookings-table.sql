@@ -1,0 +1,1 @@
+UPDATE bookings SET status = 'CANCELED' WHERE id = 1;

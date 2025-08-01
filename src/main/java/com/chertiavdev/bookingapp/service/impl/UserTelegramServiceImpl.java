@@ -31,7 +31,7 @@ public class UserTelegramServiceImpl implements UserTelegramService {
     @Override
     public void update(UserTelegram userTelegram, Long chatId) {
         if (userTelegram.isDeleted()) {
-            userTelegramRepository.restoreUserTelegram(userTelegram.getId(), chatId);
+            userTelegramRepository.restoreUserTelegramAndUpdateChatId(userTelegram.getId(), chatId);
         } else {
             userTelegram.setChatId(chatId);
             userTelegramRepository.save(userTelegram);

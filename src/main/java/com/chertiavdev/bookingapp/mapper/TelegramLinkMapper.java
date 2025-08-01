@@ -1,7 +1,7 @@
 package com.chertiavdev.bookingapp.mapper;
 
 import com.chertiavdev.bookingapp.config.MapperConfig;
-import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkRequestDto;
+import com.chertiavdev.bookingapp.dto.user.telegram.TelegramLinkDto;
 import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
 import java.time.ZoneId;
@@ -29,7 +29,7 @@ public interface TelegramLinkMapper {
     @Mapping(target = "link",
             expression = "java(String.format(telegramLinkTemplate, "
                     + "telegramBotUsername, telegramLink.getToken()))")
-    TelegramLinkRequestDto toDto(
+    TelegramLinkDto toDto(
             TelegramLink telegramLink,
             String telegramLinkTemplate,
             String telegramBotUsername

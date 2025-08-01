@@ -54,7 +54,6 @@ public class StripeServiceImpl implements StripeService {
     public boolean isSessionPaid(String sessionId) {
         try {
             Session session = Session.retrieve(sessionId);
-            System.out.println(session.getExpiresAt());
             return PAYMENT_STATUS_PAID.equals(session.getPaymentStatus());
         } catch (StripeException ex) {
             throw new StripeServiceException("Can't retrieve session by id: " + sessionId

@@ -141,7 +141,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Payment getPaymentBySessionId(String sessionId) {
-        return paymentRepository.findAllBySessionId(sessionId)
+        return paymentRepository.findBySessionId(sessionId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find payment by session id: "
                         + sessionId));
     }
@@ -155,7 +155,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static void checkSessionOwnership(Long paymentId, Long userId, Long paymentUserId) {
         if (!paymentUserId.equals(userId)) {
-            throw new AccessDeniedException("Can't renew session by payment id" + paymentId);
+            throw new AccessDeniedException("Can't renew session by payment id: " + paymentId);
         }
     }
 
@@ -166,7 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private static void verifyRenewalEligibility(Payment payment, Booking booking) {
-        if (!payment.getStatus().equals(EXPIRED) && !booking.getStatus().equals(PENDING)) {
+        if (!payment.getStatus().equals(EXPIRED) || !booking.getStatus().equals(PENDING)) {
             throw new PaymentRenewException("Can't renew payment by id: " + payment.getId()
                     + " payment status must be: " + EXPIRED + " and"
                     + " booking status must be: " + PENDING);

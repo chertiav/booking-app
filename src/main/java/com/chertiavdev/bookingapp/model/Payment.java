@@ -1,6 +1,6 @@
 package com.chertiavdev.bookingapp.model;
 
-import com.chertiavdev.bookingapp.validation.json.TypeDeserializer;
+import com.chertiavdev.bookingapp.validation.json.PaymentStatusDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +55,7 @@ public class Payment {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
-    @JsonDeserialize(using = TypeDeserializer.class)
+    @JsonDeserialize(using = PaymentStatusDeserializer.class)
     public enum Status {
         PENDING,
         PAID,

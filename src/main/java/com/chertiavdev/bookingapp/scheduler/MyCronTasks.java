@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class MyCronTasks {
-    public static final int DAYS_UNTIL_EXPIRY = 1;
+    private static final int DAYS_UNTIL_EXPIRY = 1;
     private final TelegramLinkService telegramLinkService;
     private final BookingService bookingService;
     private final PaymentService paymentService;
