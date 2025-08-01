@@ -50,6 +50,7 @@ public final class ServiceTestConstants {
     public static final String AMENITY_TABLE_NAME = "amenities";
     public static final String ACCOMMODATION_TABLE_NAME = "accommodations";
     public static final String BOOKING_TABLE_NAME = "bookings";
+    public static final String USER_TELEGRAM_TABLE_NAME = "user_telegram";
 
     //================================amenity===============================================
     public static final String AMENITY_FREE_WIFI = "Free Wi-Fi";
@@ -132,7 +133,7 @@ public final class ServiceTestConstants {
     public static final String TEST_TOKEN_INVALID = "invalid-test-token";
     public static final int NUMBER_OF_MINUTES = 10;
     public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
-    public static final String TEST_BOT_USERNAME = "TestBot";
+    public static final String TEST_BOT_USERNAME = "botname";
 
     //===============================user============================================
 

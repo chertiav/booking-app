@@ -120,6 +120,9 @@ public final class TestConstants {
     public static final String PAYMENTS_SUCCESS_ENDPOINT = "/success";
     public static final String PAYMENTS_CANCEL_ENDPOINT = "/cancel";
     public static final String PAYMENTS_RENEW_ENDPOINT = "/renew";
+    public static final String TELEGRAM_ENDPOINT = "/telegram";
+    public static final String TELEGRAM_LINK_ENDPOINT = "/link";
+    public static final String TELEGRAM_LINK_STATUS_ENDPOINT = "/status";
     public static final String URL_PARAMETERIZED_TEMPLATE = "/%s";
 
     // ======================== Error Field Keys ========================

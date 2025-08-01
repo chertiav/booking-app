@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @DisplayName("Telegram Link Repository Integration Test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(TestConfig.class)
+@Import({TestConfig.class})
 class TelegramLinkRepositoryTest {
     private static final String EXPIRATION_DATE_FIELD = "expiresAt";
     private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";

@@ -2,6 +2,8 @@ package com.chertiavdev.bookingapp.utils.helpers;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.BOOKING_DAYS_UNTIL_CHECKOUT;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_USER_AUTH_PASSWORD;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TELEGRAM_LINK_TEMPLATE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.TEST_BOT_USERNAME;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL_FORMAT;
 
 import com.chertiavdev.bookingapp.dto.accommodation.AccommodationDto;
@@ -486,7 +488,8 @@ public class ServiceTestUtils {
 
     public static TelegramLinkDto createTestTelegramLinkDto(TelegramLink telegramLink) {
         TelegramLinkDto telegramLinkDto = new TelegramLinkDto();
-        telegramLinkDto.setLink(telegramLink.getToken());
+        telegramLinkDto.setLink(String
+                .format(TELEGRAM_LINK_TEMPLATE, TEST_BOT_USERNAME, telegramLink.getToken()));
         return telegramLinkDto;
     }
 
