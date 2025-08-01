@@ -24,12 +24,12 @@ public class UserTelegramLinkTestDataBuilder {
     private final TelegramLinkDto telegramLinkDtoJohn;
 
     public UserTelegramLinkTestDataBuilder(UserTestDataBuilder userTestDataBuilder) {
-        userJohn = userTestDataBuilder.getUserJohn();
-        userSansa = userTestDataBuilder.getUserSansa();
-        telegramLinkJohn = createTelegramLinkJohn();
-        expiredTelegramLinkJohn = createExpiredTegramLinkJohn();
-        telegramLinkJohnToModel = createTelegramLinkJohnToModel();
-        telegramLinkDtoJohn = createTegramLinkDtoJohn();
+        this.userJohn = userTestDataBuilder.getUserJohn();
+        this.userSansa = userTestDataBuilder.getUserSansa();
+        this.telegramLinkJohn = createTelegramLinkJohn();
+        this.expiredTelegramLinkJohn = createExpiredTegramLinkJohn();
+        this.telegramLinkJohnToModel = createTelegramLinkJohnToModel();
+        this.telegramLinkDtoJohn = createTegramLinkDtoJohn();
     }
 
     private TelegramLink createTelegramLinkJohn() {

@@ -33,16 +33,17 @@ public class RepositoriesTestUtils {
         return checkRecordExistence(jdbcTemplate, tableName, "id = ?", id);
     }
 
-    public static Integer countRecordsInDatabase(
+    public static boolean isBookingCanceledById(
             JdbcTemplate jdbcTemplate,
             String tableName,
-            Instant now
+            Long id
     ) {
-        String query = String.format(
-                "SELECT COUNT(*) FROM %s WHERE expires_at < ? AND is_deleted = false",
-                tableName);
-        Timestamp timestamp = Timestamp.from(now);
-        return jdbcTemplate.queryForObject(query, Integer.class, timestamp);
+        return checkRecordExistence(
+                jdbcTemplate,
+                tableName,
+                "id = ? AND status = 'CANCELED'",
+                id
+        );
     }
 
     private static boolean checkRecordExistence(

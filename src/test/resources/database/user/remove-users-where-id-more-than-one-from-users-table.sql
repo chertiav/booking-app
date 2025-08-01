@@ -1,1 +1,1 @@
-DELETE FROM users WHERE id > 1;
+DELETE FROM users WHERE id in (2,3);

@@ -1,7 +1,7 @@
 package com.chertiavdev.bookingapp.repository.user;
 
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_JOHN;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL_EXAMPLE;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_INVALID_EMAIL;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_BE_PRESENT;
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT;
@@ -84,7 +84,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by email when invalid email is provided should return false")
     void existsByEmail_InValidEmail_ShouldReturnFalse() {
         //Where
-        boolean actual = userRepository.existsByEmail(USER_INVALID_EMAIL_EXAMPLE);
+        boolean actual = userRepository.existsByEmail(USER_INVALID_EMAIL);
 
         //Then
         assertFalse(actual, ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT);
@@ -108,7 +108,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by email when Invalid email is provided should return optional empty")
     void findByEmail_InValidEmail_ShouldReturnOptionalEmpty() {
         //Where
-        Optional<User> actual = userRepository.findByEmail(USER_INVALID_EMAIL_EXAMPLE);
+        Optional<User> actual = userRepository.findByEmail(USER_INVALID_EMAIL);
 
         //Then
         assertFalse(actual.isPresent(), ACTUAL_RESULT_SHOULD_NOT_BE_PRESENT);

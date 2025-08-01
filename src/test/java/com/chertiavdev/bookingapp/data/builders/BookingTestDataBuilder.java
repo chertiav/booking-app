@@ -9,12 +9,14 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SA
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_4;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_5;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPage;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createPageResponse;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestBooking;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestBookingRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapBookingToDto;
 
 import com.chertiavdev.bookingapp.dto.booking.BookingDto;
 import com.chertiavdev.bookingapp.dto.booking.CreateBookingRequestDto;
+import com.chertiavdev.bookingapp.dto.page.PageResponse;
 import com.chertiavdev.bookingapp.model.Accommodation;
 import com.chertiavdev.bookingapp.model.Booking;
 import com.chertiavdev.bookingapp.model.User;
@@ -92,8 +94,16 @@ public class BookingTestDataBuilder {
         return createPage(List.of(pendingBookingDto, confirmedBookingDto), pageable);
     }
 
+    public PageResponse<BookingDto> buildExpectedAllBookingDtosPageResponse() {
+        return createPageResponse(List.of(pendingBookingDto, confirmedBookingDto), pageable);
+    }
+
     public Page<Booking> buildExpectedPendingBookingsPage() {
         return createPage(List.of(pendingBooking), pageable);
+    }
+
+    public PageResponse<BookingDto> buildExpectedPendingBookingDtosPageResponse() {
+        return createPageResponse(List.of(pendingBookingDto), pageable);
     }
 
     public Page<BookingDto> buildExpectedPendingBookingDtosPage() {
@@ -114,6 +124,14 @@ public class BookingTestDataBuilder {
 
     public List<Booking> buildUpcomingBookingsList() {
         return List.of(pendingBooking, pendingBookingUserSansa);
+    }
+
+    public CreateBookingRequestDto createPendingBookingBadRequestDto() {
+        return createTestBookingRequestDto(
+                LocalDate.now(),
+                LocalDate.now(),
+                SAMPLE_TEST_ID_1
+        );
     }
 
     private Booking createPendingBooking() {

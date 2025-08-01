@@ -17,6 +17,8 @@ import lombok.Getter;
 
 @Getter
 public class AmenityCategoryTestDataBuilder {
+    private static final String NAME_BAD_REQUEST = "";
+
     private final AmenityCategory amenityCategoryBasicAmenities;
     private final AmenityCategory amenityCategoryComfortAndConvenience;
     private final AmenityCategory updatedAmenityCategoryBasicAmenities;
@@ -60,6 +62,10 @@ public class AmenityCategoryTestDataBuilder {
 
     public List<AmenityCategoryDto> buildAllAmenityCategoryDtosList() {
         return List.of(amenityCategoryBasicAmenitiesDto, amenityCategoryComfortAndConvenienceDto);
+    }
+
+    public CreateAmenityCategoryRequestDto createAmenityCategoryBasicAmenitiesBatRequestDto() {
+        return createTestAmenityCategoryRequest(NAME_BAD_REQUEST);
     }
 
     private AmenityCategory createAmenityCategoryBasicAmenities() {

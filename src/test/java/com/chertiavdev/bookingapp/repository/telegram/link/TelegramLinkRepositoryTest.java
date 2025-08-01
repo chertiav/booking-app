@@ -10,8 +10,8 @@ import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SH
 import static com.chertiavdev.bookingapp.utils.constants.TestConstants.RECORD_SHOULD_EXIST_BEFORE_DELETION;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.executeSqlScripts;
 import static com.chertiavdev.bookingapp.utils.helpers.RepositoriesTestUtils.recordExistsBeforeTimestamp;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.isValidExpirationTime;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @DisplayName("Telegram Link Repository Integration Test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(TestConfig.class)
+@Import({TestConfig.class})
 class TelegramLinkRepositoryTest {
     private static final String EXPIRATION_DATE_FIELD = "expiresAt";
     private static final String TELEGRAM_LINKS_TABLE_NAME = "telegram_links";
@@ -99,9 +99,10 @@ class TelegramLinkRepositoryTest {
         assertTrue(actual.isPresent(), ACTUAL_RESULT_SHOULD_BE_PRESENT);
         assertTrue(reflectionEquals(expected, actual.get(), EXPIRATION_DATE_FIELD),
                 ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
-        assertEquals(
-                expected.getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
-                actual.get().getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
+        assertTrue(
+                isValidExpirationTime(
+                        expected.getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
+                        actual.get().getExpiresAt().truncatedTo(ChronoUnit.MINUTES)),
                 EXPIRATION_TIMESTAMPS_ARE_DIFFERENT);
     }
 
@@ -132,9 +133,10 @@ class TelegramLinkRepositoryTest {
         assertTrue(actual.isPresent(), ACTUAL_RESULT_SHOULD_BE_PRESENT);
         assertTrue(reflectionEquals(expected, actual.get(), EXPIRATION_DATE_FIELD),
                 ACTUAL_RESULT_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
-        assertEquals(
-                expected.getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
-                actual.get().getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
+        assertTrue(
+                isValidExpirationTime(
+                        expected.getExpiresAt().truncatedTo(ChronoUnit.MINUTES),
+                        actual.get().getExpiresAt().truncatedTo(ChronoUnit.MINUTES)),
                 EXPIRATION_TIMESTAMPS_ARE_DIFFERENT);
     }
 

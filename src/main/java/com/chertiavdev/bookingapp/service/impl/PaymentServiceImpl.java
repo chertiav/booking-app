@@ -155,7 +155,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static void checkSessionOwnership(Long paymentId, Long userId, Long paymentUserId) {
         if (!paymentUserId.equals(userId)) {
-            throw new AccessDeniedException("Can't renew session by payment id" + paymentId);
+            throw new AccessDeniedException("Can't renew session by payment id: " + paymentId);
         }
     }
 

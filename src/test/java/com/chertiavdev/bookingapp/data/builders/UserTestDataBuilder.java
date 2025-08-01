@@ -1,5 +1,6 @@
 package com.chertiavdev.bookingapp.data.builders;
 
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.INVALID_USER_AUTH_PASSWORD;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_1;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_2;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.SAMPLE_TEST_ID_3;
@@ -11,8 +12,10 @@ import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.US
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_EMAIL_SANSA;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_FIRST_USERNAME_UPDATED;
 import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_LAST_USERNAME_UPDATED;
-import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.VALID_USER_PASSWORD;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.USER_PASSWORD;
+import static com.chertiavdev.bookingapp.utils.constants.ServiceTestConstants.VALID_USER_AUTH_PASSWORD;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUser;
+import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserLoginRequestDto;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserRegisterRequest;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserRole;
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.createTestUserUpdateRequestDto;
@@ -21,6 +24,7 @@ import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapToUse
 import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.mapToUserWithRoleDto;
 
 import com.chertiavdev.bookingapp.dto.user.UserDto;
+import com.chertiavdev.bookingapp.dto.user.UserLoginRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserRegisterRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRequestDto;
 import com.chertiavdev.bookingapp.dto.user.UserUpdateRoleRequestDto;
@@ -40,8 +44,11 @@ public class UserTestDataBuilder {
     private final User updatedRoleUserJohn;
 
     private final UserRegisterRequestDto userJohnRegisterRequestDto;
+    private final UserRegisterRequestDto userJohnRegisterBadRequestDto;
     private final UserUpdateRequestDto updatedUserJohnRequestDto;
+    private final UserUpdateRequestDto updatedUserJohnBadRequestDto;
     private final UserUpdateRoleRequestDto userJohnUpdateRoleRequestDto;
+    private final UserUpdateRoleRequestDto userJohnUpdateRoleBadRequestDto;
 
     private final User userJohnToModel;
 
@@ -59,8 +66,11 @@ public class UserTestDataBuilder {
         updatedRoleUserJohn = createUpdatedRoleUserJohn();
 
         userJohnRegisterRequestDto = createUserJohnRegisterRequestDto();
+        userJohnRegisterBadRequestDto = createUserJohnRegisterBadRequestDto();
         updatedUserJohnRequestDto = createUpdatedUserJohnRequestDto();
+        updatedUserJohnBadRequestDto = createUpdatedUserJohnBadRequestDto();
         userJohnUpdateRoleRequestDto = createUserJohnUpdateRoleRequestDto();
+        userJohnUpdateRoleBadRequestDto = createUserJohnUpdateRoleBadRequestDto();
 
         userJohnToModel = createUserJohnToModel();
 
@@ -69,12 +79,23 @@ public class UserTestDataBuilder {
         updatedRoleUserJohnDto = createUpdatedRoleUserJohnDto();
     }
 
+    public UserLoginRequestDto createUserJohnLoginRequestDto(
+            boolean isValidEmailFormat,
+            boolean isRightPassword
+    ) {
+        return createTestUserLoginRequestDto(
+                userJohnRegisterRequestDto,
+                isValidEmailFormat,
+                isRightPassword
+        );
+    }
+
     private User createUserJohn() {
         return createTestUser(
                 SAMPLE_TEST_ID_2,
                 USERNAME_FIRST_JOHN,
                 USERNAME_LAST_DOE,
-                VALID_USER_PASSWORD,
+                USER_PASSWORD,
                 USER_EMAIL_JOHN,
                 userRole
         );
@@ -85,7 +106,7 @@ public class UserTestDataBuilder {
                 SAMPLE_TEST_ID_3,
                 USERNAME_FIRST_SANSA,
                 USERNAME_LAST_STARK,
-                VALID_USER_PASSWORD,
+                USER_PASSWORD,
                 USER_EMAIL_SANSA,
                 userRole
         );
@@ -96,7 +117,7 @@ public class UserTestDataBuilder {
                 SAMPLE_TEST_ID_2,
                 USER_FIRST_USERNAME_UPDATED,
                 USER_LAST_USERNAME_UPDATED,
-                VALID_USER_PASSWORD,
+                USER_PASSWORD,
                 USER_EMAIL_JOHN,
                 userRole
         );
@@ -107,7 +128,7 @@ public class UserTestDataBuilder {
                 SAMPLE_TEST_ID_2,
                 USERNAME_FIRST_JOHN,
                 USERNAME_LAST_DOE,
-                VALID_USER_PASSWORD,
+                USER_PASSWORD,
                 USER_EMAIL_JOHN,
                 adminRole
         );
@@ -124,8 +145,18 @@ public class UserTestDataBuilder {
     private UserRegisterRequestDto createUserJohnRegisterRequestDto() {
         return createTestUserRegisterRequest(
                 USER_EMAIL_JOHN,
-                VALID_USER_PASSWORD,
-                VALID_USER_PASSWORD,
+                VALID_USER_AUTH_PASSWORD,
+                VALID_USER_AUTH_PASSWORD,
+                USERNAME_FIRST_JOHN,
+                USERNAME_LAST_DOE
+        );
+    }
+
+    private UserRegisterRequestDto createUserJohnRegisterBadRequestDto() {
+        return createTestUserRegisterRequest(
+                USER_EMAIL_JOHN,
+                VALID_USER_AUTH_PASSWORD,
+                INVALID_USER_AUTH_PASSWORD,
                 USERNAME_FIRST_JOHN,
                 USERNAME_LAST_DOE
         );
@@ -138,8 +169,19 @@ public class UserTestDataBuilder {
         );
     }
 
+    private UserUpdateRequestDto createUpdatedUserJohnBadRequestDto() {
+        return createTestUserUpdateRequestDto(
+                "",
+                USER_LAST_USERNAME_UPDATED
+        );
+    }
+
     private UserUpdateRoleRequestDto createUserJohnUpdateRoleRequestDto() {
         return createTestUserUpdateRoleRequestDto(Role.RoleName.ADMIN);
+    }
+
+    private UserUpdateRoleRequestDto createUserJohnUpdateRoleBadRequestDto() {
+        return createTestUserUpdateRoleRequestDto(null);
     }
 
     private User createUserJohnToModel() {
@@ -147,7 +189,7 @@ public class UserTestDataBuilder {
                 null,
                 USERNAME_FIRST_JOHN,
                 USERNAME_LAST_DOE,
-                VALID_USER_PASSWORD,
+                USER_PASSWORD,
                 USER_EMAIL_JOHN,
                 userRole
         );

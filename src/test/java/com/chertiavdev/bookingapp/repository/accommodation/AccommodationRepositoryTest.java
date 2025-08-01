@@ -43,10 +43,11 @@ class AccommodationRepositoryTest {
     private static final String[] SETUP_SCRIPTS = {
             "database/accommodation/address/add-address-into-address-table.sql",
             "database/accommodation/add-accommodations-into-accommodations-table.sql",
-            "database/amenities/add-amenities-into-accommodation_amenities-table.sql"
+            "database/accommodation/amenities/add-amenities-into-accommodation_amenities-table.sql"
     };
     private static final String[] CLEANUP_SCRIPTS = {
-            "database/amenities/remove-all-amenities-from-accommodation_amenities-table.sql",
+            "database/accommodation/amenities/"
+                    + "remove-all-amenities-from-accommodation_amenities-table.sql",
             "database/accommodation/remove-all-accommodations-from-accommodation-table.sql",
             "database/accommodation/address/remove-all-address-from-address-table.sql"
     };

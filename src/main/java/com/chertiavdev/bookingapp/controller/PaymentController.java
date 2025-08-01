@@ -127,7 +127,9 @@ public class PaymentController {
     @UpdateApiResponses
     @PostMapping("/renew")
     public PaymentDto renew(
-            @RequestParam("payment_id") Long paymentId,
+            @RequestParam("payment_id")
+            @Positive(message = "payment_id must be positive")
+            Long paymentId,
             @AuthenticationPrincipal User user
     ) {
         return paymentService.renewPayment(paymentId, user.getId());

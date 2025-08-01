@@ -13,11 +13,13 @@ public final class ServiceTestConstants {
     public static final long SAMPLE_TEST_ID_4 = 4L;
     public static final long SAMPLE_TEST_ID_5 = 5L;
     public static final long INVALID_TEST_ID = 100L;
+    public static final String NULL_ID = "null";
 
     //================================accommodation======================================
 
     public static final String ACCOMMODATION_SIZE_STUDIO = "Studio";
     public static final BigDecimal ACCOMMODATION_DAILY_RATE_7550 = BigDecimal.valueOf(75.50);
+    public static final BigDecimal ACCOMMODATION_DAILY_RATE_37750 = BigDecimal.valueOf(377.50);
     public static final BigDecimal ACCOMMODATION_DAILY_RATE_10050 = BigDecimal.valueOf(100.50);
     public static final int ACCOMMODATION_AVAILABILITY = 1;
     public static final int AVAILABILITY_THRESHOLD = 0;
@@ -44,6 +46,11 @@ public final class ServiceTestConstants {
     public static final String AMENITY_CATEGORY_UPDATED_NAME = "Updated category name";
     public static final String AMENITY_CATEGORY_UPDATE_ERROR_MESSAGE =
             "Can't update category by id: ";
+    public static final String AMENITY_CATEGORY_TABLE_NAME = "amenity_categories";
+    public static final String AMENITY_TABLE_NAME = "amenities";
+    public static final String ACCOMMODATION_TABLE_NAME = "accommodations";
+    public static final String BOOKING_TABLE_NAME = "bookings";
+    public static final String USER_TELEGRAM_TABLE_NAME = "user_telegram";
 
     //================================amenity===============================================
     public static final String AMENITY_FREE_WIFI = "Free Wi-Fi";
@@ -101,7 +108,7 @@ public final class ServiceTestConstants {
     public static final String PAYMENT_SESSION_NOT_FOUND_BY_ID_MESSAGE =
             "Can't find payment by id: ";
     public static final String PAYMENT_RENEWAL_INVALID_USER_MESSAGE =
-            "Can't renew session by payment id";
+            "Can't renew session by payment id: ";
     public static final String PAYMENT_RENEWAL_INVALID_STATUS_MESSAGE = "Can't renew payment by "
             + "id: %s payment status must be: %s and booking status must be: %s";
     public static final String STRIPE_APP_BASE_URL_NAME = "appBaseUrl";
@@ -126,14 +133,19 @@ public final class ServiceTestConstants {
     public static final String TEST_TOKEN_INVALID = "invalid-test-token";
     public static final int NUMBER_OF_MINUTES = 10;
     public static final String TELEGRAM_LINK_TEMPLATE = "https://t.me/%s?start=%s";
-    public static final String TEST_BOT_USERNAME = "TestBot";
+    public static final String TEST_BOT_USERNAME = "botname";
 
     //===============================user============================================
 
+    public static final String ADMIN_EMAIL = "admin@example.com";
     public static final String USER_EMAIL_JOHN = "jhon@example.com";
     public static final String USER_EMAIL_SANSA = "sansa@example.com";
-    public static final String USER_INVALID_EMAIL_EXAMPLE = "one@example.com";
-    public static final String VALID_USER_PASSWORD = "strongPassword123*";
+    public static final String USER_INVALID_EMAIL = "one@example.com";
+    public static final String USER_INVALID_EMAIL_FORMAT = "oneexample.com";
+    public static final String USER_PASSWORD =
+            "$2a$10$xNdQVAHT5Q/eeN74oxYY3OTof/kFyL/0Zy77kUbr2a5yd7cnsD/S2";
+    public static final String VALID_USER_AUTH_PASSWORD = "strongPassword123*";
+    public static final String INVALID_USER_AUTH_PASSWORD = "strongPassword123";
     public static final String USERNAME_FIRST_JOHN = "John";
     public static final String USERNAME_LAST_DOE = "Doe";
     public static final String USERNAME_FIRST_SANSA = "Sansa";
@@ -145,6 +157,7 @@ public final class ServiceTestConstants {
     public static final String USER_ID_PREFIX = "id:";
     public static final String USER_FIRST_USERNAME_UPDATED = "Jaime";
     public static final String USER_LAST_USERNAME_UPDATED = "Lannister";
+    public static final String INVALID_ROLE = "INVALID";
 
     //===============================userTelegram===================================
 

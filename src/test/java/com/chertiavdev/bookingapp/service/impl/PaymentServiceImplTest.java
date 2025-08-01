@@ -106,16 +106,19 @@ class PaymentServiceImplTest {
             + "is provided")
     void getPayments_ValidUserId_ShouldReturnPagePaymentDto() {
         //Given
-        Payment payment = paymentTestDataBuilder.getPendingPaymentPendingBooking();
-        PaymentDto paymentDto = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
+        Payment paymentPending = paymentTestDataBuilder.getPendingPaymentPendingBooking();
+        Payment paymentConfirmed = paymentTestDataBuilder.getPaidPaymentConfirmedBooking();
+        PaymentDto paymentPendingDto = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
+        PaymentDto paymentConfirmedDto = paymentTestDataBuilder.getPaidPaymentConfirmedBookingDto();
         Pageable pageable = paymentTestDataBuilder.getPageable();
         Page<Payment> paymentPage = paymentTestDataBuilder.buildAllPaymentsUserJhonToPage();
 
-        when(paymentRepository.findAllByUserId(SAMPLE_TEST_ID_1, pageable)).thenReturn(paymentPage);
-        when(paymentMapper.toDto(payment)).thenReturn(paymentDto);
+        when(paymentRepository.findAllByUserId(SAMPLE_TEST_ID_2, pageable)).thenReturn(paymentPage);
+        when(paymentMapper.toDto(paymentPending)).thenReturn(paymentPendingDto);
+        when(paymentMapper.toDto(paymentConfirmed)).thenReturn(paymentConfirmedDto);
 
         //When
-        Page<PaymentDto> actual = paymentService.getPayments(SAMPLE_TEST_ID_1, pageable);
+        Page<PaymentDto> actual = paymentService.getPayments(SAMPLE_TEST_ID_2, pageable);
 
         //Then
         Page<PaymentDto> expected = paymentTestDataBuilder.buildAllPaymentDtosUserJhonToPage();
@@ -135,8 +138,9 @@ class PaymentServiceImplTest {
         assertEquals(expected.getContent(), actual.getContent(),
                 CONTENT_OF_THE_PAGE_DOES_NOT_MATCH_THE_EXPECTED_VALUE);
 
-        verify(paymentRepository).findAllByUserId(SAMPLE_TEST_ID_1, pageable);
-        verify(paymentMapper).toDto(payment);
+        verify(paymentRepository).findAllByUserId(SAMPLE_TEST_ID_2, pageable);
+        verify(paymentMapper).toDto(paymentPending);
+        verify(paymentMapper).toDto(paymentConfirmed);
         verifyNoMoreInteractions(paymentRepository, paymentMapper);
     }
 
@@ -147,14 +151,17 @@ class PaymentServiceImplTest {
         //Given
         Payment paymentPending = paymentTestDataBuilder.getPendingPaymentPendingBooking();
         Payment paymentConfirmed = paymentTestDataBuilder.getPaidPaymentConfirmedBooking();
+        Payment paymentExpired = paymentTestDataBuilder.getExpiredPaymentPendingBooking();
         PaymentDto paymentPendingDto = paymentTestDataBuilder.getPendingPaymentPendingBookingDto();
         PaymentDto paymentConfirmedDto = paymentTestDataBuilder.getPaidPaymentConfirmedBookingDto();
+        PaymentDto paymentExpiredDto = paymentTestDataBuilder.getExpiredPaymentPendingBookingDto();
         Pageable pageable = paymentTestDataBuilder.getPageable();
         Page<Payment> paymentPage = paymentTestDataBuilder.buildAllPaymentBookingsPage();
 
         when(paymentRepository.findAll(pageable)).thenReturn(paymentPage);
         when(paymentMapper.toDto(paymentPending)).thenReturn(paymentPendingDto);
         when(paymentMapper.toDto(paymentConfirmed)).thenReturn(paymentConfirmedDto);
+        when(paymentMapper.toDto(paymentExpired)).thenReturn(paymentExpiredDto);
 
         //When
         Page<PaymentDto> actual = paymentService.getPayments(null, pageable);
@@ -180,6 +187,7 @@ class PaymentServiceImplTest {
         verify(paymentRepository).findAll(pageable);
         verify(paymentMapper).toDto(paymentPending);
         verify(paymentMapper).toDto(paymentConfirmed);
+        verify(paymentMapper).toDto(paymentExpired);
         verifyNoMoreInteractions(paymentRepository, paymentMapper);
     }
 

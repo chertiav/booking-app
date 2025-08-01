@@ -1,3 +1,4 @@
 INSERT INTO accommodation_amenities (accommodation_id, amenity_id)
 VALUES (1, 1),
-       (1, 2);
+       (1, 2),
+       (1, 3);

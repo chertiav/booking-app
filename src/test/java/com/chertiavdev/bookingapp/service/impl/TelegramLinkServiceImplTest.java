@@ -10,7 +10,6 @@ import static com.chertiavdev.bookingapp.utils.helpers.ServiceTestUtils.calculat
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -24,6 +23,7 @@ import com.chertiavdev.bookingapp.mapper.TelegramLinkMapper;
 import com.chertiavdev.bookingapp.model.TelegramLink;
 import com.chertiavdev.bookingapp.model.User;
 import com.chertiavdev.bookingapp.repository.telegram.link.TelegramLinkRepository;
+import com.chertiavdev.bookingapp.util.helpers.token.generator.UuidTokenGenerator;
 import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +45,8 @@ class TelegramLinkServiceImplTest {
     private TelegramLinkRepository telegramLinkRepository;
     @Mock
     private TelegramLinkMapper telegramLinkMapper;
+    @Mock
+    private UuidTokenGenerator uuidTokenGenerator;
 
     @BeforeEach
     void setUp() {
@@ -66,7 +68,8 @@ class TelegramLinkServiceImplTest {
         TelegramLinkDto expected = userTelegramLinkTestDataBuilder.getTelegramLinkDtoJohn();
 
         when(telegramLinkRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
-        when(telegramLinkMapper.toModel(eq(user), anyString(), eq(NUMBER_OF_MINUTES)))
+        when(uuidTokenGenerator.generateToken()).thenReturn(TEST_TOKEN_CURRENT);
+        when(telegramLinkMapper.toModel(eq(user), eq(TEST_TOKEN_CURRENT), eq(NUMBER_OF_MINUTES)))
                 .thenReturn(telegramLinkToModel);
         when(telegramLinkRepository.save(eq(telegramLinkToModel))).thenReturn(savedTelegramLink);
         when(telegramLinkMapper
@@ -81,7 +84,8 @@ class TelegramLinkServiceImplTest {
         assertEquals(expected, actual, EXCEPTION_MESSAGE_SHOULD_BE_EQUAL_TO_THE_EXPECTED_ONE);
 
         verify(telegramLinkRepository).findByUserId(eq(user.getId()));
-        verify(telegramLinkMapper).toModel(eq(user), anyString(), eq(NUMBER_OF_MINUTES));
+        verify(uuidTokenGenerator).generateToken();
+        verify(telegramLinkMapper).toModel(eq(user), eq(TEST_TOKEN_CURRENT), eq(NUMBER_OF_MINUTES));
         verify(telegramLinkRepository).save(eq(telegramLinkToModel));
         verify(telegramLinkMapper)
                 .toDto(eq(savedTelegramLink), eq(TELEGRAM_LINK_TEMPLATE), eq(TEST_BOT_USERNAME));

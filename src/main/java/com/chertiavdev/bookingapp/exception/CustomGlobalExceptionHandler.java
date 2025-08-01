@@ -2,7 +2,10 @@ package com.chertiavdev.bookingapp.exception;
 
 import com.chertiavdev.bookingapp.dto.error.CommonApiErrorResponseDto;
 import com.chertiavdev.bookingapp.dto.error.ErrorDetailDto;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -64,7 +68,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(SpecificationProviderNotFoundException.class)
-    public ResponseEntity<Object> handleSpecificationProviderNotFoundException(
+    protected ResponseEntity<Object> handleSpecificationProviderNotFoundException(
             SpecificationProviderNotFoundException ex
     ) {
         log.warn("SpecificationProviderNotFoundException occurred: {}", ex.getMessage());
@@ -77,7 +81,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(StripeServiceException.class)
-    public ResponseEntity<Object> handleStripeServiceException(
+    protected ResponseEntity<Object> handleStripeServiceException(
             StripeServiceException ex
     ) {
         log.error("StripeServiceException occurred: {}", ex.getMessage());
@@ -121,7 +125,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(AccommodationAlreadyExistsException.class)
-    public ResponseEntity<Object> handleAccommodationAlreadyExists(
+    protected ResponseEntity<Object> handleAccommodationAlreadyExists(
             AccommodationAlreadyExistsException ex
     ) {
         log.warn("AccommodationAlreadyExistsException occurred: {}", ex.getMessage());
@@ -133,7 +137,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(AccommodationAvailabilityException.class)
-    public ResponseEntity<Object> handleAccommodationAvailabilityException(
+    protected ResponseEntity<Object> handleAccommodationAvailabilityException(
             AccommodationAvailabilityException ex
     ) {
         log.warn("AccommodationAvailabilityException occurred: {}", ex.getMessage());
@@ -145,7 +149,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(BookingAlreadyCancelledException.class)
-    public ResponseEntity<Object> handleBookingAlreadyCancelledException(
+    protected ResponseEntity<Object> handleBookingAlreadyCancelledException(
             BookingAlreadyCancelledException ex
     ) {
         log.warn("BookingAlreadyCancelledException occurred: {}", ex.getMessage());
@@ -157,7 +161,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(PaymentRenewException.class)
-    public ResponseEntity<Object> handlePaymentRenewException(
+    protected ResponseEntity<Object> handlePaymentRenewException(
             PaymentRenewException ex
     ) {
         log.warn("PaymentRenewException occurred: {}", ex.getMessage());
@@ -170,7 +174,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(
+    protected ResponseEntity<Object> handleAccessDeniedException(
             AccessDeniedException ex
     ) {
         log.warn("AccessDeniedException occurred: {}", ex.getMessage());
@@ -178,6 +182,37 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.FORBIDDEN,
                 LocalDateTime.now(),
                 getErrorMessage(ex, "Access denied")
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<Object> handleHttpMessageConversionException(
+            MethodArgumentTypeMismatchException ex,
+            WebRequest request) {
+        log.error("HttpMessageConversionException occurred: {}", ex.getMessage(), ex);
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now(),
+                getErrorMessage(ex, "Invalid input. Failed to convert provided value.")
+        );
+    }
+
+    @ExceptionHandler(InvalidFormatException.class)
+    protected ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex) {
+        log.error("InvalidFormatException occurred: {}", ex.getMessage(), ex);
+        String errorMessage = String.format(
+                "Invalid value '%s'. Expected one of %s for field '%s'",
+                ex.getValue(),
+                Arrays.toString(ex.getTargetType().getEnumConstants()),
+                ex.getPath().stream()
+                        .map(JsonMappingException.Reference::getFieldName)
+                        .findFirst()
+                        .orElse("unknown")
+        );
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now(),
+                errorMessage
         );
     }
 
