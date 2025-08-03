@@ -62,7 +62,7 @@ public class BookingController {
 
     @ApiOperationDetails(
             summary = "Search bookings by parameters",
-            description = "Retrieve a paginated list of all bookings books by parameters",
+            description = "Retrieve a paginated list of all bookings by parameters",
             responseDescription = "Successfully retrieved a paginated list of all bookings "
                     + "books by parameters"
     )
