@@ -220,25 +220,20 @@ What this does:
 - Wait for the services to start. You should see logs indicating that the application and database are running.
 
 ### Step 4: Access the Application
-The application will be accessible at:
-```
-http://localhost:8088/api
-```
+After running the application, you can access it via the following endpoints:
 
-To view the Swagger API documentation, navigate to:
-```
-http://localhost:8088/api/swagger-ui/index.html
-```
+#### 🔧 Local Environment (host machine)
+- Base URL: `http://localhost:8088/api`
+- Swagger UI: [http://localhost:8088/api/swagger-ui/index.html](http://localhost:8088/api/swagger-ui/index.html)
 
-If you are working inside a container, the application will be accessible on the port defined in `SPRING_DOCKER_PORT`. Use the following address:
-```
-http://localhost:8080/api/swagger-ui/index.html
-```
+#### 🐳 Docker Container (inside container network)
+- Base URL: `http://localhost:8080/api`
+- Swagger UI: [http://localhost:8080/api/swagger-ui/index.html](http://localhost:8080/api/swagger-ui/index.html)
 
-Similarly, the Swagger documentation inside the container will be available at:
-```
-http://localhost:8080/api/swagger-ui/index.html
-```
+#### ☁️ AWS Deployment (public demo)
+- Live Swagger UI: [http://ec2-16-171-144-22.eu-north-1.compute.amazonaws.com/api/swagger-ui/index.html](http://ec2-16-171-144-22.eu-north-1.compute.amazonaws.com/api/swagger-ui/index.html)
+
+> ⚠️ **Note:** The AWS endpoint is available for demonstration purposes only. Please do not use it to submit sensitive or production-level data.
 
 ## 📊 Entity Relationships
 
