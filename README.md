@@ -230,11 +230,6 @@ After running the application, you can access it via the following endpoints:
 - Base URL: `http://localhost:8080/api`
 - Swagger UI: [http://localhost:8080/api/swagger-ui/index.html](http://localhost:8080/api/swagger-ui/index.html)
 
-#### ☁️ AWS Deployment (public demo)
-- Live Swagger UI: [http://ec2-16-171-144-22.eu-north-1.compute.amazonaws.com/api/swagger-ui/index.html](http://ec2-16-171-144-22.eu-north-1.compute.amazonaws.com/api/swagger-ui/index.html)
-
-> ⚠️ **Note:** The AWS endpoint is available for demonstration purposes only. Please do not use it to submit sensitive or production-level data.
-
 ## 📊 Entity Relationships
 
 The application has the following entities and their relationships:
